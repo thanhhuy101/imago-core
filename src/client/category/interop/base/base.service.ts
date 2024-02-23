@@ -6,20 +6,32 @@ export class CategoryInteropBaseService implements CategoryInterop {
   constructor(@Inject('CategoryUseCase') private useCase: CategoryUseCase) {
   }
     async createCategory(category: CategoryDomain) {
-    try {
-      return await this.useCase.createCategory(category);
+      try {
+        return await this.useCase.createCategory(category);
+      }
+      catch (e) {
+        throw e;
+      }
     }
-    catch (e) {
+    async deleteCategory(id: string){
+        try {
+          return this.useCase.deleteCategory(id);
+        }catch (e) {
+            throw e;
+        }
+    }
+    async getCategory(id: string): Promise<CategoryDomain> {
+    try {
+      return this.useCase.getCategory(id);
+    } catch (e) {
       throw e;
     }
     }
-    deleteCategory(id: string){
-        return this.useCase.deleteCategory(id);
-    }
-    getCategory(id: string): Promise<CategoryDomain> {
-        return this.useCase.getCategory(id);
-    }
     getCategories(): Promise<CategoryDomain[]> {
+      try {
         return this.useCase.getCategories();
+      } catch (e) {
+        throw e;
+      }
     }
 }

@@ -30,3 +30,4 @@ export const ErrorCategoryNameRequired = 'Category name is required';
 export const ErrorCategoryPhotoRequired = 'Category photo is required';
 export const ErrorCategoryAlreadyExisted = 'Category already existed';
 export const ErrorCategoryNotFound = 'Category not found';
+export const ErrorCategoryDeleteFailed = 'Category not found to delete';

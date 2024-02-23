@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   CategoryDomain,
   CategoryRepository,
-  CategoryUseCase, ErrorCategoryAlreadyExisted,
+  CategoryUseCase, ErrorCategoryAlreadyExisted, ErrorCategoryDeleteFailed,
   ErrorCategoryNameRequired, ErrorCategoryNotFound, ErrorCategoryPhotoRequired,
 } from '../../../../domain/category.domain';
 import * as admin from 'firebase-admin';
@@ -26,7 +26,11 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
     return this.repository.createCategory(category);
   }
 
-    deleteCategory(id: string): Promise<boolean> {
+    async deleteCategory(id: string): Promise<boolean> {
+      let existed = await this.repository.getCategory(id);
+      if (!existed) {
+        console.error(ErrorCategoryDeleteFailed);
+      }
        return this.repository.deleteCategory(id);
     }
     async getCategory(id: string): Promise<CategoryDomain> {
