@@ -1,0 +1,50 @@
+import { Body, Controller, Delete, Get, Inject, Param, Post, Put } from '@nestjs/common';
+import { CategoryDomain, CategoryInterop } from '../../domain/category.domain';
+import { CategoryRepositoryBaseService } from './repository/base/base.service';
+
+@Controller('v1/category')
+export class CategoryController {
+  constructor(@Inject('CategoryInterop') private interop: CategoryInterop) {}
+
+  @Post()
+  async createCategory(@Body() category: CategoryDomain) {
+    try{
+      await this.interop.createCategory(category);
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  @Delete(':id')
+  async deleteCategory(@Param('id') id: string) {
+    try{
+      return await this.interop.deleteCategory(id);
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  @Get()
+  async getCategories() {
+    try{
+      return await this.interop.getCategories();
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+  @Get(':id')
+  async getCategory(@Param('id') id: string) {
+    try{
+      return await this.interop.getCategory(id);
+    }
+    catch(e){
+      throw e;
+    }
+  }
+
+
+}
