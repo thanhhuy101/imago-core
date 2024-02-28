@@ -6,10 +6,17 @@ import { CategoryModule } from './internal/category/category.module';
 import { CategoryController } from './internal/category/category.controller';
 import { PostModule } from './internal/post/post.module';
 import { PostController } from './internal/post/post.controller';
+import { ProfileModule } from './internal/profile/profile.module';
+import { ProfileController } from './internal/profile/profile.controller';
 
 @Module({
-  imports: [AuthModule, CategoryModule, PostModule],
-  controllers: [AppController, CategoryController, PostController],
+  imports: [AuthModule, CategoryModule, PostModule, ProfileModule],
+  controllers: [
+    AppController,
+    CategoryController,
+    PostController,
+    ProfileController,
+  ],
   providers: [AppService],
 })
 export class AppModule {}
