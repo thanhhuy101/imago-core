@@ -6,7 +6,7 @@ import { CategoryModule } from './internal/category/category.module';
 import { CategoryController } from './internal/category/delivery/category.controller';
 import { PostModule } from './internal/post/post.module';
 import { RoleModule } from './internal/role/role.module';
-import { ProfileController } from './internal/profile/profile.controller';
+import { ProfileController } from './internal/profile/delivery/profile.controller';
 import { ReportController } from './internal/report/report.controller';
 import { CommentController } from './internal/comment/delivery/comment.controller';
 import { AuthController } from './internal/auth/delivery/auth.controller';
