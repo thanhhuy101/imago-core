@@ -8,14 +8,16 @@ import { PostModule } from './internal/post/post.module';
 import { PostController } from './internal/post/post.controller';
 import { ProfileModule } from './internal/profile/profile.module';
 import { ProfileController } from './internal/profile/profile.controller';
+import { ReportModule } from './internal/report/report.module';
 
 @Module({
-  imports: [AuthModule, CategoryModule, PostModule, ProfileModule],
+  imports: [AuthModule, CategoryModule, PostModule, ProfileModule, ReportModule],
   controllers: [
     AppController,
     CategoryController,
     PostController,
     ProfileController,
+
   ],
   providers: [AppService],
 })
