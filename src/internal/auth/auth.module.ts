@@ -1,6 +1,9 @@
 import { Module } from '@nestjs/common';
 import { BaseService } from './usecase/base/base.service';
 import { FirebaseService } from './repository/firebase/firebase.service';
+import { InteropService } from './interop/interop.service';
+import { AuthController } from './delivery/auth.controller';
+
 
 @Module({
   providers: [
@@ -11,8 +14,13 @@ import { FirebaseService } from './repository/firebase/firebase.service';
     {
       provide: 'AuthUseCase',
       useClass: BaseService
-    }
+    },{
+    provide: 'AuthInterop',
+    useClass: InteropService
+    },
+
   ],
-  exports: ['AuthUseCase', 'AuthRepository']
+  exports: ['AuthUseCase', 'AuthRepository', 'AuthInterop'],
+  controllers: [AuthController]
 })
 export class AuthModule {}
