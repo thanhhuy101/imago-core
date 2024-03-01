@@ -2,7 +2,6 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   ErrFirstName,
   ErrLastName,
-  ErrUserName,
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
@@ -16,23 +15,13 @@ export class UsecaseService implements ProfileUseCase {
   ) {}
 
   async getProfile(id: string): Promise<Profile> {
-    if (id === '' || id === undefined || id === null) {
-      throw ErrorProfileNotFound;
-    }
     return this.profileRepository.getProfile(id);
   }
   async createProfile(profile: Profile): Promise<boolean> {
-    function isValidString(value: string | undefined | null): boolean {
-      return typeof value === 'string' && value.trim() !== '';
-    }
-
-    if (!isValidString(profile.username)) {
-      throw ErrUserName;
-    }
-    if (!isValidString(profile.firstName)) {
+    if (profile.firstName === '') {
       throw ErrFirstName;
     }
-    if (!isValidString(profile.lastName)) {
+    if (profile.lastName === '') {
       throw ErrLastName;
     }
 
@@ -40,17 +29,10 @@ export class UsecaseService implements ProfileUseCase {
   }
 
   async updateProfile(profile: Profile): Promise<boolean> {
-    function isValidString(value: string | undefined | null): boolean {
-      return typeof value === 'string' && value.trim() !== '';
-    }
-
-    if (!isValidString(profile.username)) {
-      throw ErrUserName;
-    }
-    if (!isValidString(profile.firstName)) {
+    if (profile.firstName === '') {
       throw ErrFirstName;
     }
-    if (!isValidString(profile.lastName)) {
+    if (profile.lastName === '') {
       throw ErrLastName;
     }
 

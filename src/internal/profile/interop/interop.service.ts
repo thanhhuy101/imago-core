@@ -23,7 +23,9 @@ export class InteropService implements ProfileInterop {
   }
   async createProfile(profile: Profile, token: string): Promise<boolean> {
     try {
-      await this.authUseCase.verifyToken(token);
+      let decodedToken = await this.authUseCase.verifyToken(token);
+      profile.id = decodedToken.uid;
+      profile.userName = decodedToken.email;
       return await this.profileUseCase.createProfile(profile);
     } catch (e) {
       throw e;
