@@ -13,7 +13,6 @@ import {
   CategoryDomain,
   CategoryInterop,
 } from '../../../domain/category.domain';
-import { CategoryRepositoryBaseService } from '../repository/base/base.service';
 
 @Controller('v1/category')
 export class CategoryController {
