@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  ErrFirstName,
+  ErrLastName,
+  ErrUserName,
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
@@ -24,13 +27,13 @@ export class UsecaseService implements ProfileUseCase {
     }
 
     if (!isValidString(profile.username)) {
-      throw new Error('Username is required and must be a non-empty string');
+      throw ErrUserName;
     }
     if (!isValidString(profile.firstName)) {
-      throw new Error('Firstname is required and must be a non-empty string');
+      throw ErrFirstName;
     }
     if (!isValidString(profile.lastName)) {
-      throw new Error('Lastname is required and must be a non-empty string');
+      throw ErrLastName;
     }
 
     return await this.profileRepository.createProfile(profile);
@@ -42,13 +45,13 @@ export class UsecaseService implements ProfileUseCase {
     }
 
     if (!isValidString(profile.username)) {
-      throw new Error('Username is required and must be a non-empty string');
+      throw ErrUserName;
     }
     if (!isValidString(profile.firstName)) {
-      throw new Error('Firstname is required and must be a non-empty string');
+      throw ErrFirstName;
     }
     if (!isValidString(profile.lastName)) {
-      throw new Error('Lastname is required and must be a non-empty string');
+      throw ErrLastName;
     }
 
     return await this.profileRepository.updateProfile(profile);

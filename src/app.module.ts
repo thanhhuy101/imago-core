@@ -7,7 +7,7 @@ import { CategoryController } from './internal/category/category.controller';
 import { PostModule } from './internal/post/post.module';
 import { PostController } from './internal/post/post.controller';
 import { ProfileModule } from './internal/profile/profile.module';
-import { ProfileController } from './internal/profile/profile.controller';
+import { ProfileController } from './internal/profile/delivery/profile.controller';
 
 @Module({
   imports: [AuthModule, CategoryModule, PostModule, ProfileModule],

@@ -2,7 +2,7 @@ import { Module } from '@nestjs/common';
 import { InteropService } from './interop/interop.service';
 import { UsecaseService } from './usecase/usecase.service';
 import { RepositoryService } from './repository/repository.service';
-import { ProfileController } from './profile.controller';
+import { ProfileController } from './delivery/profile.controller';
 @Module({
   providers: [
     { provide: 'ProfileRepository', useClass: RepositoryService },

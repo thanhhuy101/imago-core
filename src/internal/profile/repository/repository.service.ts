@@ -40,48 +40,57 @@ export class RepositoryService implements ProfileRepository {
     try {
       // Lưu thông tin profile vào Firestore
       await this.db.collection('profiles').doc(profile.id).set(profile);
-  
+
       // Kiểm tra nếu profile 1 không muốn theo dõi profile 2
       if (!profile.followers.includes(profile.id)) {
         // Lấy thông tin profile cũ từ dữ liệu mới ghi vào Firestore
-        const updatedProfileDoc = await this.db.collection('profiles').doc(profile.id).get();
+        const updatedProfileDoc = await this.db
+          .collection('profiles')
+          .doc(profile.id)
+          .get();
         const updatedProfileData = updatedProfileDoc.data() as Profile;
-  
+
         // Xóa ID của profile 1 khỏi mảng followers của profile 2
-        const updatedFollowers = updatedProfileData.followers.filter(id => id !== profile.id);
+        const updatedFollowers = updatedProfileData.followers.filter(
+          (id) => id !== profile.id,
+        );
         await this.db.collection('profiles').doc(profile.id).update({
-          followers: updatedFollowers
+          followers: updatedFollowers,
         });
-  
+
         // Xóa ID của profile 2 khỏi mảng following của profile 1
-        const updatedFollowing = profile.following.filter(id => id !== profile.id);
+        const updatedFollowing = profile.following.filter(
+          (id) => id !== profile.id,
+        );
         await this.db.collection('profiles').doc(profile.id).update({
-          following: updatedFollowing
+          following: updatedFollowing,
         });
       } else {
         // Thêm ID của profile hiện tại vào mảng following của profile 1 (profile)
         if (!profile.following.includes(profile.id)) {
           profile.following.push(profile.id);
-          await this.db.collection('profiles').doc(profile.id).update({
-            following: profile.following
-          });
         }
-  
+
         // Thêm ID của profile 1 vào mảng followers của profile hiện tại (updatedProfileData)
-        const updatedProfileDoc = await this.db.collection('profiles').doc(profile.id).get();
+        const updatedProfileDoc = await this.db
+          .collection('profiles')
+          .doc(profile.id)
+          .get();
         const updatedProfileData = updatedProfileDoc.data() as Profile;
         if (!updatedProfileData.followers.includes(profile.id)) {
           updatedProfileData.followers.push(profile.id);
-          await this.db.collection('profiles').doc(profile.id).update({
-            followers: updatedProfileData.followers
-          });
         }
+
+        // Cập nhật dữ liệu vào Firestore
+        await this.db.collection('profiles').doc(profile.id).update({
+          following: profile.following,
+          followers: updatedProfileData.followers,
+        });
       }
-  
+
       return true;
     } catch (error) {
       throw error;
     }
   }
-  
 }
