@@ -25,9 +25,11 @@ export interface ProfileUseCase {
 }
 
 export interface ProfileInterop {
-  getProfile(id: string): Promise<Profile>;
-  createProfile(profile: Profile): Promise<boolean>;
-  updateProfile(profile: Profile): Promise<boolean>;
+  getProfile(id: string, token: string): Promise<Profile>;
+  createProfile(profile: Profile, token: string): Promise<boolean>;
+  updateProfile(profile: Profile, token: string): Promise<boolean>;
+  follow(profile: Profile, token: string): Promise<any>;
+  unfollow(profile: Profile, token: string): Promise<any>;
 }
 
 export const ErrorProfileNotFound = 'Profile not found';

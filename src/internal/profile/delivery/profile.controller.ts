@@ -6,6 +6,7 @@ import {
   Post,
   Put,
   Query,
+  Headers,
 } from '@nestjs/common';
 import { Profile, ProfileInterop } from 'src/domain/profile.domain';
 
@@ -16,41 +17,49 @@ export class ProfileController {
   ) {}
 
   @Get('get')
-  getProfile(@Query('id') id: string) {
-    return this.profileInterop.getProfile(id);
+  getProfile(@Headers() headers: any, @Query('id') id: string) {
+    let token = headers['authorization'];
+    return this.profileInterop.getProfile(id, token);
   }
 
   @Get('getMine')
-  getMineProfile(@Query('id') id: string) {
-    return this.profileInterop.getProfile(id);
+  getMineProfile(@Headers() headers: any, @Query('id') id: string) {
+    let token = headers['authorization'];
+    return this.profileInterop.getProfile(id, token);
   }
 
   @Post('create')
-  createProfile(@Body() profile: Profile) {
-    return this.profileInterop.createProfile(profile);
+  createProfile(@Headers() headers: any, @Body() profile: Profile) {
+    let token = headers['authorization'];
+    return this.profileInterop.createProfile(profile, token);
   }
 
   @Post('createMine')
-  createMineProfile(@Body() profile: Profile) {
-    return this.profileInterop.createProfile(profile);
+  createMineProfile(@Headers() headers: any, @Body() profile: Profile) {
+    let token = headers['authorization'];
+    return this.profileInterop.createProfile(profile, token);
   }
 
   @Put('update')
-  updateProfile(@Body() profile: Profile) {
-    return this.profileInterop.updateProfile(profile);
+  updateProfile(@Headers() headers: any, @Body() profile: Profile) {
+    let token = headers['authorization'];
+    return this.profileInterop.updateProfile(profile, token);
   }
 
   @Put('updateMine')
-  updateMineProfile(@Body() profile: Profile) {
-    return this.profileInterop.updateProfile(profile);
+  updateMineProfile(@Headers() headers: any, @Body() profile: Profile) {
+    let token = headers['authorization'];
+    return this.profileInterop.updateProfile(profile, token);
   }
 
   @Put('follow')
-  updateFollow(@Body() profile: Profile) {
-    return this.profileInterop.updateProfile(profile);
+  updateFollow(@Headers() headers: any, @Body() profile: Profile) {
+    let token = headers['authorization'];
+    return this.profileInterop.follow(profile, token);
   }
   @Put('unfollow')
-  updateUnfollow(@Body() profile: Profile) {
-    return this.profileInterop.updateProfile(profile);
+  updateUnfollow(@Headers() headers: any, @Body() profile: Profile) {
+    let token = headers['authorization'];
+    return this.profileInterop.unfollow(profile, token);
   }
 }
