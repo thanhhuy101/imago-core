@@ -26,16 +26,16 @@ export interface AuthUseCase {
 }
 export interface AuthInterop {
   get(id: string,token: string): Promise<AuthDomain>;
-  create(account: AuthDomain,token: string):Promise<admin.firestore.WriteResult>;
+  create(token: string,account: AuthDomain):Promise<admin.firestore.WriteResult>;
   update(account: AuthDomain, token: string): Promise<admin.firestore.WriteResult>;
-  list(account: AuthDomain,token: string): Promise<AuthDomain[]>;
-  signUp(account: AuthDomain,token: string ): Promise<admin.firestore.WriteResult>;
-  signIn(account: AuthDomain,token: string ): Promise<AuthDomain>;
+  list(token: string,account: AuthDomain): Promise<AuthDomain[]>;
+  signUp(token: string,account: AuthDomain ): Promise<admin.firestore.WriteResult>;
+  signIn(token: string,account: AuthDomain ): Promise<AuthDomain>;
 
 }
 
 export const ErrorUnauthorized = new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);
 
 export const ErrIdExisted: HttpException = new HttpException(
-  'tag existed',
+  'Auth existed',
   400,)

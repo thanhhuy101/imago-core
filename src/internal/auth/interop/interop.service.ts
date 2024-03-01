@@ -8,50 +8,40 @@ export class InteropService implements AuthInterop {
     constructor(@Inject('AuthUseCase')private authUseCase: AuthUseCase) {}
   async get(id: string,token: string): Promise<AuthDomain> {
     try{
-      // await this.authUseCase.verifyToken(token);
+      console.log(id);
       return await this.authUseCase.get(id);
     }catch (e){
       throw e;
     }
   }
   // @ts-ignore
-  async create(auth: AuthDomain,token: string): Promise<FirebaseFirestore.WriteResult> {
+  async create(token: string,auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
     try{
-        const existingUser = await this.authUseCase.get(auth.id);
-      if (existingUser){
-        throw ErrorUnauthorized;
-      }
-      return await this.authUseCase.create(auth);
+        return await this.authUseCase.create(auth);
     }
     catch (e){
       throw e;
     }}
 
-  async signUp(auth: AuthDomain,token: string): Promise<FirebaseFirestore.WriteResult> {
+  async signUp(token: string,auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
     try {
       let decodedIdToken = await this.authUseCase.verifyToken(token);
       auth.id = decodedIdToken.uid;
       auth.email = decodedIdToken.email;
       auth.role = 'default';
       auth.status = 'active';
-      return await this.create(auth, token);
+      return await this.create(token,auth);
     }
     catch (e){
       throw e;
     }
   }
 
-  async signIn(auth: AuthDomain,token: string): Promise<AuthDomain> {
+  async signIn(token: string,auth: AuthDomain): Promise<AuthDomain> {
     try {
       let decodedIdToken = await this.authUseCase.verifyToken(token);
       let user = await this.authUseCase.get(decodedIdToken.uid);
-      if (user.id == decodedIdToken.uid){
-        return await this.get(decodedIdToken.uid, token);
-      }
-      else {
-        throw new Error('User not found');
-      }
-
+        return await this.get(decodedIdToken.uid,token);
     }
     catch (e){
       throw e;
@@ -61,12 +51,14 @@ export class InteropService implements AuthInterop {
   // @ts-ignore
   async update(auth: AuthDomain): Promise<AuthDomain> {
     try {
-      return await this.authUseCase.update(auth);
+      // console.log(auth);
+      return await this.authUseCase.update( auth);
     } catch (error) {
       throw error;
     }
   }
-  async list(auth: AuthDomain): Promise<AuthDomain[]> {
+  async list(token: string,auth: AuthDomain): Promise<AuthDomain[]> {
+      console.log(auth);
     return await this.authUseCase.list(auth);
   }
   verifyToken(token: string): Promise<DecodedIdToken> {

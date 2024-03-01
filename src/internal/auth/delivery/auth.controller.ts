@@ -7,29 +7,35 @@ export class AuthController {
   @Post('signup')
   signUp(@Headers() headers:any,@Body() auth:AuthDomain) {
     let token = headers['authorization'];
-    return this.authInterop.signUp(auth, token);
+    return this.authInterop.signUp(token,auth);
   }
 
   @Post('signin')
   signIn(@Headers() headers:any,@Body() auth:AuthDomain) {
     let token = headers['authorization'];
-    return this.authInterop.signIn(auth, token);
+    return this.authInterop.signIn(token,auth);
   }
 
 @Put('changerole')
 changeRole(@Headers() headers:any,@Body() auth:AuthDomain) {
   let token = headers['authorization'];
 // @ts-ignore
-  return this.authInterop.update(auth, token);
+  return this.authInterop.update(auth,token);
 }
 @Put('block')
  block(@Headers() headers:any,@Body() auth:AuthDomain) {
   let token = headers['authorization'];
-return this.authInterop.create(auth, token);
+  console.log(auth);
+return this.authInterop.update(auth, token);
  }
  @Get('list')
   list(@Headers() headers:any,@Body() auth:AuthDomain) {
    let token = headers['authorization'];
-return this.authInterop.create(auth, token);
+return this.authInterop.list(token,auth);
+  }
+  @Get('getId')
+  getId(@Headers() headers:any,@Query('id') id:string) {
+    let token = headers['authorization'];
+    return this.authInterop.get(id,token);
   }
 }

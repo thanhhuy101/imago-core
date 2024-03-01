@@ -46,6 +46,11 @@ export class FirebaseService implements AuthRepository {
   async list(auth: AuthDomain): Promise<AuthDomain[]> {
     // @ts-ignore
     return await this.db.collection('auths').get().then((querySnapshot) => {
+      let auths: AuthDomain[] = [];
+      querySnapshot.forEach((doc) => {
+        auths.push(doc.data() as AuthDomain);
+      });
+      return auths;
     })}
 
 
