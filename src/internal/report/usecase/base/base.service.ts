@@ -15,6 +15,6 @@ export class BaseServiceUseCase implements ReportUseCase{
   }
 
   update(id: string): Promise<Report> {
-    return this.reportRepository.update( id);
+    return this.reportRepository.update(id);
   }
 }
