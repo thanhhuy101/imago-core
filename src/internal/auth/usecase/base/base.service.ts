@@ -1,12 +1,31 @@
 import { Inject, Injectable } from "@nestjs/common";
-import { AuthRepository, AuthUseCase } from "../../../../domain/auth.domain";
+import { AuthDomain, AuthRepository, AuthUseCase } from '../../../../domain/auth.domain';
+import { DecodedIdToken } from 'firebase-admin/lib/auth';
 
 @Injectable()
 export class BaseService implements AuthUseCase {
-  constructor(@Inject('AuthRepository') private authRepository: AuthRepository) {
+  constructor(@Inject('AuthRepository') private repository: AuthRepository) {
   }
 
-  async verifyToken(token: string) {
-    return this.authRepository.verifyToken(token);
+  async get(id: string): Promise<AuthDomain> {
+    return this.repository.get(id);
+  }
+
+  async create(auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
+    
+    return this.repository.create(auth);
+  }
+
+  // @ts-ignore
+  async update(auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
+    return this.repository.update(auth);
+  }
+
+  async list(auth: AuthDomain): Promise<AuthDomain[]> {
+    return this.repository.list(auth);
+  }
+
+  verifyToken(token: string): Promise<DecodedIdToken> {
+    return this.repository.verifyToken(token);
   }
 }
