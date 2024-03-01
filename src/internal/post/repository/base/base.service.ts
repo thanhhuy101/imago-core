@@ -1,38 +1,46 @@
 import { Injectable } from '@nestjs/common';
-import { PostDomain, PostRepository } from 'src/domain/post.domain';
+import { PostDomain, PostRepository } from '../../../../domain/post.domain';
 import * as admin from 'firebase-admin';
+
 @Injectable()
-export class RepositoryService implements PostRepository {
+export class BaseRepositoryService implements PostRepository {
   private db: admin.firestore.Firestore;
   constructor() {
     this.db = admin.firestore();
   }
 
-  async getPost(id: string): Promise<PostDomain> {
+  async getDetail(id: string): Promise<PostDomain> {
     const post = await this.db.collection('posts').doc(id).get();
     console.log(id);
     // console.log(post.data());
     return post.data() as PostDomain;
   }
-  async getPostsByUid(creatorId: string): Promise<PostDomain[]> {
+  async getByMentionId(mention: string): Promise<PostDomain[]> {
+    const postsRef = this.db.collection('posts');
+    const query = postsRef.where('mention', 'array-contains', mention);
+    const snapshot = await query.get();
+    const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+    return posts;
+  }
+  async getAllByUid(creatorId: string): Promise<PostDomain[]> {
     const post = await this.db.collection('posts').doc(creatorId).get();
     return post.data() as PostDomain[];
   }
-  async getSharedPost(uid: string): Promise<PostDomain[]> {
+  async getShare(uid: string): Promise<PostDomain[]> {
     const postsRef = this.db.collection('posts');
     const query = postsRef.where('share', 'array-contains', uid);
     const snapshot = await query.get();
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return posts;
   }
-  async getPostsByCateId(uid: string): Promise<PostDomain[]> {
-    const posts = await this.db
-      .collection('posts')
-      .where('cateId', 'array-contains', uid)
-      .get();
-    return posts.docs.map((doc) => doc.data() as PostDomain);
+  async getByCateId(uid: string): Promise<PostDomain[]> {
+    const postsRef = this.db.collection('posts');
+    const query = postsRef.where('cateId', 'array-contains', uid);
+    const snapshot = await query.get();
+    const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+    return posts;
   }
-  async createPost(post: PostDomain): Promise<boolean> {
+  async create(post: PostDomain): Promise<boolean> {
     try {
       await this.db.collection('posts').doc(post.id).set(post);
       return true;
@@ -40,7 +48,7 @@ export class RepositoryService implements PostRepository {
       throw e;
     }
   }
-  async updatePost(post: PostDomain): Promise<boolean> {
+  async update(post: PostDomain): Promise<boolean> {
     try {
       await this.db.collection('posts').doc(post.id).set(post);
       return true;
@@ -48,7 +56,7 @@ export class RepositoryService implements PostRepository {
       throw e;
     }
   }
-  async deletePost(id: string): Promise<boolean> {
+  async delete(id: string): Promise<boolean> {
     try {
       await this.db.collection('posts').doc(id).delete();
       return true;

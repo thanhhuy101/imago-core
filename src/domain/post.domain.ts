@@ -1,3 +1,4 @@
+import { Comment } from './comment.domain';
 export interface PostDomain {
   id: string;
   creatorId: string;
@@ -8,42 +9,40 @@ export interface PostDomain {
   cateId: string[];
   reaction: string[];
   comments: Comment[];
+  mention: string[];
 }
-export interface Comment {
-  authorId: string;
-  content: string;
-  id: string;
-  postId: string;
-  reaction: [];
-  replyId: string;
-}
+
 export interface PostRepository {
-  getPost(id: string): Promise<PostDomain>;
-  getPostsByUid(creatorId: string): Promise<PostDomain[]>;
-  getPostsByCateId(cateId: string): Promise<PostDomain[]>;
-  getSharedPost(uid: string): Promise<PostDomain[]>;
-  createPost(post: PostDomain): Promise<boolean>;
-  updatePost(post: PostDomain): Promise<boolean>;
-  deletePost(id: string): Promise<boolean>;
+  getDetail(id: string): Promise<PostDomain>;
+  getAllByUid(creatorId: string): Promise<PostDomain[]>;
+  getByCateId(cateId: string): Promise<PostDomain[]>;
+  getShare(uid: string): Promise<PostDomain[]>;
+  create(post: PostDomain): Promise<boolean>;
+  update(post: PostDomain): Promise<boolean>;
+  delete(id: string): Promise<boolean>;
+  getByMentionId(mention: string): Promise<PostDomain[]>;
 }
 export interface PostUseCase {
-  getPost(id: string): Promise<PostDomain>;
-  getPostsByUid(creatorId: string): Promise<PostDomain[]>;
-  getPostsByCateId(cateId: string): Promise<PostDomain[]>;
-  getSharedPost(uid: string): Promise<PostDomain[]>;
-  createPost(post: PostDomain): Promise<boolean>;
-  updatePost(post: PostDomain): Promise<boolean>;
-  deletePost(id: string): Promise<boolean>;
+  getDetail(id: string): Promise<PostDomain>;
+  getAllByUid(creatorId: string): Promise<PostDomain[]>;
+  getByCateId(cateId: string): Promise<PostDomain[]>;
+  getShare(uid: string): Promise<PostDomain[]>;
+  create(post: PostDomain): Promise<boolean>;
+  update(post: PostDomain): Promise<boolean>;
+  delete(id: string): Promise<boolean>;
+  getByMentionId(mention: string): Promise<PostDomain[]>;
 }
 export interface PostInterop {
-  getPost(id: string): Promise<PostDomain>;
-  getPostsByUid(creatorId: string): Promise<PostDomain[]>;
-  getPostsByCateId(cateId: string): Promise<PostDomain[]>;
-  getSharedPost(uid: string): Promise<PostDomain[]>;
-  createPost(post: PostDomain): Promise<boolean>;
-  updatePost(post: PostDomain): Promise<boolean>;
-  deletePost(id: string): Promise<boolean>;
+  getDetail(id: string,token: string): Promise<PostDomain>;
+  getAllByUid(creatorId: string,token: string): Promise<PostDomain[]>;
+  getByCateId(cateId: string,token: string): Promise<PostDomain[]>;
+  getShare(uid: string,token: string): Promise<PostDomain[]>;
+  create(post: PostDomain,token: string): Promise<boolean>;
+  update(post: PostDomain,token: string): Promise<boolean>;
+  delete(id: string,token: string): Promise<boolean>;
+  getByMentionId(mention: string,token: string): Promise<PostDomain[]>;
 }
+
 
 export const ErrorPostNotFound = 'Post not found';
 export const ErrorPostDeleteFailed = 'Post not found to delete';
