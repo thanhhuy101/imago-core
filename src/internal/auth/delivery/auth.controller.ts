@@ -25,7 +25,7 @@ changeRole(@Headers() headers:any,@Body() auth:AuthDomain) {
 @Put('block')
  block(@Headers() headers:any,@Body() auth:AuthDomain) {
   let token = headers['authorization'];
-  console.log(auth);
+ 
 return this.authInterop.update(auth, token);
  }
  @Get('list')

@@ -12,7 +12,7 @@ export class BaseService implements AuthUseCase {
   }
 
   async create(auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
-    // console.log(auth);
+    
     return this.repository.create(auth);
   }
 

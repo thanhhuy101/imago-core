@@ -8,7 +8,7 @@ export class InteropService implements AuthInterop {
     constructor(@Inject('AuthUseCase')private authUseCase: AuthUseCase) {}
   async get(id: string,token: string): Promise<AuthDomain> {
     try{
-      console.log(id);
+      
       return await this.authUseCase.get(id);
     }catch (e){
       throw e;
@@ -51,14 +51,14 @@ export class InteropService implements AuthInterop {
   // @ts-ignore
   async update(auth: AuthDomain): Promise<AuthDomain> {
     try {
-      // console.log(auth);
+      
       return await this.authUseCase.update( auth);
     } catch (error) {
       throw error;
     }
   }
   async list(token: string,auth: AuthDomain): Promise<AuthDomain[]> {
-      console.log(auth);
+     
     return await this.authUseCase.list(auth);
   }
   verifyToken(token: string): Promise<DecodedIdToken> {

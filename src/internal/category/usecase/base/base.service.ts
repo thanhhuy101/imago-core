@@ -34,11 +34,11 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
        return this.repository.deleteCategory(id);
     }
     async getCategory(id: string): Promise<CategoryDomain> {
-      let existed = await this.repository.getCategory(id);
-      if (!existed) {
-        console.error(ErrorCategoryNotFound);
-      }
-      return this.repository.getCategory(id);
+        return await this.repository.getCategory(id);
+    //   if (!existed) {
+    //     console.error(ErrorCategoryNotFound);
+    //   }
+    //   return this.repository.getCategory(id);
     }
     getCategories(): Promise<CategoryDomain[]> {
         return this.repository.getCategories();
