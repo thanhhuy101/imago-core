@@ -1,5 +1,4 @@
 import { Module } from '@nestjs/common';
-
 import { HttpController } from './delivery/http.controller';
 import { AuthModule } from '../auth/auth.module';
 import { BaseUseCaseService } from './usecase/base/base.service';
