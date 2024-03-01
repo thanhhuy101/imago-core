@@ -25,8 +25,12 @@ export class RepositoryService implements PostRepository {
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return posts;
   }
-  getPostsByCateId(uid: string): Promise<PostDomain[]> {
-    throw new Error('Method not implemented.');
+  async getPostsByCateId(uid: string): Promise<PostDomain[]> {
+    const posts = await this.db
+      .collection('posts')
+      .where('cateId', 'array-contains', uid)
+      .get();
+    return posts.docs.map((doc) => doc.data() as PostDomain);
   }
   async createPost(post: PostDomain): Promise<boolean> {
     try {
@@ -46,7 +50,7 @@ export class RepositoryService implements PostRepository {
   }
   async deletePost(id: string): Promise<boolean> {
     try {
-      const category = await this.db.collection('posts').doc(id).delete();
+      await this.db.collection('posts').doc(id).delete();
       return true;
     } catch (e) {
       throw e;

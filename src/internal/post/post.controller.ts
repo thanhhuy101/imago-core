@@ -13,7 +13,7 @@ import { PostDomain, PostInterop } from 'src/domain/post.domain';
 @Controller('v1/post')
 export class PostController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
-  @Get()
+  @Get('detail')
   async getPosts(@Query('id') id: string) {
     try {
       return await this.interop.getPost(id);
@@ -21,23 +21,23 @@ export class PostController {
       throw e;
     }
   }
-  @Get()
-  async getPostsByUid(@Query('creatorId') creatorId: string) {
+  @Get('mine')
+  async getPostsByUid(@Query('uid') creatorId: string) {
     try {
       return await this.interop.getPostsByUid(creatorId);
     } catch (e) {
       throw e;
     }
   }
-  @Get()
-  async getPostsByCateId(@Query('cateId') cateId: string) {
+  @Get('category')
+  async getPostsByCateId(@Query('category') cateId: string) {
     try {
       return await this.interop.getPostsByCateId(cateId);
     } catch (e) {
       throw e;
     }
   }
-  @Get()
+  @Get('shared')
   async getSharedPost(@Query('uid') uid: string) {
     try {
       return await this.interop.getSharedPost(uid);
