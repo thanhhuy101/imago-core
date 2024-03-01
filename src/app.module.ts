@@ -5,7 +5,6 @@ import { AuthModule } from './internal/auth/auth.module';
 import { CategoryModule } from './internal/category/category.module';
 import { CategoryController } from './internal/category/delivery/category.controller';
 import { PostModule } from './internal/post/post.module';
-import { PostController } from './internal/post/post.controller';
 import { ProfileModule } from './internal/profile/profile.module';
 import { ProfileController } from './internal/profile/profile.controller';
 import { CommentModule } from './internal/comment/comment.module';
@@ -25,7 +24,6 @@ import { ReportController } from './internal/report/report.controller';
   controllers: [
     AppController,
     CategoryController,
-    PostController,
     ProfileController,
     ReportController,
     CommentController,
