@@ -7,9 +7,13 @@ import {
   Param,
   Post,
   Put,
+  Query,
 } from '@nestjs/common';
-import { CategoryDomain, CategoryInterop } from '../../domain/category.domain';
-import { CategoryRepositoryBaseService } from './repository/base/base.service';
+import {
+  CategoryDomain,
+  CategoryInterop,
+} from '../../../domain/category.domain';
+import { CategoryRepositoryBaseService } from '../repository/base/base.service';
 
 @Controller('v1/category')
 export class CategoryController {
@@ -25,27 +29,25 @@ export class CategoryController {
   }
 
   @Delete(':id')
-  async deleteCategory(@Param('id') id: string) {
+  async deleteCategory(@Query('id') id: string) {
     try {
       return await this.interop.deleteCategory(id);
     } catch (e) {
       throw e;
     }
   }
-
   @Get()
-  async getCategories() {
+  async getCategory(@Query('id') id: string) {
     try {
-      return await this.interop.getCategories();
+      return await this.interop.getCategory(id);
     } catch (e) {
       throw e;
     }
   }
-
-  @Get(':id')
-  async getCategory(@Param('id') id: string) {
+  @Get()
+  async getCategories() {
     try {
-      return await this.interop.getCategory(id);
+      return await this.interop.getCategories();
     } catch (e) {
       throw e;
     }
