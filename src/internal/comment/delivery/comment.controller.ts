@@ -6,7 +6,7 @@ import {
   Headers,
   Get,
   Query,
-  Delete,
+  Delete, Put,
 } from '@nestjs/common';
 import { CommentInterop } from '../../../domain/comment.domain';
 import { Comment } from '../../../domain/comment.domain';
@@ -25,19 +25,26 @@ export class CommentController {
     }
   }
   @Delete()
-  async deleteComment(@Query('id') query: any, id: string) {
-    let token = query['authorization'];
+  async deleteComment(@Headers() headers: any,@Query('id') id: string) {
+    let token = headers['authorization'];
     try {
       return await this.interop.deleteComment(token, id);
     } catch (e) {
       throw e;
     }
   }
-  @Post('/update')
-  async updateComment(@Headers() headers: any, @Body() comment: Comment) {
+  @Put()
+  async updateComment(@Headers() headers: any, @Query('id') id: string, @Body() comment: Comment){
     let token = headers['authorization'];
     try {
-      return await this.interop.updateComment(token, comment);
+      const updateRef =  await this.interop.updateComment(token, id, comment);
+      return {
+        id: comment.id,
+        content: comment.content,
+        postId: comment.postId,
+        authorId: comment.authorId,
+        updateRef
+      }
     } catch (e) {
       throw e;
     }

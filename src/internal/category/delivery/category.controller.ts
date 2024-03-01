@@ -27,7 +27,7 @@ export class CategoryController {
     }
   }
 
-  @Delete(':id')
+  @Delete()
   async deleteCategory(@Query('id') id: string) {
     try {
       return await this.interop.deleteCategory(id);

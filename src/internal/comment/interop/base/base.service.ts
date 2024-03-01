@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Body, Inject, Injectable } from '@nestjs/common';
 import { Comment, CommentInterop, CommentUseCase } from '../../../../domain/comment.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
 
@@ -15,15 +15,16 @@ export class CommentInteropBaseService implements CommentInterop {
             throw e;
         }
     }
-    async updateComment(token: string,comment: Comment) {
+    async updateComment(token: string,id: string, comment: Comment) {
       try {
-        return this.useCase.updateComment(comment);
+        await this.auth.verifyToken(token);
+        return this.useCase.updateComment(id,comment);
       }
       catch (e) {
         throw e;
       }
     }
-    async deleteComment(token: string,id: string) {
+    async deleteComment(token: string,id: string){
       try {
         return await this.useCase.deleteComment(id);
       }
