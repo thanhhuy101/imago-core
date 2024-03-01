@@ -1,4 +1,4 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { Body, Inject, Injectable } from '@nestjs/common';
 import {
   Comment,
   CommentRepository,
@@ -23,8 +23,9 @@ export class CommentUseCaseBaseService implements CommentUseCase {
     }
     return this.repository.createComment(comment);
   }
-    updateComment(comment: Comment): Promise<boolean> {
-        return this.repository.updateComment(comment);
+    updateComment(id:string, comment: Comment): Promise<boolean> {
+        return this.repository.updateComment(id, comment);
+
     }
     async deleteComment(id: string): Promise<boolean> {
         let exists = await this.repository.getCommentById(id);
