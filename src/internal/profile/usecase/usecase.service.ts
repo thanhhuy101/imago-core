@@ -6,8 +6,12 @@ import {
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
-  ProfileUseCase,
+  ProfileUseCase, ErrorProfileCreateFailed,
 } from 'src/domain/profile.domain';
+import {
+
+  ErrorPostCreateFailed,
+} from '../../../domain/post.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {
@@ -22,19 +26,33 @@ export class UsecaseService implements ProfileUseCase {
     if (
       profile.firstName === '' ||
       profile.firstName === null ||
-      typeof profile.firstName !== 'number'
+      typeof profile.firstName === 'number'
     ) {
       throw ErrFirstName;
     }
     if (
       profile.lastName === '' ||
       profile.lastName === null ||
-      typeof profile.lastName !== 'number'
+      typeof profile.lastName === 'number'
     ) {
       throw ErrLastName;
     }
 
     return await this.profileRepository.createProfile(profile);
+   // if(profile.firstName === '' || profile.firstName === null || typeof profile.firstName === 'string'){
+   //   console.error(ErrFirstName);
+   // }
+   //  if(profile.lastName === '' || profile.lastName === null || typeof profile.lastName === 'string'){
+   //  console.error(ErrLastName);
+   //  }
+   //  if(profile.phone === '' || profile.phone === null || typeof profile.phone === 'string'){
+   //    console.error(ErrPhone);
+   //  }
+   //  let existed = await this.profileRepository.getProfile(profile.id);
+   //  if (existed) {
+   //    console.error(ErrorProfileCreateFailed);
+   //  }
+   //  return await this.profileRepository.createProfile(profile);
   }
 
   async updateProfile(profile: Profile): Promise<boolean> {
