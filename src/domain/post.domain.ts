@@ -21,6 +21,7 @@ export interface PostRepository {
   update(post: PostDomain): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   getByMentionId(mention: string): Promise<PostDomain[]>;
+  getAllPost(): Promise<PostDomain[]>;
 }
 export interface PostUseCase {
   getDetail(id: string): Promise<PostDomain>;
@@ -31,6 +32,7 @@ export interface PostUseCase {
   update(post: PostDomain): Promise<boolean>;
   delete(id: string): Promise<boolean>;
   getByMentionId(mention: string): Promise<PostDomain[]>;
+  getAllPost(): Promise<PostDomain[]>;
 }
 export interface PostInterop {
   getDetail(id: string,token: string): Promise<PostDomain>;
@@ -41,6 +43,7 @@ export interface PostInterop {
   update(post: PostDomain,token: string): Promise<boolean>;
   delete(id: string,token: string): Promise<boolean>;
   getByMentionId(mention: string,token: string): Promise<PostDomain[]>;
+  getAllPost(token:string): Promise<PostDomain[]>;
 }
 
 

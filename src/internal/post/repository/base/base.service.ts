@@ -9,6 +9,16 @@ export class BaseRepositoryService  implements PostRepository {
     this.db = admin.firestore();
   }
 
+  async getAllPost(): Promise<PostDomain[]>{
+    try {
+      const postsRef = this.db.collection('posts');
+      const snapshot = await postsRef.get();
+      return snapshot.docs.map((doc) => doc.data() as PostDomain);
+    }
+    catch (e) {
+      throw e;
+    }
+  }
   async getDetail(id: string): Promise<PostDomain> {
     const post = await this.db.collection('posts').doc(id).get();
     console.log(id);

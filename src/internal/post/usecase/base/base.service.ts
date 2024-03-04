@@ -12,6 +12,9 @@ export class BaseUseCaseService implements PostUseCase {
   constructor(
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
+  async getAllPost(): Promise<PostDomain[]> {
+    return this.postRepository.getAllPost();
+  }
   async getDetail(id: string): Promise<PostDomain> {
     if (id === '' || id === undefined || id === null) {
       throw ErrorPostNotFound;
