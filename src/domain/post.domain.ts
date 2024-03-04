@@ -37,6 +37,8 @@ export interface PostRepository {
 
   delete(id: string): Promise<boolean>;
 
+  getPostById(id: string): Promise<PostDomain>;
+
   getByMentionId(
     mention: string,
     page: number,
@@ -54,6 +56,8 @@ export interface PostUseCase {
     page: number,
     size: number,
   ): Promise<PostRespone>;
+
+  getPostById(id:string): Promise<PostDomain>;
 
   getMine(id: string, page: number, size: number): Promise<PostRespone>;
 
@@ -100,6 +104,8 @@ export interface PostInterop {
     page: number,
     size: number,
   ): Promise<PostRespone>;
+
+  getPostById(id: string, token: string): Promise<PostDomain>;
 
   create(post: PostDomain, token: string): Promise<boolean>;
 

@@ -24,6 +24,15 @@ export class HttpController {
       throw e;
     }
   }
+  @Get()
+  async getPostById(@Headers() headers: any, @Query('postId') postId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getPostById(postId, token);
+    } catch (e) {
+      throw e;
+    }
+  }
   @Get('all')
   async getAllPost(@Headers() headers:any) {
     let token = headers['authorization'];

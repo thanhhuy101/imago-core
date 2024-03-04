@@ -17,6 +17,10 @@ export class BaseUseCaseService implements PostUseCase {
   constructor(
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
+
+  async getPostById(id: string): Promise<PostDomain> {
+    return await this.postRepository.getPostById(id);
+    }
   async getAllPost(): Promise<PostDomain[]> {
     return this.postRepository.getAllPost();
   }
