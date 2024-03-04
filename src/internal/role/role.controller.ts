@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Role, RoleInterop } from '../../domain/role.domain';
 
-@Controller('role')
+@Controller('/v1/role')
 export class RoleController {
   constructor(@Inject('RoleInterop') private roleInterop: RoleInterop) {}
 

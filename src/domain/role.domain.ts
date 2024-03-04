@@ -1,5 +1,6 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
 import { DecodedIdToken } from 'firebase-admin/lib/auth';
+import * as admin from 'firebase-admin';
 
 export interface Role {
   id: string;
@@ -10,9 +11,9 @@ export interface Role {
 export interface RoleRepository {
   getAllRole(): Promise<Role[]>;
 
-  createRole(role: Role): any;
+  createRole(role: Role): Promise<admin.firestore.WriteResult>;
 
-  updateRole(id: string, role: Role): Role;
+  updateRole(id: string, role: Role): Promise<admin.firestore.WriteResult>;
 
   deleteRole(id: string);
 
@@ -22,9 +23,9 @@ export interface RoleRepository {
 export interface RoleUseCase {
   getAllRole(): Promise<Role[]>;
 
-  createRole(role: Role): any;
+  createRole(role: Role): Promise<admin.firestore.WriteResult>;
 
-  updateRole(id: string, role: Role): Role;
+  updateRole(id: string, role: Role): Promise<admin.firestore.WriteResult>;
 
   deleteRole(id: string);
 
@@ -34,9 +35,13 @@ export interface RoleUseCase {
 export interface RoleInterop {
   getAllRole(token: string): Promise<Role[]>;
 
-  createRole(token: string, role: Role): any;
+  createRole(token: string, role: Role): Promise<admin.firestore.WriteResult>;
 
-  updateRole(token: string, id: string, role: Role): any;
+  updateRole(
+    token: string,
+    id: string,
+    role: Role,
+  ): Promise<admin.firestore.WriteResult>;
 
   deleteRole(token: string, id: string);
 }

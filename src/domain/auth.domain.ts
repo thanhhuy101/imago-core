@@ -5,13 +5,14 @@ export interface  AuthDomain {
   id: string;
   email: string;
   role: string;
-  status: string;
+  isBanned: boolean;
+  createdAt: Date;
 }
 export interface AuthRepository {
 
   get(id: string): Promise<AuthDomain>;
   create(account: AuthDomain):Promise<admin.firestore.WriteResult>;
-  update(account: AuthDomain): Promise<admin.firestore.WriteResult>;
+  update( account: AuthDomain): Promise<admin.firestore.WriteResult>;
   list(account: AuthDomain): Promise<AuthDomain[]>;
   verifyToken(token: string): Promise<DecodedIdToken>;
 
@@ -20,14 +21,14 @@ export interface AuthRepository {
 export interface AuthUseCase {
   get(id: string): Promise<AuthDomain>;
   create(account: AuthDomain):Promise<admin.firestore.WriteResult>;
-  update(account: AuthDomain): Promise<AuthDomain>;
+  update(token: string, account: AuthDomain): Promise<AuthDomain>;
   list(account: AuthDomain): Promise<AuthDomain[]>;
   verifyToken(token: string): Promise<DecodedIdToken>;
 }
 export interface AuthInterop {
   get(id: string,token: string): Promise<AuthDomain>;
   create(token: string,account: AuthDomain):Promise<admin.firestore.WriteResult>;
-  update(account: AuthDomain, token: string): Promise<admin.firestore.WriteResult>;
+  update( token: string, account: AuthDomain): Promise<admin.firestore.WriteResult>;
   list(token: string,account: AuthDomain): Promise<AuthDomain[]>;
   signUp(token: string,account: AuthDomain ): Promise<admin.firestore.WriteResult>;
   signIn(token: string,account: AuthDomain ): Promise<AuthDomain>;
