@@ -27,7 +27,7 @@ export class CategoryController {
     }
   }
 
-  @Delete(':id')
+  @Delete()
   async deleteCategory(@Query('id') id: string) {
     try {
       return await this.interop.deleteCategory(id);
@@ -43,7 +43,7 @@ export class CategoryController {
       throw e;
     }
   }
-  @Get()
+  @Get('all')
   async getCategories() {
     try {
       return await this.interop.getCategories();

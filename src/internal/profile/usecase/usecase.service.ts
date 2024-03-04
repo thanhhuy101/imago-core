@@ -1,10 +1,18 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  ErrFirstName,
+  ErrLastName,
+  ErrPhone,
+  ErrUserName,
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
-  ProfileUseCase,
+  ProfileUseCase, ErrorProfileCreateFailed,
 } from 'src/domain/profile.domain';
+import {
+
+  ErrorPostCreateFailed,
+} from '../../../domain/post.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {
@@ -13,44 +21,43 @@ export class UsecaseService implements ProfileUseCase {
   ) {}
 
   async getProfile(id: string): Promise<Profile> {
-    if (id === '' || id === undefined || id === null) {
-      throw ErrorProfileNotFound;
-    }
     return this.profileRepository.getProfile(id);
   }
   async createProfile(profile: Profile): Promise<boolean> {
-    function isValidString(value: string | undefined | null): boolean {
-      return typeof value === 'string' && value.trim() !== '';
-    }
+    try {
+      if (profile.userName === '') {
+        throw ErrUserName;
+      }
+      if (profile.firstName === '' || typeof profile.firstName === 'number') {
+        throw ErrFirstName;
+      }
+      if (profile.lastName === '' || typeof profile.lastName === 'number') {
+        throw ErrLastName;
+      }
 
-    if (!isValidString(profile.username)) {
-      throw new Error('Username is required and must be a non-empty string');
+      return await this.profileRepository.createProfile(profile);
+    } catch (error) {
+      throw error;
     }
-    if (!isValidString(profile.firstName)) {
-      throw new Error('Firstname is required and must be a non-empty string');
-    }
-    if (!isValidString(profile.lastName)) {
-      throw new Error('Lastname is required and must be a non-empty string');
-    }
-
-    return await this.profileRepository.createProfile(profile);
   }
 
   async updateProfile(profile: Profile): Promise<boolean> {
-    function isValidString(value: string | undefined | null): boolean {
-      return typeof value === 'string' && value.trim() !== '';
+    try {
+      if (profile.userName === '') {
+        throw ErrUserName;
+      }
+      if (profile.firstName === '' || typeof profile.firstName === 'number') {
+        throw ErrFirstName;
+      }
+      if (profile.lastName === '' || typeof profile.lastName === 'number') {
+        throw ErrLastName;
+      }
+      if (profile.phone === '') {
+        throw ErrPhone;
+      }
+      return await this.profileRepository.updateProfile(profile);
+    } catch (error) {
+      throw error;
     }
-
-    if (!isValidString(profile.username)) {
-      throw new Error('Username is required and must be a non-empty string');
-    }
-    if (!isValidString(profile.firstName)) {
-      throw new Error('Firstname is required and must be a non-empty string');
-    }
-    if (!isValidString(profile.lastName)) {
-      throw new Error('Lastname is required and must be a non-empty string');
-    }
-
-    return await this.profileRepository.updateProfile(profile);
   }
 }
