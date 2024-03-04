@@ -42,6 +42,8 @@ export interface PostRepository {
     page: number,
     size: number,
   ): Promise<PostRespone>;
+
+  getAllPost(): Promise<PostDomain[]>;
 }
 
 export interface PostUseCase {
@@ -70,6 +72,8 @@ export interface PostUseCase {
     page: number,
     size: number,
   ): Promise<PostRespone>;
+
+  getAllPost(): Promise<PostDomain[]>;
 }
 export interface PostInterop {
   getDetail(id: string, token: string): Promise<PostDomain>;
@@ -109,6 +113,8 @@ export interface PostInterop {
     page: number,
     size: number,
   ): Promise<PostRespone>;
+
+  getAllPost(token: string): Promise<PostDomain[]>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(

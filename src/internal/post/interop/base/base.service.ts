@@ -114,4 +114,12 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+  async getAllPost(token: string): Promise<PostDomain[]> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return this.useCase.getAllPost();
+    } catch (e) {
+      throw e;
+    }
+  }
 }

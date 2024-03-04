@@ -24,6 +24,15 @@ export class HttpController {
       throw e;
     }
   }
+  @Get('all')
+  async getAllPost(@Headers() headers:any) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getAllPost(token);
+    } catch (e) {
+      throw e;
+    }
+  }
 
   @Get('mention')
   async getMention(

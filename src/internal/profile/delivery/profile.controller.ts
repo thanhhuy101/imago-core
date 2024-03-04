@@ -16,50 +16,50 @@ export class ProfileController {
     @Inject('ProfileInterop') private profileInterop: ProfileInterop,
   ) {}
 
-  @Get('get')
+  @Get('')
   getProfile(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
     return this.profileInterop.getProfile(id, token);
   }
 
-  @Get('getMine')
-  getMineProfile(@Headers() headers: any, @Query('id') id: string) {
+  @Get('mine')
+  getMineProfile(@Headers() headers: any) {
     let token = headers['authorization'];
-    return this.profileInterop.getProfile(id, token);
+    return this.profileInterop.getMineProfile(token);
   }
 
-  @Post('create')
+  @Post('')
   createProfile(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
     return this.profileInterop.createProfile(profile, token);
   }
 
-  @Post('createMine')
+  @Post('mine')
   createMineProfile(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
     return this.profileInterop.createProfile(profile, token);
   }
 
-  @Put('update')
+  @Put('')
   updateProfile(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
     return this.profileInterop.updateProfile(profile, token);
   }
 
-  @Put('updateMine')
+  @Put('mine')
   updateMineProfile(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
     return this.profileInterop.updateProfile(profile, token);
   }
 
   @Put('follow')
-  updateFollow(@Headers() headers: any, @Body() profile: Profile) {
+  updateFollow(@Headers() headers: any,@Query('uid') uid: string , @Query('id') id: string){
     let token = headers['authorization'];
-    return this.profileInterop.follow(profile, token);
+    return this.profileInterop.follow(token, uid, id);
   }
   @Put('unfollow')
-  updateUnfollow(@Headers() headers: any, @Body() profile: Profile) {
+  updateUnfollow(@Headers() headers: any, @Query('uid') uid: string , @Query('id') id: string){
     let token = headers['authorization'];
-    return this.profileInterop.unfollow(profile, token);
+    return this.profileInterop.unfollow(token, uid, id);
   }
 }
