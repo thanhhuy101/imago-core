@@ -26,6 +26,7 @@ export interface ProfileUseCase {
 
 export interface ProfileInterop {
   getProfile(id: string, token: string): Promise<Profile>;
+  getMineProfile(token: string): Promise<Profile>;
   createProfile(profile: Profile, token: string): Promise<boolean>;
   updateProfile(profile: Profile, token: string): Promise<boolean>;
   follow(profile: Profile, token: string): Promise<any>;
@@ -42,4 +43,4 @@ export const ErrFirstName =
 export const ErrLastName =
   'Last name is required is string and must not be a empty string or number';
 export const ErrPhone =
-  'A phone number is required is number and must not be a empty string or string';
+  'A phone number is required and must be a non-empty string';
