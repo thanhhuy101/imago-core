@@ -16,75 +16,114 @@ import any = jasmine.any;
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
   @Get()
-  async getPosts(@Headers() headers:any,@Query('id') id: string) {
+  async getPosts(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getDetail(id,token);
+      return await this.interop.getDetail(id, token);
     } catch (e) {
       throw e;
     }
   }
 
   @Get('mention')
-  async getMention(@Headers() headers:any,@Query('mention') mention: string) {
+  async getMention(
+    @Headers() headers: any,
+    @Query('mention') mention: string,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getByMentionId(mention,token);
+      return await this.interop.getByMentionId(mention, token, page, size);
     } catch (e) {
       throw e;
     }
   }
 
   @Get('mine')
-  async getPostsByUid(@Headers() headers:any,@Query('creatorId') creatorId: string) {
+  async getMine(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getAllByUid(creatorId,token);
+      return await this.interop.getMine(token, page, size);
     } catch (e) {
       throw e;
     }
   }
-  @Get('category')
-  async getPostsByCateId(@Headers() headers:any,@Query('cateId') cateId: string) {
+
+  @Get('user')
+  async getPostsByUid(
+    @Headers() headers: any,
+    @Query('creatorId') creatorId: string,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getByCateId(cateId,token);
+      return await this.interop.getAllByUid(token, creatorId, page, size);
     } catch (e) {
       throw e;
     }
   }
+
+  @Get('newfeeds')
+  async getPostsByCateId(
+    @Headers() headers: any,
+    @Query('cateId') cateId: string,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getByCateId(cateId, token, page, size);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @Get('share')
-  async getSharedPost(@Headers() headers:any,@Query('uid') uid: string) {
+  async getSharedPost(
+    @Headers() headers: any,
+    @Query('uid') uid: string,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getShare(uid,token);
+      return await this.interop.getShare(uid, token, page, size);
     } catch (e) {
       throw e;
     }
   }
+
   @Post()
-  async createPost(@Headers() headers:any,@Body() post: PostDomain) {
+  async createPost(@Headers() headers: any, @Body() post: PostDomain) {
     let token = headers['authorization'];
     try {
-      return await this.interop.create(post,token);
+      return await this.interop.create(post, token);
     } catch (e) {
       throw e;
     }
   }
+
   @Put()
-  async updatePost(@Headers() headers:any,@Body() post: PostDomain) {
+  async updatePost(@Headers() headers: any, @Body() post: PostDomain) {
     let token = headers['authorization'];
     try {
-      return await this.interop.update(post,token);
+      return await this.interop.update(post, token);
     } catch (e) {
       throw e;
     }
   }
+
   @Delete()
-  async deletePost(@Headers() headers:any,@Query('id') id: string) {
+  async deletePost(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
     try {
-      return await this.interop.delete(id,token);
+      return await this.interop.delete(id, token);
     } catch (e) {
       throw e;
     }

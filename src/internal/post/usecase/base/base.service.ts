@@ -1,11 +1,15 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  ErrorEmptyPage,
+  ErrorEmptySize,
   ErrorPostCreateFailed,
   ErrorPostDeleteFailed,
   ErrorPostNotFound,
   PostDomain,
   PostRepository,
+  PostRespone,
   PostUseCase,
+  SizeError,
 } from '../../../../domain/post.domain';
 
 @Injectable()
@@ -19,26 +23,52 @@ export class BaseUseCaseService implements PostUseCase {
     }
     return this.postRepository.getDetail(id);
   }
-  async getByMentionId(mention: string): Promise<PostDomain[]> {
+  async getByMentionId(
+    mention: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     if (mention === '' || mention === undefined || mention === null) {
       throw ErrorPostNotFound;
     }
-    return this.postRepository.getByMentionId(mention);
+    return this.postRepository.getByMentionId(mention, page, size);
   }
-  getAllByUid(creatorId: string): Promise<PostDomain[]> {
+  getAllByUid(
+    creatorId: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     if (creatorId === '' || creatorId === undefined || creatorId === null) {
       throw ErrorPostNotFound;
     }
-    return this.postRepository.getAllByUid(creatorId);
+    return this.postRepository.getAllByUid(creatorId, page, size);
   }
-  getByCateId(cateId: string): Promise<PostDomain[]> {
-    return this.postRepository.getByCateId(cateId);
+  getMine(id: string, page: number, size: number): Promise<PostRespone> {
+    if (id === '' || id === undefined || id === null) {
+      throw ErrorPostNotFound;
+    }
+    return this.postRepository.getMine(id, page, size);
   }
-  getShare(uid: string): Promise<PostDomain[]> {
+  getByCateId(
+    cateId: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
+    if (size < 1) {
+      throw SizeError;
+    } else if (size === undefined || size === null || isNaN(size)) {
+      throw ErrorEmptySize;
+    } else if (page < 1 || isNaN(page)) {
+      throw ErrorEmptyPage;
+    } else {
+      return this.postRepository.getByCateId(cateId, page, size);
+    }
+  }
+  getShare(uid: string, page: number, size: number): Promise<PostRespone> {
     if (uid === '' || uid === undefined || uid === null) {
       throw ErrorPostNotFound;
     }
-    return this.postRepository.getShare(uid);
+    return this.postRepository.getShare(uid, page, size);
   }
   create(post: PostDomain): Promise<boolean> {
     if (

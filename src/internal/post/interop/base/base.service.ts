@@ -1,11 +1,19 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { PostDomain, PostInterop, PostUseCase } from '../../../../domain/post.domain';
+import {
+  PostDomain,
+  PostInterop,
+  PostRespone,
+  PostUseCase,
+} from '../../../../domain/post.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
 
 @Injectable()
-export class BaseInteropService  implements PostInterop {
-  constructor(@Inject('PostUseCase') private useCase: PostUseCase,@Inject('AuthUseCase') private authUsecase: AuthUseCase) {}
-  async getDetail(id: string,token: string): Promise<PostDomain> {
+export class BaseInteropService implements PostInterop {
+  constructor(
+    @Inject('PostUseCase') private useCase: PostUseCase,
+    @Inject('AuthUseCase') private authUsecase: AuthUseCase,
+  ) {}
+  async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.getDetail(id);
@@ -13,57 +21,92 @@ export class BaseInteropService  implements PostInterop {
       throw e;
     }
   }
-  async getByMentionId(mention: string,token:string): Promise<PostDomain[]> {
+  async getByMentionId(
+    mention: string,
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     try {
       await this.authUsecase.verifyToken(token);
-      return this.useCase.getByMentionId(mention);
+      return this.useCase.getByMentionId(mention, page, size);
     } catch (e) {
       throw e;
     }
   }
-  async getAllByUid(creatorId: string,token:string): Promise<PostDomain[]> {
+  async getMine(
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     try {
-      await this.authUsecase.verifyToken(token);
-      return this.useCase.getAllByUid(creatorId);
+      const idToken = await this.authUsecase.verifyToken(token);
+      return this.useCase.getMine(idToken.uid, page, size);
     } catch (e) {
       throw e;
     }
   }
-  async getByCateId(cateId: string,token:string): Promise<PostDomain[]> {
+  async getAllByUid(
+    token: string,
+    creatorId: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     try {
       await this.authUsecase.verifyToken(token);
-      return this.useCase.getByCateId(cateId);
+      return this.useCase.getAllByUid(creatorId, page, size);
     } catch (e) {
       throw e;
     }
   }
-  async getShare(uid: string,token:string): Promise<PostDomain[]> {
+  async getByCateId(
+    cateId: string,
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     try {
       await this.authUsecase.verifyToken(token);
-      return this.useCase.getShare(uid);
+      return this.useCase.getByCateId(cateId, page, size);
     } catch (e) {
       throw e;
     }
   }
-  async create(post: PostDomain,token:string): Promise<boolean> {
+  async getShare(
+    uid: string,
+    token: string,
+    page: number,
+    size: number,
+  ): Promise<PostRespone> {
     try {
+      await this.authUsecase.verifyToken(token);
+      return this.useCase.getShare(uid, page, size);
+    } catch (e) {
+      throw e;
+    }
+  }
+  async create(post: PostDomain, token: string): Promise<boolean> {
+    try {
+      const idToken = await this.authUsecase.verifyToken(token);
+      post.id = idToken.uid.slice(0, 10) + Date.now().toString();
+      post.creatorId = idToken.uid;
       post.comments = [];
       post.reaction = [];
-      await this.authUsecase.verifyToken(token);
       return this.useCase.create(post);
     } catch (e) {
       throw e;
     }
   }
-  async update(post: PostDomain,token: string): Promise<boolean> {
+  async update(post: PostDomain, token: string): Promise<boolean> {
     try {
-      await this.authUsecase.verifyToken(token);
+      const idToken = await this.authUsecase.verifyToken(token);
+      post.creatorId = idToken.uid;
       return this.useCase.update(post);
     } catch (e) {
       throw e;
     }
   }
-  async delete(id: string,token: string): Promise<boolean> {
+  async delete(id: string, token: string): Promise<boolean> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.delete(id);
