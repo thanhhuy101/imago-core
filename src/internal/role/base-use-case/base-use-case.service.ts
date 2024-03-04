@@ -17,12 +17,15 @@ export class BaseUseCaseService implements RoleUseCase {
     return await this.roleRepo.getAllRole();
   }
 
-  createRole(role: Role): any {
-    return this.roleRepo.createRole(role);
+  async createRole(role: Role): Promise<admin.firestore.WriteResult> {
+    return await this.roleRepo.createRole(role);
   }
 
-  updateRole(id: string, role: Role): any {
-    return this.roleRepo.updateRole(id, role);
+  async updateRole(
+    id: string,
+    role: Role,
+  ): Promise<admin.firestore.WriteResult> {
+    return await this.roleRepo.updateRole(id, role);
   }
 
   deleteRole(id: string) {
