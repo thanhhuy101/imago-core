@@ -1,5 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { ErrorQuantity, StorageDomain, StorageRepository, StorageUseCase } from '../../../domain/storage.domain';
+import { ErrorQuantity, StorageDomain, StorageRepository, StorageUseCase, ErrorFileRequired } from '../../../domain/storage.domain';
 import { storage } from 'firebase-admin';
 @Injectable()
 export class UsecaseService implements StorageUseCase {
@@ -9,6 +9,7 @@ export class UsecaseService implements StorageUseCase {
     if (files.length > 5) {
       throw ErrorQuantity;
     }
+
     return await this.storageRepo.uploadFile(files, storage);
   }
 
