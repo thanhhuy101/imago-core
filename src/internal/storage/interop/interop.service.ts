@@ -1,11 +1,20 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { StorageDomain, StorageInterop, StorageUseCase } from '../../../domain/storage.domain';
+import { ErrorFileRequired, StorageDomain, StorageInterop, StorageUseCase } from '../../../domain/storage.domain';
+import { AuthUseCase } from '../../../domain/auth.domain';
 
 @Injectable()
 export class InteropService implements StorageInterop {
-  constructor(@Inject('StorageUseCase') private storageUsecase: StorageUseCase) { }
+  constructor(@Inject('StorageUseCase') private storageUsecase: StorageUseCase,
+              @Inject('AuthUseCase') private authUsecase: AuthUseCase) { }
 
-  async uploadFile(files: Express.Multer.File[], storage: StorageDomain): Promise<string[]> {
-    return await this.storageUsecase.uploadFile(files, storage);
+  async uploadFile(files: Express.Multer.File[], storage: StorageDomain, token: string): Promise<string[]> {
+    try {
+      const user = await this.authUsecase.verifyToken(token);
+      storage.userId = user.uid
+      return await this.storageUsecase.uploadFile(files, storage);
+    }catch (e)
+    {
+      throw e;
+    }
   }
 }
