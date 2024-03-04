@@ -20,13 +20,12 @@ export class AuthController {
 changeRole(@Headers() headers:any,@Body() auth:AuthDomain) {
   let token = headers['authorization'];
 // @ts-ignore
-  return this.authInterop.update(auth,token);
+  return this.authInterop.update(token, auth);
 }
 @Put('block')
  block(@Headers() headers:any,@Body() auth:AuthDomain) {
   let token = headers['authorization'];
- 
-return this.authInterop.update(auth, token);
+    return this.authInterop.update(token, auth);
  }
  @Get('list')
   list(@Headers() headers:any,@Body() auth:AuthDomain) {
