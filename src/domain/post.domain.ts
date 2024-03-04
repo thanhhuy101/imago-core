@@ -10,6 +10,7 @@ export interface PostDomain {
   reaction: string[];
   comments: Comment[];
   mention: string[];
+  createdAt: Date;
 }
 
 export interface PostRepository {

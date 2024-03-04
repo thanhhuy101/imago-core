@@ -16,7 +16,7 @@ import any = jasmine.any;
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
   @Get()
-  async getPosts(@Headers() headers:any,@Query('id') id: string) {
+  async getPost(@Headers() headers:any,@Query('id') id: string) {
     let token = headers['authorization'];
     try {
       return await this.interop.getDetail(id,token);
