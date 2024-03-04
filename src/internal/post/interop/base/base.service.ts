@@ -13,6 +13,15 @@ export class BaseInteropService implements PostInterop {
     @Inject('PostUseCase') private useCase: PostUseCase,
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
   ) {}
+
+  async getPostById(id: string, token: string): Promise<PostDomain> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return await this.useCase.getPostById(id);
+    } catch (e) {
+      throw e;
+    }
+  }
   async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
       await this.authUsecase.verifyToken(token);
