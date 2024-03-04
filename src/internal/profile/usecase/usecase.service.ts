@@ -3,6 +3,7 @@ import {
   ErrFirstName,
   ErrLastName,
   ErrPhone,
+  ErrUserName,
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
@@ -19,43 +20,40 @@ export class UsecaseService implements ProfileUseCase {
     return this.profileRepository.getProfile(id);
   }
   async createProfile(profile: Profile): Promise<boolean> {
-    if (
-      profile.firstName === '' ||
-      profile.firstName === null ||
-      typeof profile.firstName === 'number'
-    ) {
-      throw ErrFirstName;
-    }
-    if (
-      profile.lastName === '' ||
-      profile.lastName === null ||
-      typeof profile.lastName === 'number'
-    ) {
-      throw ErrLastName;
-    }
+    try {
+      if (profile.userName === '') {
+        throw ErrUserName;
+      }
+      if (profile.firstName === '' || typeof profile.firstName === 'number') {
+        throw ErrFirstName;
+      }
+      if (profile.lastName === '' || typeof profile.lastName === 'number') {
+        throw ErrLastName;
+      }
 
-    return await this.profileRepository.createProfile(profile);
+      return await this.profileRepository.createProfile(profile);
+    } catch (error) {
+      throw error;
+    }
   }
 
   async updateProfile(profile: Profile): Promise<boolean> {
-    if (
-      profile.firstName === '' ||
-      profile.firstName === null ||
-      typeof profile.firstName === 'number'
-    ) {
-      throw ErrFirstName;
+    try {
+      if (profile.userName === '') {
+        throw ErrUserName;
+      }
+      if (profile.firstName === '' || typeof profile.firstName === 'number') {
+        throw ErrFirstName;
+      }
+      if (profile.lastName === '' || typeof profile.lastName === 'number') {
+        throw ErrLastName;
+      }
+      if (profile.phone === '') {
+        throw ErrPhone;
+      }
+      return await this.profileRepository.updateProfile(profile);
+    } catch (error) {
+      throw error;
     }
-    if (
-      profile.lastName === '' ||
-      profile.lastName === null ||
-      typeof profile.lastName === 'number'
-    ) {
-      throw ErrLastName;
-    }
-    //check if phone is null or is string then throw error
-    if (profile.phone === '') {
-      throw ErrPhone;
-    }
-    return await this.profileRepository.updateProfile(profile);
   }
 }
