@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  ErrorPostCreateFailed, ErrorPostDeleteFailed,
+  ErrorPostCreateFailed,
+  ErrorPostDeleteFailed,
   ErrorPostNotFound,
   PostDomain,
   PostRepository,

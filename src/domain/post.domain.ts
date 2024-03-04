@@ -33,16 +33,15 @@ export interface PostUseCase {
   getByMentionId(mention: string): Promise<PostDomain[]>;
 }
 export interface PostInterop {
-  getDetail(id: string,token: string): Promise<PostDomain>;
-  getAllByUid(creatorId: string,token: string): Promise<PostDomain[]>;
-  getByCateId(cateId: string,token: string): Promise<PostDomain[]>;
-  getShare(uid: string,token: string): Promise<PostDomain[]>;
-  create(post: PostDomain,token: string): Promise<boolean>;
-  update(post: PostDomain,token: string): Promise<boolean>;
-  delete(id: string,token: string): Promise<boolean>;
-  getByMentionId(mention: string,token: string): Promise<PostDomain[]>;
+  getDetail(id: string, token: string): Promise<PostDomain>;
+  getAllByUid(creatorId: string, token: string): Promise<PostDomain[]>;
+  getByCateId(cateId: string, token: string): Promise<PostDomain[]>;
+  getShare(uid: string, token: string): Promise<PostDomain[]>;
+  create(post: PostDomain, token: string): Promise<boolean>;
+  update(post: PostDomain, token: string): Promise<boolean>;
+  delete(id: string, token: string): Promise<boolean>;
+  getByMentionId(mention: string, token: string): Promise<PostDomain[]>;
 }
-
 
 export const ErrorPostNotFound = 'Post not found';
 export const ErrorPostDeleteFailed = 'Post not found to delete';
