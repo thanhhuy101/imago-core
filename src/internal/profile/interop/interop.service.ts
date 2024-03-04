@@ -74,7 +74,7 @@ export class InteropService implements ProfileInterop {
           }
         }
       } else {
-        return;
+        return true;
       }
     } catch (error) {
       throw error;
