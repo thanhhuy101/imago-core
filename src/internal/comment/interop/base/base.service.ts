@@ -6,6 +6,8 @@ import { AuthUseCase } from '../../../../domain/auth.domain';
 export class CommentInteropBaseService implements CommentInterop {
 
     constructor(@Inject('CommentUseCase') private useCase: CommentUseCase, @Inject('AuthUseCase') private auth: AuthUseCase) {}
+
+
     async createComment(token: string,comment: Comment) {
         try {
           let decoded = await this.auth.verifyToken(token);
@@ -26,6 +28,7 @@ export class CommentInteropBaseService implements CommentInterop {
     }
     async deleteComment(token: string,id: string){
       try {
+        await this.auth.verifyToken(token);
         return await this.useCase.deleteComment(id);
       }
       catch (e) {
@@ -34,15 +37,24 @@ export class CommentInteropBaseService implements CommentInterop {
     }
     async getCommentById(token: string,id: string): Promise<Comment> {
       try {
+        await this.auth.verifyToken(token);
         return await this.useCase.getCommentById(id);
-
       }
       catch (e) {
           throw e;
       }
     }
+  async getCommentsByPostId(token: string, postId: string): Promise<Comment[]> {
+    try {
+      await this.auth.verifyToken(token);
+      return await this.useCase.getCommentsByPostId(postId);
+    } catch (e) {
+      throw (e);
+    }
+  }
     async getComments(token: string): Promise<Comment[]> {
       try {
+        await this.auth.verifyToken(token);
         return await this.useCase.getComments();
       }
       catch (e) {
