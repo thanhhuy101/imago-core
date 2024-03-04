@@ -16,6 +16,8 @@ import { ProfileModule } from './internal/profile/profile.module';
 import { CommentModule } from './internal/comment/comment.module';
 import { ReportModule } from './internal/report/report.module';
 import { HashtagModule } from './internal/hashtag/hashtag.module';
+import { StorageModule } from './internal/storage/storage.module';
+import { StorageController } from './internal/storage/storage.controller';
 
 @Module({
   imports: [
@@ -27,6 +29,7 @@ import { HashtagModule } from './internal/hashtag/hashtag.module';
     ReportModule,
     RoleModule,
     HashtagModule,
+    StorageModule,
   ],
   controllers: [
     AppController,
@@ -36,8 +39,9 @@ import { HashtagModule } from './internal/hashtag/hashtag.module';
     CommentController,
     AuthController,
     HttpController,
+    StorageController,
   ],
 
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule { }
