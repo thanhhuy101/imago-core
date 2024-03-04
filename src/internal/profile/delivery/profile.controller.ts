@@ -53,12 +53,20 @@ export class ProfileController {
   }
 
   @Put('follow')
-  updateFollow(@Headers() headers: any,@Query('uid') uid: string , @Query('id') id: string){
+  updateFollow(
+    @Headers() headers: any,
+    @Query('uid') uid: string,
+    @Query('id') id: string,
+  ) {
     let token = headers['authorization'];
     return this.profileInterop.follow(token, uid, id);
   }
   @Put('unfollow')
-  updateUnfollow(@Headers() headers: any, @Query('uid') uid: string , @Query('id') id: string){
+  updateUnfollow(
+    @Headers() headers: any,
+    @Query('uid') uid: string,
+    @Query('id') id: string,
+  ) {
     let token = headers['authorization'];
     return this.profileInterop.unfollow(token, uid, id);
   }
