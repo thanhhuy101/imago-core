@@ -24,14 +24,13 @@ export class UsecaseService implements ProfileUseCase {
       if (profile.userName === '') {
         throw ErrUserName;
       }
-      //check if first name is empty string then throw exception
       if (profile.firstName === '' || typeof profile.firstName === 'number') {
         throw ErrFirstName;
       }
-      //check if last name is empty string then throw exception
       if (profile.lastName === '' || typeof profile.lastName === 'number') {
         throw ErrLastName;
       }
+
       return await this.profileRepository.createProfile(profile);
     } catch (error) {
       throw error;
@@ -43,15 +42,12 @@ export class UsecaseService implements ProfileUseCase {
       if (profile.userName === '') {
         throw ErrUserName;
       }
-      //check if first name is empty string then throw exception
       if (profile.firstName === '' || typeof profile.firstName === 'number') {
         throw ErrFirstName;
       }
-      //check if last name is empty string then throw exception
       if (profile.lastName === '' || typeof profile.lastName === 'number') {
         throw ErrLastName;
       }
-      //check if phone is empty string then throw exception
       if (profile.phone === '') {
         throw ErrPhone;
       }
