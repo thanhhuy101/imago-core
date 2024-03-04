@@ -1,5 +1,8 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  ErrFirstName,
+  ErrLastName,
+  ErrPhone,
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
@@ -13,44 +16,46 @@ export class UsecaseService implements ProfileUseCase {
   ) {}
 
   async getProfile(id: string): Promise<Profile> {
-    if (id === '' || id === undefined || id === null) {
-      throw ErrorProfileNotFound;
-    }
     return this.profileRepository.getProfile(id);
   }
   async createProfile(profile: Profile): Promise<boolean> {
-    function isValidString(value: string | undefined | null): boolean {
-      return typeof value === 'string' && value.trim() !== '';
+    if (
+      profile.firstName === '' ||
+      profile.firstName === null ||
+      typeof profile.firstName === 'number'
+    ) {
+      throw ErrFirstName;
     }
-
-    if (!isValidString(profile.username)) {
-      throw new Error('Username is required and must be a non-empty string');
-    }
-    if (!isValidString(profile.firstName)) {
-      throw new Error('Firstname is required and must be a non-empty string');
-    }
-    if (!isValidString(profile.lastName)) {
-      throw new Error('Lastname is required and must be a non-empty string');
+    if (
+      profile.lastName === '' ||
+      profile.lastName === null ||
+      typeof profile.lastName === 'number'
+    ) {
+      throw ErrLastName;
     }
 
     return await this.profileRepository.createProfile(profile);
   }
 
   async updateProfile(profile: Profile): Promise<boolean> {
-    function isValidString(value: string | undefined | null): boolean {
-      return typeof value === 'string' && value.trim() !== '';
+    if (
+      profile.firstName === '' ||
+      profile.firstName === null ||
+      typeof profile.firstName === 'number'
+    ) {
+      throw ErrFirstName;
     }
-
-    if (!isValidString(profile.username)) {
-      throw new Error('Username is required and must be a non-empty string');
+    if (
+      profile.lastName === '' ||
+      profile.lastName === null ||
+      typeof profile.lastName === 'number'
+    ) {
+      throw ErrLastName;
     }
-    if (!isValidString(profile.firstName)) {
-      throw new Error('Firstname is required and must be a non-empty string');
+    //check if phone is null or is string then throw error
+    if (profile.phone === '') {
+      throw ErrPhone;
     }
-    if (!isValidString(profile.lastName)) {
-      throw new Error('Lastname is required and must be a non-empty string');
-    }
-
     return await this.profileRepository.updateProfile(profile);
   }
 }
