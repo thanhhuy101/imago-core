@@ -33,7 +33,7 @@ export class InteropService implements ProfileInterop {
     try {
       let decodedToken = await this.authUseCase.verifyToken(token);
       profile.id = decodedToken.uid;
-      profile.userName = decodedToken.email;
+      profile.email = decodedToken.email;
       return await this.profileUseCase.createProfile(profile);
     } catch (e) {
       throw e;

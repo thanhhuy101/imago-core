@@ -4,12 +4,13 @@ export interface Profile {
   firstName: string;
   lastName: string;
   bio: string;
+  email: string;
   photoUrl: string;
   followers: string[];
   following: string[];
   phone: string;
   gender: string;
-  categrories: string[];
+  categories: string[];
 }
 
 export interface ProfileRepository {
