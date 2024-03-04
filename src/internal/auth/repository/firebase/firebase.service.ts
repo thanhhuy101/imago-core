@@ -36,15 +36,15 @@ export class FirebaseService implements AuthRepository {
   }
   async update(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
     try {
-      const db = this.auth;
+      // const db = this.auth;
       // @ts-ignore
+
       return await this.db.collection('auths').doc(auth.id).update(auth);
     } catch (error) {
       throw error;
     }
   }
-  async list(auth: AuthDomain): Promise<AuthDomain[]> {
-    // @ts-ignore
+  async list(): Promise<AuthDomain[]> {
     return await this.db.collection('auths').get().then((querySnapshot) => {
       let auths: AuthDomain[] = [];
       querySnapshot.forEach((doc) => {
