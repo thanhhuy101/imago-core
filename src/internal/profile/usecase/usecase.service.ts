@@ -22,14 +22,14 @@ export class UsecaseService implements ProfileUseCase {
     if (
       profile.firstName === '' ||
       profile.firstName === null ||
-      typeof profile.firstName !== 'number'
+      typeof profile.firstName === 'number'
     ) {
       throw ErrFirstName;
     }
     if (
       profile.lastName === '' ||
       profile.lastName === null ||
-      typeof profile.lastName !== 'number'
+      typeof profile.lastName === 'number'
     ) {
       throw ErrLastName;
     }
@@ -41,14 +41,14 @@ export class UsecaseService implements ProfileUseCase {
     if (
       profile.firstName === '' ||
       profile.firstName === null ||
-      typeof profile.firstName !== 'number'
+      typeof profile.firstName === 'number'
     ) {
       throw ErrFirstName;
     }
     if (
       profile.lastName === '' ||
       profile.lastName === null ||
-      typeof profile.lastName !== 'number'
+      typeof profile.lastName === 'number'
     ) {
       throw ErrLastName;
     }

@@ -9,7 +9,8 @@ export interface Profile {
   following: string[];
   phone: string;
   gender: string;
-  categrories: string[];
+  category: string[];
+  email: string;
 }
 
 export interface ProfileRepository {
@@ -29,8 +30,8 @@ export interface ProfileInterop {
   getMineProfile(token: string): Promise<Profile>;
   createProfile(profile: Profile, token: string): Promise<boolean>;
   updateProfile(profile: Profile, token: string): Promise<boolean>;
-  follow(profile: Profile, token: string): Promise<any>;
-  unfollow(profile: Profile, token: string): Promise<any>;
+  follow(token: string, uid: string, id: string): Promise<any>;
+  unfollow(token: string, uid: string, id: string): Promise<any>;
 }
 
 export const ErrorProfileNotFound = 'Profile not found';
