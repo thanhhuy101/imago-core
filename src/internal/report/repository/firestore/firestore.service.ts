@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { Report, ReportRepository } from '../../../../domain/report.domain';
 import * as admin from 'firebase-admin';
 @Injectable()
-export class FirestoreService implements ReportRepository{
+export class FirestoreService implements ReportRepository {
   private db: admin.firestore.Firestore;
 
   constructor() {
@@ -26,9 +26,7 @@ export class FirestoreService implements ReportRepository{
 
   update(id: string): Promise<Report> {
     let reportRef = this.db.collection('reports').doc(id);
-    reportRef.update({status: 'completed'}).then();
+    reportRef.update({ status: 'completed' }).then();
     return Promise.resolve({} as Report);
   }
-
-
 }

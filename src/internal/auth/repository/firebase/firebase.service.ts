@@ -1,13 +1,18 @@
 import { Injectable } from '@nestjs/common';
 import * as assmin from 'firebase-admin';
-import { AuthDomain, AuthRepository, ErrorUnauthorized } from '../../../../domain/auth.domain';
+import {
+  AuthDomain,
+  AuthRepository,
+  ErrorUnauthorized,
+} from '../../../../domain/auth.domain';
 import { DecodedIdToken } from 'firebase-admin/lib/auth';
 import * as admin from 'firebase-admin';
 
 @Injectable()
 export class FirebaseService implements AuthRepository {
   auth: assmin.auth.Auth;
-  db  = admin.firestore();
+  db = admin.firestore();
+
   // @ts-ignore
   constructor() {
     this.auth = assmin.auth();
@@ -25,15 +30,16 @@ export class FirebaseService implements AuthRepository {
       throw error;
     }
   }
+
   async create(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
-    try{
+    try {
       const db = this.auth;
       return await this.db.collection('auths').doc(auth.id).set(auth);
-    }
-    catch (error){
+    } catch (error) {
       throw error;
     }
   }
+
   async update(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
     try {
       const db = this.auth;
@@ -43,26 +49,44 @@ export class FirebaseService implements AuthRepository {
       throw error;
     }
   }
+
   async list(auth: AuthDomain): Promise<AuthDomain[]> {
     // @ts-ignore
-    return await this.db.collection('auths').get().then((querySnapshot) => {
-      let auths: AuthDomain[] = [];
-      querySnapshot.forEach((doc) => {
-        auths.push(doc.data() as AuthDomain);
+    return await this.db
+      .collection('auths')
+      .get()
+      .then((querySnapshot) => {
+        let auths: AuthDomain[] = [];
+        querySnapshot.forEach((doc) => {
+          auths.push(doc.data() as AuthDomain);
+        });
+        return auths;
       });
-      return auths;
-    })}
-
+  }
 
   async verifyToken(token: string): Promise<DecodedIdToken> {
     try {
       const decodedToken = await this.auth.verifyIdToken(token);
+
       if (!decodedToken) {
         throw ErrorUnauthorized;
       }
       return decodedToken;
     } catch (error) {
       throw ErrorUnauthorized;
+    }
+  }
+
+  async verifyRole(id: string): Promise<string> {
+    try {
+      const doc = await this.db.collection('auths').doc(id).get();
+      if (!doc.exists) {
+        throw ErrorUnauthorized;
+      } else {
+        return doc.data()?.role;
+      }
+    } catch (error) {
+      throw error;
     }
   }
 }
