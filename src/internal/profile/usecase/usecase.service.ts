@@ -7,8 +7,12 @@ import {
   ErrorProfileNotFound,
   Profile,
   ProfileRepository,
-  ProfileUseCase,
+  ProfileUseCase, ErrorProfileCreateFailed,
 } from 'src/domain/profile.domain';
+import {
+
+  ErrorPostCreateFailed,
+} from '../../../domain/post.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {

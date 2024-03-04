@@ -68,4 +68,13 @@ export class CommentController {
       throw e;
     }
   }
+  @Get('/post')
+  async getCommentsByPostId(@Headers() headers: any, @Query('postId') postId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getCommentsByPostId(token, postId);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
