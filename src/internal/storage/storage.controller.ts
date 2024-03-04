@@ -1,7 +1,7 @@
 import {
   Body,
   Controller,
-  FileTypeValidator, Get,
+  FileTypeValidator, Get, Headers,
   Inject,
   MaxFileSizeValidator,
   ParseFilePipe,
@@ -29,14 +29,13 @@ export class StorageController {
           new FileTypeValidator({ fileType: '.(jpg|jpeg|png)' })
         ]
       })
-    ) files: Express.Multer.File[],
+    ) files: Express.Multer.File[], @Headers() headers:any
   ) {
     try {
-      return this.storageInterop.uploadFile(files, storage);
+      let token = headers['authorization'];
+      return this.storageInterop.uploadFile(files, storage, token );
     } catch (error) {
       throw error;
     }
-    //
-
   }
 }
