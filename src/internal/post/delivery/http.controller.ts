@@ -16,10 +16,19 @@ import any = jasmine.any;
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
   @Get()
-  async getPosts(@Headers() headers: any, @Query('id') id: string) {
+  async getPost(@Headers() headers:any,@Query('id') id: string) {
     let token = headers['authorization'];
     try {
       return await this.interop.getDetail(id, token);
+    } catch (e) {
+      throw e;
+    }
+  }
+  @Get()
+  async getPostById(@Headers() headers: any, @Query('postId') postId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getPostById(postId, token);
     } catch (e) {
       throw e;
     }

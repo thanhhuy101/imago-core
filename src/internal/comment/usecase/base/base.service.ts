@@ -39,6 +39,7 @@ export class CommentUseCaseBaseService implements CommentUseCase {
         return await this.repository.getCommentById(id);
     }
   async getCommentsByPostId(postId: string): Promise<Comment[]> {
+
     return await this.repository.getCommentsByPostId(postId);
   }
     async getComments(): Promise<Comment[]> {
