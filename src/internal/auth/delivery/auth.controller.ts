@@ -17,22 +17,22 @@ export class AuthController {
   }
 
 @Put('changerole')
-changeRole(@Headers() headers:any,@Body() auth:AuthDomain) {
+changeRole(@Headers() headers:any,@Query('id') id :string) {
   let token = headers['authorization'];
 // @ts-ignore
-  return this.authInterop.update(token, auth);
+  return this.authInterop.changeRole(token, id);
 }
 @Put('block')
- block(@Headers() headers:any,@Body() auth:AuthDomain) {
+ block(@Headers() headers:any,@Query('id') id :string) {
   let token = headers['authorization'];
-    return this.authInterop.update(token, auth);
+  return this.authInterop.block(token, id);
  }
  @Get('list')
   list(@Headers() headers:any,@Body() auth:AuthDomain) {
    let token = headers['authorization'];
 return this.authInterop.list(token,auth);
   }
-  @Get('getId')
+  @Get('')
   getId(@Headers() headers:any,@Query('id') id:string) {
     let token = headers['authorization'];
     return this.authInterop.get(id,token);
