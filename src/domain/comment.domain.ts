@@ -1,3 +1,5 @@
+import { Body } from '@nestjs/common';
+
 export interface Comment {
   id: string;
   content: string;
@@ -8,7 +10,7 @@ export interface Comment {
 export interface CommentRepository {
   createComment(comment: Comment): Promise<boolean>;
   updateComment(id:string,comment: Comment): Promise<boolean>;
-  deleteComment(id: string): Promise<boolean>;
+  deleteComment(id: string, comment: Comment): Promise<boolean>;
   getCommentById(id: string): Promise<Comment>;
   getComments(): Promise<Comment[]>;
   getCommentsByPostId(postId: string): Promise<Comment[]>;
@@ -17,7 +19,7 @@ export interface CommentRepository {
 export interface CommentUseCase {
   createComment(comment: Comment): Promise<boolean>;
   updateComment( id: string,comment: Comment): Promise<boolean>;
-  deleteComment(id: string): Promise<boolean>;
+  deleteComment(id: string, comment: Comment): Promise<boolean>;
   getCommentById(id: string): Promise<Comment>;
   getComments(): Promise<Comment[]>;
   getCommentsByPostId(postId: string): Promise<Comment[]>;
@@ -26,7 +28,7 @@ export interface CommentUseCase {
 export interface CommentInterop {
   createComment(token: string,comment: Comment): any;
   updateComment(token: string,id: string,comment: Comment): any;
-  deleteComment(token: string,id: string): any;
+  deleteComment(token: string,id: string, comment: Comment): any;
   getCommentById(token: string,id: string): Promise<Comment>;
   getComments(token: string): Promise<Comment[]>;
   getCommentsByPostId(token: string,postId: string): Promise<Comment[]>;

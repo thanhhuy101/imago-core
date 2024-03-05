@@ -25,10 +25,11 @@ export class CommentController {
     }
   }
   @Delete()
-  async deleteComment(@Headers() headers: any,@Query('id') id: string) {
+  async deleteComment(@Headers() headers: any,@Query('id') id: string, @Body() comment: Comment) {
     let token = headers['authorization'];
     try {
-      return await this.interop.deleteComment(token, id);
+        return await this.interop.deleteComment(token, id, comment);
+
     } catch (e) {
       throw e;
     }
@@ -38,12 +39,14 @@ export class CommentController {
     let token = headers['authorization'];
     try {
       const updateRef =  await this.interop.updateComment(token, id, comment);
+      if (id !== comment.id) {
+        throw Error('Comment not updated');
+      }
       return {
         id: comment.id,
         content: comment.content,
         postId: comment.postId,
         authorId: comment.authorId,
-        updateRef
       }
     } catch (e) {
       throw e;
