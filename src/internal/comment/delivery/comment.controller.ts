@@ -40,7 +40,8 @@ export class CommentController {
     try {
       const updateRef =  await this.interop.updateComment(token, id, comment);
       if (id !== comment.id) {
-        throw Error('Comment not updated');
+        console.log("comment id and id are not the same");
+        return false;
       }
       return {
         id: comment.id,
