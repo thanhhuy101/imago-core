@@ -35,26 +35,41 @@ export class BaseUseCaseService implements PostUseCase {
     page: number,
     size: number,
   ): Promise<PostRespone> {
-    if (mention === '' || mention === undefined || mention === null) {
+    if(size < 1){
+      throw SizeError;
+    } else if (page < 1 || isNaN(page)) {
+      throw ErrorEmptyPage;
+    }else if (mention === '' || mention === undefined || mention === null) {
       throw ErrorPostNotFound;
+    } else {
+      return this.postRepository.getByMentionId(mention, page, size);
     }
-    return this.postRepository.getByMentionId(mention, page, size);
   }
   getAllByUid(
     creatorId: string,
     page: number,
     size: number,
   ): Promise<PostRespone> {
-    if (creatorId === '' || creatorId === undefined || creatorId === null) {
+    if(size < 1){
+      throw SizeError;
+    } else if (page < 1 || isNaN(page)) {
+      throw ErrorEmptyPage;
+    }else if (creatorId === '' || creatorId === undefined || creatorId === null) {
       throw ErrorPostNotFound;
+    } else {
+      return this.postRepository.getAllByUid(creatorId, page, size);
     }
-    return this.postRepository.getAllByUid(creatorId, page, size);
   }
   getMine(id: string, page: number, size: number): Promise<PostRespone> {
-    if (id === '' || id === undefined || id === null) {
+    if(size < 1){
+      throw SizeError;
+    }else if (id === '' || id === undefined || id === null) {
       throw ErrorPostNotFound;
+    } else if (page < 1 || isNaN(page)) {
+      throw ErrorEmptyPage;
+    }else{
+      return this.postRepository.getMine(id, page, size);
     }
-    return this.postRepository.getMine(id, page, size);
   }
   getByCateId(
     cateId: string,
@@ -72,18 +87,27 @@ export class BaseUseCaseService implements PostUseCase {
     }
   }
   getShare(uid: string, page: number, size: number): Promise<PostRespone> {
-    if (uid === '' || uid === undefined || uid === null) {
-      throw ErrorPostNotFound;
-    }
+    if (size < 1) {
+      throw SizeError;
+    } else if (size === undefined || size === null || isNaN(size)) {
+      throw ErrorEmptySize;
+    } else if (page < 1 || isNaN(page)) {
+      throw ErrorEmptyPage;
+    } else{
     return this.postRepository.getShare(uid, page, size);
+    }
   }
   create(post: PostDomain): Promise<boolean> {
     if (
+      post.content.length === 0 ||
+      post.content === undefined ||
+      post.content === null ||
       post.photoUrl.length === 0 ||
       post.photoUrl === undefined ||
       post.photoUrl === null
-    ) {
+    ){
       console.error(ErrorPostCreateFailed);
+      return Promise.resolve(false);
     }
     return this.postRepository.create(post);
   }

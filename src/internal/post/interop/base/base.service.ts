@@ -101,6 +101,9 @@ export class BaseInteropService implements PostInterop {
       post.creatorId = idToken.uid;
       post.comments = [];
       post.reaction = [];
+      post.share = [];
+      post.mention = [];
+      post.hashtag = [];
       return this.useCase.create(post);
     } catch (e) {
       throw e;
