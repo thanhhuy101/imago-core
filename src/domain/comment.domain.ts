@@ -11,6 +11,7 @@ export interface CommentRepository {
   deleteComment(id: string): Promise<boolean>;
   getCommentById(id: string): Promise<Comment>;
   getComments(): Promise<Comment[]>;
+  getCommentsByPostId(postId: string): Promise<Comment[]>;
 }
 
 export interface CommentUseCase {
@@ -19,6 +20,7 @@ export interface CommentUseCase {
   deleteComment(id: string): Promise<boolean>;
   getCommentById(id: string): Promise<Comment>;
   getComments(): Promise<Comment[]>;
+  getCommentsByPostId(postId: string): Promise<Comment[]>;
 }
 
 export interface CommentInterop {
@@ -27,8 +29,10 @@ export interface CommentInterop {
   deleteComment(token: string,id: string): any;
   getCommentById(token: string,id: string): Promise<Comment>;
   getComments(token: string): Promise<Comment[]>;
+  getCommentsByPostId(token: string,postId: string): Promise<Comment[]>;
 }
 export const ErrorCommentContent = 'Comment content cannot be empty';
 export const ErrorCommentNotDeleted = 'Comment not deleted';
 export const ErrorCommentAlreadyExits = 'Comment not updated';
 export const ErrorCommentAuthorId = 'Comment authorId cannot be empty';
+export const ErrorCommentPostId = 'This post dont have any comment';
