@@ -31,24 +31,19 @@ export class FirestoreRepositoryService implements RoleRepository {
       });
   }
 
-  createRole(role: Role): any {
-    role.id = Date.now().toString();
+  async createRole(role: Role): Promise<admin.firestore.WriteResult> {
+    role.id = this.db.collection('roles').doc().id;
     const roleRef = this.db.collection('roles').doc(role.id).set(role);
-    return {
-      id: role.id,
-      name: role.name,
-      description: role.description,
-    };
+    return roleRef;
   }
-  
-  updateRole(id: string, role: Partial<Role>): any {
+
+  async updateRole(
+    id: string,
+    role: Partial<Role>,
+  ): Promise<admin.firestore.WriteResult> {
     role.id = id;
-    const roleRef = this.db.collection('roles').doc(id).update(role);
-    return {
-      id: id,
-      name: role.name,
-      description: role.description,
-    };
+    const roleRef = await this.db.collection('roles').doc(id).update(role);
+    return roleRef;
   }
 
   deleteRole(id: string) {

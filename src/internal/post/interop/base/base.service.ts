@@ -13,6 +13,15 @@ export class BaseInteropService implements PostInterop {
     @Inject('PostUseCase') private useCase: PostUseCase,
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
   ) {}
+
+  async getPostById(id: string, token: string): Promise<PostDomain> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return await this.useCase.getPostById(id);
+    } catch (e) {
+      throw e;
+    }
+  }
   async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
       await this.authUsecase.verifyToken(token);
@@ -92,6 +101,9 @@ export class BaseInteropService implements PostInterop {
       post.creatorId = idToken.uid;
       post.comments = [];
       post.reaction = [];
+      post.share = [];
+      post.mention = [];
+      post.hashtag = [];
       return this.useCase.create(post);
     } catch (e) {
       throw e;

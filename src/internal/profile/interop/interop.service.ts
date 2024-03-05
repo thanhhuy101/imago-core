@@ -33,7 +33,7 @@ export class InteropService implements ProfileInterop {
     try {
       let decodedToken = await this.authUseCase.verifyToken(token);
       profile.id = decodedToken.uid;
-      profile.userName = decodedToken.email;
+      profile.email = decodedToken.email;
       return await this.profileUseCase.createProfile(profile);
     } catch (e) {
       throw e;
@@ -52,20 +52,29 @@ export class InteropService implements ProfileInterop {
       await this.authUseCase.verifyToken(token);
       let profile = await this.profileUseCase.getProfile(uid);
       let otherProfile = await this.profileUseCase.getProfile(id);
-      if(profile){
-        if(!profile.following === undefined || profile.following.length === 0 || profile.following.includes(id)){
-          if(!otherProfile.followers === undefined || otherProfile.followers.length === 0 || otherProfile.followers.includes(uid)) {
+      if (profile) {
+        if (this.isExisted(profile.following, id) || uid === id) {
+          return false;
+        } 
+        if (
+          !profile.following === undefined ||
+          profile.following.length === 0 ||
+          !this.isExisted(profile.following, id)
+        ) {
+          if (
+            !otherProfile.followers === undefined ||
+            otherProfile.followers.length === 0 ||
+            otherProfile.followers.includes(uid) ||
+            profile.followers.includes(id)
+          ) {
             profile.following.push(id);
             otherProfile.followers.push(uid);
             await this.profileUseCase.updateProfile(profile);
             await this.profileUseCase.updateProfile(otherProfile);
           }
-        } else{
-          return;
         }
-        return;
       } else {
-        return;
+        return true;
       }
     } catch (error) {
       throw error;
@@ -77,23 +86,34 @@ export class InteropService implements ProfileInterop {
       await this.authUseCase.verifyToken(token);
       let profile = await this.profileUseCase.getProfile(uid);
       let otherProfile = await this.profileUseCase.getProfile(id);
-      if(profile){
-        if(!profile.following === undefined || profile.following.length === 0 || profile.following.includes(id)){
-          if(!otherProfile.followers === undefined || otherProfile.followers.length === 0 || otherProfile.followers.includes(uid)) {
-            profile.following = profile.following.filter((value) => value !== id);
-            otherProfile.followers = otherProfile.followers.filter((value) => value !== uid);
+      if (profile) {
+        if (this.isExisted(profile.following, id)) {
+          if (otherProfile.followers.includes(uid)) {
+            profile.following = profile.following.filter((item) => item !== id);
+            otherProfile.followers = otherProfile.followers.filter(
+              (item) => item !== uid,
+            );
             await this.profileUseCase.updateProfile(profile);
             await this.profileUseCase.updateProfile(otherProfile);
           }
-        } else{
+        }
+        if (!this.isExisted(profile.following, id)) {
           return;
         }
-        return;
       } else {
         return;
       }
     } catch (error) {
       throw error;
     }
+  }
+
+  isExisted(checkArray: string[], id: string): Boolean {
+    for (let i = 0; i < checkArray.length; i++) {
+      if (checkArray[i] === id) {
+        return true;
+      }
+    }
+    return false;
   }
 }
