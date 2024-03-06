@@ -1,64 +1,95 @@
 import { Inject, Injectable } from '@nestjs/common';
-
-import { AuthDomain, AuthInterop, AuthUseCase, ErrIdExisted, ErrorUnauthorized } from '../../../domain/auth.domain';
-import { DecodedIdToken } from 'firebase-admin/lib/auth';
+import {
+  Auth,
+  AuthInterop,
+  AuthUseCase,
+  ErrorBlockFailed,
+  ErrorInvalidRole,
+  ErrorPermissionDenied,
+} from '../../../domain/auth.domain';
 
 @Injectable()
 export class InteropService implements AuthInterop {
-    constructor(@Inject('AuthUseCase')private authUseCase: AuthUseCase) {}
-  async get(id: string,token: string): Promise<AuthDomain> {
-    try{
-      return await this.authUseCase.get(id);
-    }catch (e){
-      throw e;
-    }
-  }
-  // @ts-ignore
-  async create(token: string,auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
-    try{
-        return await this.authUseCase.create(auth);
-    }
-    catch (e){
-      throw e;
-    }}
+  constructor(@Inject('AuthUseCase') private authUseCase: AuthUseCase) {}
 
-  async signUp(token: string,auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
+  async block(
+    token: string,
+    id: string,
+  ): Promise<FirebaseFirestore.WriteResult> {
     try {
-      let decodedIdToken = await this.authUseCase.verifyToken(token);
-       auth.id = decodedIdToken.uid;
-       auth.email = decodedIdToken.email;
-       auth.role = 'default';
-       auth.createdAt = new Date();
-       auth.isBanned = false;
-       return await this.create(token,auth);
-    }
-    catch (e){
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const account = (await this.authUseCase.getById(id)) as any as Auth;
+      account.isBanned = true;
+      if (account.id === decodedToken.uid) {
+        throw ErrorBlockFailed;
+      } else {
+        return await this.authUseCase.update(account);
+      }
+    } catch (e) {
       throw e;
     }
   }
 
-  async signIn(token: string): Promise<AuthDomain> {
+  async changeRole(
+    token: string,
+    id: string,
+    role: string,
+  ): Promise<FirebaseFirestore.WriteResult> {
     try {
-      let decodedIdToken = await this.authUseCase.verifyToken(token);
-      await this.authUseCase.get(decodedIdToken.uid);
-        return await this.get(decodedIdToken.uid,token);
-    }
-    catch (e){
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const account = (await this.authUseCase.getById(id)) as any as Auth;
+      account.role = role;
+      if (!account.role || !['admin', 'user'].includes(account.role)) {
+        throw ErrorInvalidRole;
+      } else {
+        return await this.authUseCase.update(account);
+      }
+    } catch (e) {
       throw e;
     }
   }
-  // @ts-ignore
-  async update(token: string, auth: AuthDomain): Promise<AuthDomain> {
+
+  async getAll(token: string): Promise<FirebaseFirestore.WriteResult[]> {
     try {
-      return await this.authUseCase.update(token, auth);
-    } catch (error) {
-      throw error;
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const isAdmin = (await this.authUseCase.getById(
+        decodedToken.uid,
+      )) as any as Auth;
+
+      if (isAdmin.role !== 'admin') {
+        throw ErrorPermissionDenied;
+      }
+      return await this.authUseCase.getAll();
+    } catch (e) {
+      throw e;
     }
   }
-  async list(token: string,auth: AuthDomain): Promise<AuthDomain[]> {
-    return await this.authUseCase.list(auth);
+
+  async getById(
+    id: string,
+    token: string,
+  ): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      return await this.authUseCase.getById(id);
+    } catch (e) {
+      throw e;
+    }
   }
-  verifyToken(token: string): Promise<DecodedIdToken> {
-    throw new Error('Method not implemented.');
+
+  async signUp(token: string): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const accountData: Auth = {
+        id: decodedToken.uid,
+        email: decodedToken.email,
+        role: 'user',
+        isBanned: false,
+        createdAt: new Date(),
+      };
+      return await this.authUseCase.create(accountData);
+    } catch (e) {
+      throw e;
+    }
   }
 }

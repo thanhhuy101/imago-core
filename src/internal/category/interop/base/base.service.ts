@@ -41,3 +41,4 @@ export class CategoryInteropBaseService implements CategoryInterop {
       }
     }
 }
+ 

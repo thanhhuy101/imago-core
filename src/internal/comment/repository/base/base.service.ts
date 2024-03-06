@@ -1,6 +1,10 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, HttpException, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
 import { Comment, CommentRepository, CommentRespone } from '../../../../domain/comment.domain';
+import {
+  ErrorCommentNotDeleted,
+  ErrorCommentNotUpdatedByIdNotTheSame,
+} from '../../../../domain/comment.domain';
 
 @Injectable()
 export class CommentRepositoryBaseService implements CommentRepository{
@@ -28,6 +32,7 @@ export class CommentRepositoryBaseService implements CommentRepository{
   }
   async createComment(comment: Comment): Promise<boolean> {
     try {
+
       const Comment = await this.db.collection('comments').doc(comment.id).set(comment);
       return true;
     } catch (e) {
@@ -42,9 +47,14 @@ export class CommentRepositoryBaseService implements CommentRepository{
       throw e;
     }
   }
-  async deleteComment(id: string): Promise<boolean> {
+  async deleteComment(id: string, comment: Comment): Promise<boolean> {
     try {
-    const Comment = await this.db.collection('comments').doc(id).delete();
+      const docRef = this.db.collection('comments').doc(id);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return false;
+      }
+      await docRef.delete();
       return true;
     } catch (e) {
       throw e;
@@ -67,3 +77,4 @@ export class CommentRepositoryBaseService implements CommentRepository{
     }
   }
 }
+ 

@@ -33,10 +33,10 @@ export class CommentInteropBaseService implements CommentInterop {
         throw e;
       }
     }
-    async deleteComment(token: string,id: string){
+    async deleteComment(token: string,id: string,comment: Comment){
       try {
         await this.auth.verifyToken(token);
-        return await this.useCase.deleteComment(id);
+        return await this.useCase.deleteComment(id,comment);
       }
       catch (e) {
         throw e;
@@ -54,7 +54,7 @@ export class CommentInteropBaseService implements CommentInterop {
   async getCommentsByPostId(token: string, postId: string,page: number): Promise<CommentRespone> {
     try {
       let decoded = await this.auth.verifyToken(token);
-      let post= await this.postUseCase.getPostById(postId);
+      let post= await this.postUseCase.getDetail(postId);
       if(post === undefined || post === null ){
         throw ErrorPostIdNotExist;
       }
@@ -73,3 +73,4 @@ export class CommentInteropBaseService implements CommentInterop {
       }
     }
 }
+ 

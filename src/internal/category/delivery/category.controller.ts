@@ -39,6 +39,7 @@ export class CategoryController {
   @Get()
   async getCategory(@Query('id') id: string) {
     try {
+
       return await this.interop.getCategory(id);
     } catch (e) {
       throw e;
@@ -57,3 +58,4 @@ export class CategoryController {
     }
   }
 }
+ 

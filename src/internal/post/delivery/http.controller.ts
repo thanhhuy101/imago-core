@@ -9,26 +9,17 @@ import {
   Query,
   Headers,
 } from '@nestjs/common';
-import { PostDomain, PostInterop } from 'src/domain/post.domain';
+import { ErrorInvalidPostBody, PostDomain, PostInterop } from 'src/domain/post.domain';
 import any = jasmine.any;
 
 @Controller('v1/post')
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
   @Get()
-  async getPosts(@Headers() headers: any, @Query('id') id: string) {
+  async getPost(@Headers() headers:any,@Query('id') id: string) {
     let token = headers['authorization'];
     try {
       return await this.interop.getDetail(id, token);
-    } catch (e) {
-      throw e;
-    }
-  }
-  @Get()
-  async getPostById(@Headers() headers: any, @Query('postId') postId: string) {
-    let token = headers['authorization'];
-    try {
-      return await this.interop.getPostById(postId, token);
     } catch (e) {
       throw e;
     }
@@ -108,13 +99,12 @@ export class HttpController {
   @Get('share')
   async getSharedPost(
     @Headers() headers: any,
-    @Query('uid') uid: string,
     @Query('page') page: number,
     @Query('size') size: number,
   ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getShare(uid, token, page, size);
+      return await this.interop.getShare( token, page, size);
     } catch (e) {
       throw e;
     }
@@ -123,6 +113,9 @@ export class HttpController {
   @Post()
   async createPost(@Headers() headers: any, @Body() post: PostDomain) {
     let token = headers['authorization'];
+    if (!post || Object.keys(post).length === 0) {
+      throw ErrorInvalidPostBody;
+    }
     try {
       return await this.interop.create(post, token);
     } catch (e) {
@@ -133,6 +126,9 @@ export class HttpController {
   @Put()
   async updatePost(@Headers() headers: any, @Body() post: PostDomain) {
     let token = headers['authorization'];
+    if (!post || Object.keys(post).length === 0) {
+      throw ErrorInvalidPostBody;
+    }
     try {
       return await this.interop.update(post, token);
     } catch (e) {

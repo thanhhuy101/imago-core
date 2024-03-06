@@ -1,11 +1,13 @@
-import { Body, Inject, Injectable } from '@nestjs/common';
+import { Body, HttpException, Inject, Injectable } from '@nestjs/common';
 import {
   Comment,
   CommentRepository, CommentRespone,
   CommentUseCase, ErrorCommentAlreadyExits, ErrorCommentAuthorId,
-  ErrorCommentContent, ErrorCommentNotDeleted, ErrorPostId,ErrorEmptyPage
+  ErrorCommentContent, ErrorCommentNotDeleted, ErrorPostId,ErrorEmptyPage, ErrorCommentNotfound, ErrorCommentNotUpdatedByIdNotTheSame, ErrorCommentNotString, ErrorCommentNotCreated
 } from '../../../../domain/comment.domain';
-import {ErrorEmptyPageData, PageError } from '../../../../domain/post.domain';
+
+import { isNumber } from '@nestjs/common/utils/shared.utils';
+import { ErrorEmptyPageData, PageError } from 'src/domain/post.domain';
 
 @Injectable()
 export class CommentUseCaseBaseService implements CommentUseCase {
@@ -15,28 +17,42 @@ export class CommentUseCaseBaseService implements CommentUseCase {
 
 
   async createComment(comment: Comment): Promise<boolean> {
+    if (!comment.id || !comment.postId || !comment.content || !comment.authorId) {
+      throw ErrorCommentNotCreated;
+    }
     if(comment.content === '' || comment.content === null || comment.content === undefined){
-      console.error(ErrorCommentContent)  }
+      throw ErrorCommentContent;
+    }
     if (comment.authorId === '' || comment.authorId === null || comment.authorId === undefined) {
-      console.error(ErrorCommentAuthorId)
+      throw ErrorCommentAuthorId;
+    }
+    if (typeof (comment.id) !== 'string') {
+      throw ErrorCommentNotString;
     }
     let exists = await this.repository.getCommentById(comment.id);
     if (exists) {
-      console.error(ErrorCommentAlreadyExits)
+      throw ErrorCommentAlreadyExits;
     }
     return this.repository.createComment(comment);
   }
-    updateComment(id:string, comment: Comment): Promise<boolean> {
-        return this.repository.updateComment(id, comment);
+     updateComment(id:string, comment: Comment): Promise<boolean> {
+       if(id !== comment.id){
+        throw ErrorCommentNotUpdatedByIdNotTheSame;
+      }
+      if(comment.content.trim()===""){
+        throw ErrorCommentContent;
+      }
+        return  this.repository.updateComment(id, comment);
     }
-    async deleteComment(id: string): Promise<boolean> {
+    async deleteComment(id: string, comment: Comment): Promise<boolean> {
         let exists = await this.repository.getCommentById(id);
         if (!exists) {
-            console.error(ErrorCommentNotDeleted)
+          throw ErrorCommentNotDeleted;
         }
-        return this.repository.deleteComment(id);
+        return this.repository.deleteComment(id, comment);
     }
     async getCommentById(id: string): Promise<Comment> {
+    
         return await this.repository.getCommentById(id);
     }
   async getCommentsByPostId(
@@ -63,6 +79,10 @@ export class CommentUseCaseBaseService implements CommentUseCase {
     }
   }
     async getComments(): Promise<Comment[]> {
+    let exists = await this.repository.getComments();
+    if (!exists) {
+      throw ErrorCommentNotfound;
+    }
         return await this.repository.getComments();
     }
 }

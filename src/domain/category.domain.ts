@@ -1,3 +1,4 @@
+import {HttpException} from '@nestjs/common';
 export interface CategoryDomain {
   id:string,
   name:string,
@@ -29,8 +30,24 @@ export interface CategoryInterop {
   getCategories(page: number, token:string): Promise<AllCategories>;
 }
 
-export const ErrorCategoryNameRequired = 'Category name is required';
-export const ErrorCategoryPhotoRequired = 'Category photo is required';
-export const ErrorCategoryAlreadyExisted = 'Category already existed';
-export const ErrorCategoryNotFound = 'Category not found';
-export const ErrorCategoryDeleteFailed = 'Category not found to delete';
+export const ErrorCategoryNameRequired: HttpException = new HttpException(  'Category name is required',
+400,
+);
+export const ErrorCategoryPhotoRequired: HttpException = new HttpException('Category photo is required',
+400,
+);
+export const ErrorCategoryNotCreated: HttpException = new HttpException('Category not created',
+400,
+);
+export const ErrorCategoryAlreadyExisted: HttpException = new HttpException('Category already existed',
+400,
+);
+export const ErrorCategoryNotFound: HttpException = new HttpException('Category not found',
+400,
+);
+export const ErrorCategoryDeleteFailed: HttpException = new HttpException('Category not found to delete',
+400,
+);
+export const ErrorCategoryNotString: HttpException = new HttpException('Category not created by Id is not string',
+400,
+);
