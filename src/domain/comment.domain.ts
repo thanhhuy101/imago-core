@@ -1,4 +1,5 @@
 import { Body } from '@nestjs/common';
+import {HttpException} from '@nestjs/common';
 
 export interface Comment {
   id: string;
@@ -33,8 +34,33 @@ export interface CommentInterop {
   getComments(token: string): Promise<Comment[]>;
   getCommentsByPostId(token: string,postId: string): Promise<Comment[]>;
 }
-export const ErrorCommentContent = 'Comment content cannot be empty';
-export const ErrorCommentNotDeleted = 'Comment not deleted';
-export const ErrorCommentAlreadyExits = 'Comment not updated';
-export const ErrorCommentAuthorId = 'Comment authorId cannot be empty';
-export const ErrorCommentPostId = 'This post dont have any comment';
+export const ErrorCommentContent: HttpException = new HttpException('Comment content cannot be empty',
+400,
+);
+export const ErrorCommentNotDeleted: HttpException = new HttpException('Comment not found to delete',
+400,
+);
+export const ErrorCommentAlreadyExits: HttpException = new HttpException('Comment Already Created',
+400,
+);
+export const ErrorCommentNotString: HttpException = new HttpException('Comment id must be a string',
+400,
+);
+export const ErrorCommentAuthorId: HttpException = new HttpException('Comment authorId cannot be empty',
+400,
+);
+export const ErrorCommentPostId: HttpException = new HttpException('This post dont have any comment',
+400,
+);
+export const ErrorCommentNotUpdatedByIdNotTheSame: HttpException = new HttpException('Comment not updated by Id not the same',
+400,
+);
+export const ErrorCommentNotfound: HttpException = new HttpException('Comment not found',
+400,
+);
+export const ErrorCommentNotCreated: HttpException = new HttpException('Comment not created',
+400,
+);
+
+
+ 
