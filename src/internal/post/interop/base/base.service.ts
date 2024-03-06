@@ -131,13 +131,14 @@ export class BaseInteropService implements PostInterop {
   }
 
   async update(post: PostDomain, token: string): Promise<boolean> {
-    try {
-      const idToken = await this.authUsecase.verifyToken(token);
-      post.creatorId = idToken.uid;
-      post.updatedAt = new Date();
-      return this.useCase.update(post);
-    } catch (e) {
-      throw e;
+    const idToken = await this.authUsecase.verifyToken(token)
+    if(post.creatorId!=idToken.uid) {
+      try {
+        post.updatedAt = new Date();
+        return this.useCase.update(post);
+      } catch (e) {
+        throw e;
+      }
     }
   }
 

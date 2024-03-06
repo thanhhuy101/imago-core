@@ -84,7 +84,12 @@ export const ErrorPermissionDenied = new HttpException(
   HttpStatus.FORBIDDEN,
 );
 
+export const ErrorChangeRoleFailed = new HttpException(
+  'You can not change your own role',
+  HttpStatus.BAD_REQUEST,
+);
+
 export const ErrorBlockFailed = new HttpException(
-  'You can block yourself',
+  'You can not block yourself',
   HttpStatus.BAD_REQUEST,
 );

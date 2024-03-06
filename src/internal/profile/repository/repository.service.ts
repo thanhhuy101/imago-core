@@ -14,34 +14,43 @@ export class RepositoryService implements ProfileRepository {
     this.db = admin.firestore();
   }
 
-  async getProfile(id: string): Promise<Profile> {
-    try {
-      const profile = await this.db.collection('profiles').doc(id).get();
-      if (!profile.exists) {
-        throw ErrorProfileNotFound;
-      } else {
-        return profile.data() as Profile;
-      }
-    } catch (error) {
-      throw error;
-    }
+  async get(id: string): Promise<Profile> {
+    return await this.db
+      .collection('profile')
+      .doc(id)
+      .get()
+      .then((doc) => {
+        if (doc.exists) {
+          return doc.data() as Profile;
+        } else {
+          throw ErrorProfileNotFound;
+        }
+      });
   }
 
-  async createProfile(profile: Profile): Promise<boolean> {
-    try {
-      await this.db.collection('profiles').doc(profile.id).set(profile);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+  async getAll(): Promise<Profile[]> {
+    return await this.db
+      .collection('profile')
+      .get()
+      .then((snapshot) => {
+        let result: Profile[] = [];
+        snapshot.forEach((doc) => {
+          result.push(doc.data() as Profile);
+        });
+        return result;
+      });
   }
 
-  async updateProfile(profile: Profile): Promise<boolean> {
-    try {
-      await this.db.collection('profiles').doc(profile.id).set(profile);
-      return true;
-    } catch (error) {
-      throw error;
-    }
+  async create(profile: Profile): Promise<boolean> {
+    await this.db.collection('profile').doc(profile.id).set(profile);
+    return true;
+  }
+
+  async update(profile: Profile): Promise<boolean> {
+    await this.db
+      .collection('profile')
+      .doc(profile.id)
+      .update({ ...profile });
+    return true;
   }
 }
