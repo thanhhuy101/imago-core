@@ -1,5 +1,5 @@
-import { Injectable } from '@nestjs/common';
-import { CategoryDomain, CategoryRepository } from '../../../../domain/category.domain';
+import { HttpException, Injectable } from '@nestjs/common';
+import { CategoryDomain, CategoryRepository, ErrorCategoryDeleteFailed } from '../../../../domain/category.domain';
 import * as admin from 'firebase-admin';
 @Injectable()
 export class CategoryRepositoryBaseService implements CategoryRepository {
@@ -9,9 +9,7 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
     }
     async createCategory(category: CategoryDomain): Promise<boolean> {
         try {
-            if (!category.name || !category.photoUrl || !category.users || !category.id) {
-                return false;
-            }
+
           await this.db.collection('categories').doc(category.id).set(category);
           return true;
         }
@@ -31,8 +29,7 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
             const docRef = this.db.collection('categories').doc(id);
             const doc = await docRef.get();
             if (!doc.exists) {
-                return false;
-            }
+            throw  ErrorCategoryDeleteFailed;          }
             await docRef.delete();
             return true;
         } catch (e) {
@@ -57,3 +54,4 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
         }
     }
 }
+ 
