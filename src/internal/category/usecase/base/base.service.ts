@@ -17,8 +17,7 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
   constructor(@Inject('CategoryRepository') private repository: CategoryRepository) {}
 
    async createCategory(category: CategoryDomain): Promise<boolean> {
-     if (!category.name || !category.photoUrl || !category.users || !category.id) {
-      throw ErrorCategoryNotCreated;    }
+
      if (typeof (category.id) !== 'string') {
        throw ErrorCategoryNotString;
      }
@@ -31,6 +30,8 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
      let existed = await this.repository.getCategory(category.id);
      if (existed) {
         throw ErrorCategoryAlreadyExisted;  }
+     if (!category.name || !category.photoUrl || !category.users || !category.id) {
+       throw ErrorCategoryNotCreated;    }
     return this.repository.createCategory(category);
   }
 
