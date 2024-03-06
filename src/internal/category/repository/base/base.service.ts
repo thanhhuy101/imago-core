@@ -9,6 +9,9 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
     }
     async createCategory(category: CategoryDomain): Promise<boolean> {
         try {
+            if (!category.name || !category.photoUrl || !category.users || !category.id) {
+                return false;
+            }
           await this.db.collection('categories').doc(category.id).set(category);
           return true;
         }
@@ -18,10 +21,21 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
     }
 
     async deleteCategory(id: string): Promise<boolean> {
-        try{
-            const category = await this.db.collection('categories').doc(id).delete();
+        // try{
+        //     const category = await this.db.collection('categories').doc(id).delete();
+        //     return true;
+        // }catch (e) {
+        //     throw e;
+        // }
+        try {
+            const docRef = this.db.collection('categories').doc(id);
+            const doc = await docRef.get();
+            if (!doc.exists) {
+                return false;
+            }
+            await docRef.delete();
             return true;
-        }catch (e) {
+        } catch (e) {
             throw e;
         }
     }

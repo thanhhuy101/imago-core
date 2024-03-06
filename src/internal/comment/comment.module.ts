@@ -7,9 +7,10 @@ import { CategoryRepositoryBaseService } from '../category/repository/base/base.
 import { CategoryUseCaseBaseService } from '../category/usecase/base/base.service';
 import { CategoryInteropBaseService } from '../category/interop/base/base.service';
 import { AuthModule } from '../auth/auth.module';
+import { PostModule } from '../post/post.module';
 
 @Module({
-  imports: [AuthModule],
+  imports: [AuthModule, PostModule],
   controllers: [CommentController],
   providers: [
     {

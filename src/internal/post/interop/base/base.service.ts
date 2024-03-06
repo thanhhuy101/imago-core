@@ -2,7 +2,7 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   PostDomain,
   PostInterop,
-  PostRespone,
+  PostResponse,
   PostUseCase,
 } from '../../../../domain/post.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
@@ -13,6 +13,16 @@ export class BaseInteropService implements PostInterop {
     @Inject('PostUseCase') private useCase: PostUseCase,
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
   ) {}
+
+  async getPostById(id: string, token: string): Promise<PostDomain> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return await this.useCase.getPostById(id);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
       await this.authUsecase.verifyToken(token);
@@ -21,12 +31,13 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getByMentionId(
     mention: string,
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.getByMentionId(mention, page, size);
@@ -34,11 +45,12 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getMine(
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     try {
       const idToken = await this.authUsecase.verifyToken(token);
       return this.useCase.getMine(idToken.uid, page, size);
@@ -46,12 +58,13 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getAllByUid(
     token: string,
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.getAllByUid(creatorId, page, size);
@@ -59,12 +72,13 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getByCateId(
     cateId: string,
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.getByCateId(cateId, page, size);
@@ -72,11 +86,12 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getShare(
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     try {
       const idToken=await this.authUsecase.verifyToken(token);
       return this.useCase.getShare(idToken.uid, page, size);
@@ -84,6 +99,7 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async create(post: PostDomain, token: string): Promise<boolean> {
     try {
       const idToken = await this.authUsecase.verifyToken(token);
@@ -106,6 +122,7 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async update(post: PostDomain, token: string): Promise<boolean> {
     try {
       const idToken = await this.authUsecase.verifyToken(token);
@@ -116,6 +133,7 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async delete(id: string, token: string): Promise<boolean> {
     try {
       await this.authUsecase.verifyToken(token);
@@ -124,6 +142,7 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
+
   async getAllPost(token: string): Promise<PostDomain[]> {
     try {
       await this.authUsecase.verifyToken(token);

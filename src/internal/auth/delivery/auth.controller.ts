@@ -1,40 +1,60 @@
-import { Body, Controller, Get, Headers, Inject, Post, Put, Query } from '@nestjs/common';
-import { AuthDomain, AuthInterop } from '../../../domain/auth.domain';
+import {
+  Body,
+  Controller,
+  Get,
+  Headers,
+  Inject,
+  Post,
+  Put,
+  Query,
+} from '@nestjs/common';
+import { Auth, AuthInterop } from '../../../domain/auth.domain';
 
 @Controller('v1/auth')
 export class AuthController {
-  constructor(@Inject('AuthInterop')private authInterop: AuthInterop) {}
-  @Post('signup')
-  signUp(@Headers() headers:any,@Body() auth:AuthDomain) {
+  constructor(@Inject('AuthInterop') private authInterop: AuthInterop) {}
+
+  @Post()
+  async signUp(
+    @Headers() headers: any,
+  ): Promise<FirebaseFirestore.WriteResult> {
     let token = headers['authorization'];
-    return this.authInterop.signUp(token,auth);
+    return await this.authInterop.signUp(token);
   }
 
-  @Post('signin')
-  signIn(@Headers() headers:any,@Body() auth:AuthDomain) {
+  @Get('list')
+  async getAll(
+    @Headers() headers: any,
+  ): Promise<FirebaseFirestore.WriteResult[]> {
     let token = headers['authorization'];
-    return this.authInterop.signIn(token,auth);
+    return await this.authInterop.getAll(token);
   }
 
-@Put('changerole')
-changeRole(@Headers() headers:any,@Body() auth:AuthDomain) {
-  let token = headers['authorization'];
-// @ts-ignore
-  return this.authInterop.update(token, auth);
-}
-@Put('block')
- block(@Headers() headers:any,@Body() auth:AuthDomain) {
-  let token = headers['authorization'];
-    return this.authInterop.update(token, auth);
- }
- @Get('list')
-  list(@Headers() headers:any,@Body() auth:AuthDomain) {
-   let token = headers['authorization'];
-return this.authInterop.list(token,auth);
-  }
-  @Get('getId')
-  getId(@Headers() headers:any,@Query('id') id:string) {
+  @Get()
+  async getById(
+    @Headers() headers: any,
+    @Query('id') id: string,
+  ): Promise<FirebaseFirestore.WriteResult> {
     let token = headers['authorization'];
-    return this.authInterop.get(id,token);
+    return await this.authInterop.getById(id, token);
+  }
+
+  @Put('role')
+  async changeRole(
+    @Headers() headers: any,
+    @Query('id') id: string,
+    @Query('role') role: string,
+  ): Promise<FirebaseFirestore.WriteResult> {
+    let token = headers['authorization'];
+    return await this.authInterop.changeRole(token, id, role);
+  }
+
+  @Put('block')
+  async block(
+    @Headers() headers: any,
+    @Query('id') id: string,
+  ): Promise<FirebaseFirestore.WriteResult> {
+    let token = headers['authorization'];
+    return await this.authInterop.block(token, id);
   }
 }

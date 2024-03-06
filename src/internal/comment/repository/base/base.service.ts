@@ -19,6 +19,9 @@ export class CommentRepositoryBaseService implements CommentRepository{
     }
   async createComment(comment: Comment): Promise<boolean> {
     try {
+      if (!comment.id || !comment.postId || !comment.content || !comment.authorId) {
+        return false;
+      }
       const Comment = await this.db.collection('comments').doc(comment.id).set(comment);
       return true;
     } catch (e) {
@@ -27,15 +30,32 @@ export class CommentRepositoryBaseService implements CommentRepository{
   }
   async updateComment(id: string,comment: Partial<Comment>): Promise<boolean> {
     try {
+      if(id !== comment.id){
+        return false;
+      }
       const Comment = await this.db.collection('comments').doc(id).update(comment);
       return true;
     } catch (e) {
       throw e;
     }
   }
-  async deleteComment(id: string): Promise<boolean> {
+  async deleteComment(id: string, comment: Comment): Promise<boolean> {
+    // try {
+    //   const Comment = await this.db.collection('comments').doc(id).delete();
+    //   if (comment.id !== id){
+    //     return false;}
+    //   return true;
+    //
+    // } catch (e) {
+    //   throw e;
+    // }
     try {
-    const Comment = await this.db.collection('comments').doc(id).delete();
+      const docRef = this.db.collection('comments').doc(id);
+      const doc = await docRef.get();
+      if (!doc.exists) {
+        return false;
+      }
+      await docRef.delete();
       return true;
     } catch (e) {
       throw e;

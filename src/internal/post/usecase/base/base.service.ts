@@ -8,7 +8,7 @@ import {
   ErrorPostNotFound,
   PostDomain,
   PostRepository,
-  PostRespone,
+  PostResponse,
   PostUseCase,
   SizeError,
 } from '../../../../domain/post.domain';
@@ -19,9 +19,15 @@ export class BaseUseCaseService implements PostUseCase {
   constructor(
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
+
+  async getPostById(id: string): Promise<PostDomain> {
+    return await this.postRepository.getPostById(id);
+  }
+
   async getAllPost(): Promise<PostDomain[]> {
     return this.postRepository.getAllPost();
   }
+
   async getDetail(id: string): Promise<PostDomain> {
     if (!id || id.trim() === '') {
       throw ErrorPostIdInvalid;
@@ -34,11 +40,12 @@ export class BaseUseCaseService implements PostUseCase {
 
     return postDetail;
   }
+
   async getByMentionId(
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
@@ -54,11 +61,12 @@ export class BaseUseCaseService implements PostUseCase {
       return this.postRepository.getByMentionId(mention, page, size);
     }
   }
+
   getAllByUid(
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
@@ -74,7 +82,7 @@ export class BaseUseCaseService implements PostUseCase {
       return this.postRepository.getAllByUid(creatorId, page, size);
     }
   }
-  getMine(id: string, page: number, size: number): Promise<PostRespone> {
+  getMine(id: string, page: number, size: number): Promise<PostResponse> {
     if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
@@ -90,11 +98,12 @@ export class BaseUseCaseService implements PostUseCase {
       return this.postRepository.getMine(id, page, size);
     }
   }
+
   getByCateId(
     cateId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
@@ -112,7 +121,7 @@ export class BaseUseCaseService implements PostUseCase {
       return this.postRepository.getByCateId(cateId, page, size);
     }
   }
-  getShare(shareId: string, page: number, size: number): Promise<PostRespone> {
+  getShare(shareId: string, page: number, size: number): Promise<PostResponse> {
     if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
@@ -128,6 +137,7 @@ export class BaseUseCaseService implements PostUseCase {
     return this.postRepository.getShare(shareId, page, size);
     }
   }
+
   create(post: PostDomain): Promise<boolean> {
     if (
       post.photoUrl.length === 0 ||
@@ -143,6 +153,7 @@ export class BaseUseCaseService implements PostUseCase {
     }
     return this.postRepository.create(post);
   }
+
   update(post: PostDomain): Promise<boolean> {
     if (
       post.photoUrl.length === 0 ||
@@ -158,6 +169,7 @@ export class BaseUseCaseService implements PostUseCase {
     }
     return this.postRepository.update(post);
   }
+
   async delete(id: string): Promise<boolean> {
     const existed = await this.postRepository.getDetail(id);
     if (!existed) {
