@@ -78,3 +78,18 @@ export const ErrorInvalidRole = new HttpException(
   'Invalid role',
   HttpStatus.BAD_REQUEST,
 );
+
+export const ErrorPermissionDenied = new HttpException(
+  'Permission denied',
+  HttpStatus.FORBIDDEN,
+);
+
+export const ErrorChangeRoleFailed = new HttpException(
+  'You can not change your own role',
+  HttpStatus.BAD_REQUEST,
+);
+
+export const ErrorBlockFailed = new HttpException(
+  'You can not block yourself',
+  HttpStatus.BAD_REQUEST,
+);
