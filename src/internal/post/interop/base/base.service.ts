@@ -1,6 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  AllPosts,
+  AllPosts, ErrorIllegalUpdate,
   PostDomain,
   PostInterop,
   PostResponse,
@@ -131,15 +131,20 @@ export class BaseInteropService implements PostInterop {
   }
 
   async update(post: PostDomain, token: string): Promise<boolean> {
-    const idToken = await this.authUsecase.verifyToken(token)
-    if(post.creatorId!=idToken.uid) {
+
       try {
-        post.updatedAt = new Date();
-        return this.useCase.update(post);
+        const idToken = await this.authUsecase.verifyToken(token)
+        if(post.creatorId==idToken.uid) {
+          post.updatedAt = new Date();
+
+          return this.useCase.update(post);
+        }else{
+          throw ErrorIllegalUpdate;
+        }
       } catch (e) {
         throw e;
       }
-    }
+
   }
 
   async delete(id: string, token: string): Promise<boolean> {
