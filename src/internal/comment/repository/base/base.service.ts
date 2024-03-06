@@ -1,6 +1,10 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, HttpException, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { Comment, CommentRepository } from '../../../../domain/comment.domain';
+import { Comment, CommentRepository, CommentRespone } from '../../../../domain/comment.domain';
+import {
+  ErrorCommentNotDeleted,
+  ErrorCommentNotUpdatedByIdNotTheSame,
+} from '../../../../domain/comment.domain';
 
 @Injectable()
 export class CommentRepositoryBaseService implements CommentRepository{
@@ -9,19 +13,26 @@ export class CommentRepositoryBaseService implements CommentRepository{
   constructor() {
     this.db = admin.firestore();
   }
-  async getCommentsByPostId(postId: string): Promise<Comment[]> {
-        try {
-          const comments = await this.db.collection('comments').where('postId', '==', postId).get();
-        return comments.docs.map(doc => doc.data() as Comment);
-        } catch (e) {
-          throw e;
-        }
+  async getCommentsByPostId(
+    postId: string,
+    page: number,
+  ): Promise<CommentRespone> {
+    try {
+      const commentRef = this.db.collection('comments');
+      const snapshot = await commentRef.where('postId', '==', postId).get();
+      const comments = snapshot.docs.map((doc) => doc.data() as Comment);
+      const size = 2;
+      return {
+        data: comments.slice((page - 1) * size, page * size),
+        endpage: Math.ceil(comments.length / size),
+      };
+    } catch (e) {
+      throw e;
     }
+  }
   async createComment(comment: Comment): Promise<boolean> {
     try {
-      if (!comment.id || !comment.postId || !comment.content || !comment.authorId) {
-        return false;
-      }
+
       const Comment = await this.db.collection('comments').doc(comment.id).set(comment);
       return true;
     } catch (e) {
@@ -30,9 +41,6 @@ export class CommentRepositoryBaseService implements CommentRepository{
   }
   async updateComment(id: string,comment: Partial<Comment>): Promise<boolean> {
     try {
-      if(id !== comment.id){
-        return false;
-      }
       const Comment = await this.db.collection('comments').doc(id).update(comment);
       return true;
     } catch (e) {
@@ -40,15 +48,6 @@ export class CommentRepositoryBaseService implements CommentRepository{
     }
   }
   async deleteComment(id: string, comment: Comment): Promise<boolean> {
-    // try {
-    //   const Comment = await this.db.collection('comments').doc(id).delete();
-    //   if (comment.id !== id){
-    //     return false;}
-    //   return true;
-    //
-    // } catch (e) {
-    //   throw e;
-    // }
     try {
       const docRef = this.db.collection('comments').doc(id);
       const doc = await docRef.get();
@@ -78,3 +77,4 @@ export class CommentRepositoryBaseService implements CommentRepository{
     }
   }
 }
+

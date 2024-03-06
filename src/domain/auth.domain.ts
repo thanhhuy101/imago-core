@@ -1,8 +1,7 @@
 import { DecodedIdToken } from 'firebase-admin/lib/auth';
 import { HttpException, HttpStatus } from '@nestjs/common';
-import * as admin from 'firebase-admin';
 
-export interface AuthDomain {
+export interface Auth {
   id: string;
   email: string;
   role: string;
@@ -11,48 +10,43 @@ export interface AuthDomain {
 }
 
 export interface AuthRepository {
-  get(id: string): Promise<AuthDomain>;
+  getById(id: string): Promise<FirebaseFirestore.WriteResult>;
 
-  create(account: AuthDomain): Promise<admin.firestore.WriteResult>;
+  create(account: Auth): Promise<FirebaseFirestore.WriteResult>;
 
-  update(account: AuthDomain): Promise<admin.firestore.WriteResult>;
+  update(account: Auth): Promise<FirebaseFirestore.WriteResult>;
 
-  list(account: AuthDomain): Promise<AuthDomain[]>;
+  getAll(): Promise<FirebaseFirestore.WriteResult[]>;
 
   verifyToken(token: string): Promise<DecodedIdToken>;
-
-  verifyRole(id: string): Promise<string>;
 }
 
 export interface AuthUseCase {
-  get(id: string): Promise<AuthDomain>;
-  create(account: AuthDomain): Promise<admin.firestore.WriteResult>;
-  update(token: string, account: AuthDomain): Promise<AuthDomain>;
-  list(account: AuthDomain): Promise<AuthDomain[]>;
+  getById(id: string): Promise<FirebaseFirestore.WriteResult>;
+
+  create(account: Auth): Promise<FirebaseFirestore.WriteResult>;
+
+  update(account: Auth): Promise<FirebaseFirestore.WriteResult>;
+
+  getAll(): Promise<FirebaseFirestore.WriteResult[]>;
 
   verifyToken(token: string): Promise<DecodedIdToken>;
-
-  verifyRole(id: string): Promise<string>;
 }
 
 export interface AuthInterop {
-  get(id: string, token: string): Promise<AuthDomain>;
-  create(
+  getById(id: string, token: string): Promise<FirebaseFirestore.WriteResult>;
+
+  getAll(token: string): Promise<FirebaseFirestore.WriteResult[]>;
+
+  signUp(token: string): Promise<FirebaseFirestore.WriteResult>;
+
+  changeRole(
     token: string,
-    account: AuthDomain,
-  ): Promise<admin.firestore.WriteResult>;
-  update(
-    token: string,
-    account: AuthDomain,
-  ): Promise<admin.firestore.WriteResult>;
-  list(token: string, account: AuthDomain): Promise<AuthDomain[]>;
-  signUp(
-    token: string,
-    account: AuthDomain,
-  ): Promise<admin.firestore.WriteResult>;
-  signIn(token: string, account: AuthDomain): Promise<AuthDomain>;
-  changeRole(token: string, id: string): Promise<admin.firestore.WriteResult>;
-  block(token: string, id: string): Promise<admin.firestore.WriteResult>;
+    id: string,
+    role: string,
+  ): Promise<FirebaseFirestore.WriteResult>;
+
+  block(token: string, id: string): Promise<FirebaseFirestore.WriteResult>;
 }
 
 export const ErrorUnauthorized = new HttpException(
@@ -60,7 +54,42 @@ export const ErrorUnauthorized = new HttpException(
   HttpStatus.UNAUTHORIZED,
 );
 
-export const ErrIdExisted: HttpException = new HttpException(
-  'Auth existed',
-  400,
+export const ErrorAccountExists = new HttpException(
+  'Account already exists',
+  HttpStatus.BAD_REQUEST,
+);
+
+export const ErrorAccountNotFound = new HttpException(
+  'Account not found',
+  HttpStatus.NOT_FOUND,
+);
+
+export const ErrorIdNotFound = new HttpException(
+  'Id not found',
+  HttpStatus.BAD_REQUEST,
+);
+
+export const ErrorInvalidToken = new HttpException(
+  'Invalid token',
+  HttpStatus.UNAUTHORIZED,
+);
+
+export const ErrorInvalidRole = new HttpException(
+  'Invalid role',
+  HttpStatus.BAD_REQUEST,
+);
+
+export const ErrorPermissionDenied = new HttpException(
+  'Permission denied',
+  HttpStatus.FORBIDDEN,
+);
+
+export const ErrorChangeRoleFailed = new HttpException(
+  'You can not change your own role',
+  HttpStatus.BAD_REQUEST,
+);
+
+export const ErrorBlockFailed = new HttpException(
+  'You can not block yourself',
+  HttpStatus.BAD_REQUEST,
 );

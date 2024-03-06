@@ -1,8 +1,10 @@
 import { Injectable } from '@nestjs/common';
 import * as assmin from 'firebase-admin';
 import {
-  AuthDomain,
+  Auth,
   AuthRepository,
+  ErrorAccountNotFound,
+  ErrorInvalidToken,
   ErrorUnauthorized,
 } from '../../../../domain/auth.domain';
 import { DecodedIdToken } from 'firebase-admin/lib/auth';
@@ -13,55 +15,8 @@ export class FirebaseService implements AuthRepository {
   auth: assmin.auth.Auth;
   db = admin.firestore();
 
-  // @ts-ignore
   constructor() {
     this.auth = assmin.auth();
-  }
-
-  async get(id: string): Promise<AuthDomain> {
-    try {
-      const doc = await this.db.collection('auths').doc(id).get();
-      if (!doc.exists) {
-        throw ErrorUnauthorized;
-      } else {
-        return doc.data() as AuthDomain;
-      }
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async create(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
-    try {
-      const db = this.auth;
-      return await this.db.collection('auths').doc(auth.id).set(auth);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async update(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
-    try {
-      // @ts-ignore
-
-      return await this.db.collection('auths').doc(auth.id).update(auth);
-    } catch (error) {
-      throw error;
-    }
-  }
-
-  async list(auth: AuthDomain): Promise<AuthDomain[]> {
-    // @ts-ignore
-    return await this.db
-      .collection('auths')
-      .get()
-      .then((querySnapshot) => {
-        let auths: AuthDomain[] = [];
-        querySnapshot.forEach((doc) => {
-          auths.push(doc.data() as AuthDomain);
-        });
-        return auths;
-      });
   }
 
   async verifyToken(token: string): Promise<DecodedIdToken> {
@@ -69,7 +24,7 @@ export class FirebaseService implements AuthRepository {
       const decodedToken = await this.auth.verifyIdToken(token);
 
       if (!decodedToken) {
-        throw ErrorUnauthorized;
+        throw ErrorInvalidToken;
       }
       return decodedToken;
     } catch (error) {
@@ -77,16 +32,42 @@ export class FirebaseService implements AuthRepository {
     }
   }
 
-  async verifyRole(id: string): Promise<string> {
-    try {
-      const doc = await this.db.collection('auths').doc(id).get();
-      if (!doc.exists) {
-        throw ErrorUnauthorized;
-      } else {
-        return doc.data()?.role;
-      }
-    } catch (error) {
-      throw error;
-    }
+  async create(account: Auth): Promise<FirebaseFirestore.WriteResult> {
+    return await this.db.collection('auth').doc(account.id).set(account);
+  }
+
+  async getAll(): Promise<FirebaseFirestore.WriteResult[]> {
+    return await this.db
+      .collection('auth')
+      .get()
+      .then((snapshot) => {
+        let result: FirebaseFirestore.WriteResult[] = [];
+        snapshot.forEach((doc) => {
+          result.push(doc.data() as FirebaseFirestore.WriteResult);
+        });
+        return result;
+      });
+  }
+
+  async getById(id: string): Promise<FirebaseFirestore.WriteResult> {
+    return await this.db
+      .collection('auth')
+      .doc(id)
+      .get()
+      .then((doc) => {
+        // console.log(doc.exists);
+        if (doc.exists) {
+          return doc.data() as FirebaseFirestore.WriteResult;
+        } else {
+          throw ErrorAccountNotFound;
+        }
+      });
+  }
+
+  async update(account: Auth): Promise<FirebaseFirestore.WriteResult> {
+    return await this.db
+      .collection('auth')
+      .doc(account.id)
+      .update({ ...account });
   }
 }

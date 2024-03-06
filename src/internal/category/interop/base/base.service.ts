@@ -1,9 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { CategoryDomain, CategoryInterop, CategoryUseCase } from '../../../../domain/category.domain';
+import { AllCategories, CategoryDomain, CategoryInterop, CategoryUseCase } from '../../../../domain/category.domain';
+import { DecodedIdToken } from 'firebase-admin/lib/auth';
+import { AuthUseCase } from '../../../../domain/auth.domain';
 
 @Injectable()
 export class CategoryInteropBaseService implements CategoryInterop {
-  constructor(@Inject('CategoryUseCase') private useCase: CategoryUseCase) {
+  constructor(@Inject('CategoryUseCase') private useCase: CategoryUseCase, @Inject('AuthUseCase') private authUseCase: AuthUseCase,) {
   }
     async createCategory(category: CategoryDomain) {
       try {
@@ -27,11 +29,16 @@ export class CategoryInteropBaseService implements CategoryInterop {
       throw e;
     }
     }
-    getCategories(): Promise<CategoryDomain[]> {
-      try {
-        return this.useCase.getCategories();
+    async getCategories(
+      page: number,
+      token: string
+    ): Promise<AllCategories> {
+      try{
+        await this.authUseCase.verifyToken(token);
+        return this.useCase.getCategories(page);
       } catch (e) {
         throw e;
       }
     }
 }
+ 

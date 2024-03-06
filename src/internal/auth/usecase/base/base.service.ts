@@ -1,8 +1,10 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import {
-  AuthDomain,
+  Auth,
   AuthRepository,
   AuthUseCase,
+  ErrorAccountExists,
+  ErrorIdNotFound,
 } from '../../../../domain/auth.domain';
 import { DecodedIdToken } from 'firebase-admin/lib/auth';
 
@@ -10,31 +12,57 @@ import { DecodedIdToken } from 'firebase-admin/lib/auth';
 export class BaseService implements AuthUseCase {
   constructor(@Inject('AuthRepository') private repository: AuthRepository) {}
 
-  async get(id: string): Promise<AuthDomain> {
-    return this.repository.get(id);
-  }
-
-  async create(auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
-    return this.repository.create(auth);
-  }
-
-  // @ts-ignore
-  async update(
-    token: string,
-    auth: AuthDomain,
-  ): Promise<FirebaseFirestore.WriteResult> {
-    return this.repository.update(auth);
-  }
-
-  async list(auth: AuthDomain): Promise<AuthDomain[]> {
-    return this.repository.list(auth);
-  }
-
   verifyToken(token: string): Promise<DecodedIdToken> {
     return this.repository.verifyToken(token);
   }
 
-  verifyRole(id: string): Promise<string> {
-    return this.repository.verifyRole(id);
+  async create(account: Auth): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      const isExists = await this.repository.getById(account.id);
+      if (isExists) {
+        throw ErrorAccountExists;
+      }
+    } catch (e) {
+      if ((e as HttpException) == ErrorAccountExists) {
+        throw e;
+      } else {
+        try {
+          return this.repository.create(account);
+        } catch (e) {
+          throw e;
+        }
+      }
+    }
+  }
+
+  getAll(): Promise<FirebaseFirestore.WriteResult[]> {
+    try {
+      return this.repository.getAll();
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  getById(id: string): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      if (!id) {
+        throw ErrorIdNotFound;
+      } else {
+        return this.repository.getById(id);
+      }
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  update(account: Auth): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      const isExists = this.repository.getById(account.id);
+      if (isExists) {
+        return this.repository.update(account);
+      }
+    } catch (e) {
+      throw e;
+    }
   }
 }
