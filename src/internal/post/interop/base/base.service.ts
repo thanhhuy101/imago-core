@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  AllPosts,
   PostDomain,
   PostInterop,
   PostResponse,
@@ -14,14 +15,6 @@ export class BaseInteropService implements PostInterop {
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
   ) {}
 
-  async getPostById(id: string, token: string): Promise<PostDomain> {
-    try {
-      await this.authUsecase.verifyToken(token);
-      return await this.useCase.getPostById(id);
-    } catch (e) {
-      throw e;
-    }
-  }
 
   async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
@@ -72,7 +65,17 @@ export class BaseInteropService implements PostInterop {
       throw e;
     }
   }
-
+  async getAllPost(
+    token: string,
+    page: number,
+    ): Promise<AllPosts> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return this.useCase.getAllPost(page);
+    } catch (e) {
+      throw e;
+    }
+  }
   async getByCateId(
     cateId: string,
     token: string,
@@ -148,12 +151,4 @@ export class BaseInteropService implements PostInterop {
     }
   }
 
-  async getAllPost(token: string): Promise<PostDomain[]> {
-    try {
-      await this.authUsecase.verifyToken(token);
-      return this.useCase.getAllPost();
-    } catch (e) {
-      throw e;
-    }
-  }
 }

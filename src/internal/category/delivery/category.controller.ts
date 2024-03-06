@@ -8,6 +8,7 @@ import {
   Post,
   Put,
   Query,
+  Headers,
 } from '@nestjs/common';
 import {
   CategoryDomain,
@@ -44,10 +45,14 @@ export class CategoryController {
       throw e;
     }
   }
-  @Get('/all')
-  async getCategories() {
+  @Get('all')
+  async getCategories(
+    @Headers() headers: any,
+    @Query('page') page: number,
+  ) {
+    let token = headers['authorization'];
     try {
-      return await this.interop.getCategories();
+      return await this.interop.getCategories(page, token);
     } catch (e) {
       throw e;
     }

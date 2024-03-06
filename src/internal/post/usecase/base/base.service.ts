@@ -1,11 +1,14 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  ErrorContentInvalid,
-  ErrorEmptyPage,
-  ErrorEmptySize, ErrorInvalidPostBody, ErrorMinusPage, ErrorPageIsNaN, ErrorPhotoInvalid,
+  AllPosts,
+  ErrorEmptyPage, ErrorEmptyPageData,
   ErrorPostCreateFailed,
-  ErrorPostDeleteFailed, ErrorPostIdInvalid,
-  ErrorPostNotFound,
+  ErrorPostDeleteFailed,
+  ErrorPostNotFound, PageError,
+  ErrorContentInvalid,
+  ErrorEmptySize, ErrorInvalidPostBody, ErrorMinusPage, ErrorPageIsNaN, ErrorPhotoInvalid,
+   ErrorPostIdInvalid,
+
   PostDomain,
   PostRepository,
   PostResponse,
@@ -20,14 +23,24 @@ export class BaseUseCaseService implements PostUseCase {
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
 
-  async getPostById(id: string): Promise<PostDomain> {
-    return await this.postRepository.getPostById(id);
-  }
-
-  async getAllPost(): Promise<PostDomain[]> {
-    return this.postRepository.getAllPost();
-  }
-
+    async getAllPost(
+      page: number,
+    ): Promise<AllPosts> {
+      let endpage: number;
+      const postRef = await this.postRepository.getAllPost(page);
+      endpage = postRef.endpage;
+      if (page < 1) {
+        throw PageError;
+      } else if (page === undefined || page === null || isNaN(page)) {
+        throw ErrorEmptyPage;
+      }
+      else if (page > endpage){
+        throw ErrorEmptyPageData;
+      }
+      else {
+        return this.postRepository.getAllPost(page);
+      }
+    }
   async getDetail(id: string): Promise<PostDomain> {
     if (!id || id.trim() === '') {
       throw ErrorPostIdInvalid;

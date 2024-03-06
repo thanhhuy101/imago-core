@@ -5,26 +5,29 @@ export interface CategoryDomain {
   users: string[],
   photoUrl: string,
 }
-
+export interface AllCategories {
+  data: CategoryDomain[];
+  endpage: number;
+}
 export interface CategoryRepository {
   createCategory(category: CategoryDomain): Promise<boolean>;
   deleteCategory(id: string): Promise<boolean>;
   getCategory(id: string): Promise<CategoryDomain>;
-  getCategories(): Promise<CategoryDomain[]>;
+  getCategories(page: number): Promise<AllCategories>;
 }
 
 export interface CategoryUseCase {
   createCategory(category: CategoryDomain): Promise<boolean>;
   deleteCategory(id: string): Promise<boolean>;
   getCategory(id: string): Promise<CategoryDomain>;
-  getCategories(): Promise<CategoryDomain[]>;
+  getCategories(page: number): Promise<AllCategories>;
 }
 
 export interface CategoryInterop {
   createCategory(category: CategoryDomain): any;
   deleteCategory(id: string): any;
   getCategory(id: string): Promise<CategoryDomain>;
-  getCategories(): Promise<CategoryDomain[]>;
+  getCategories(page: number, token:string): Promise<AllCategories>;
 }
 
 export const ErrorCategoryNameRequired: HttpException = new HttpException(  'Category name is required',
@@ -48,4 +51,3 @@ export const ErrorCategoryDeleteFailed: HttpException = new HttpException('Categ
 export const ErrorCategoryNotString: HttpException = new HttpException('Category not created by Id is not string',
 400,
 );
- 
