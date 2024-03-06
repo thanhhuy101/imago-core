@@ -169,10 +169,7 @@ export class BaseUseCaseService implements PostUseCase {
 
   update(post: PostDomain): Promise<boolean> {
     if (
-      post.photoUrl.length === 0 ||
-      post.photoUrl === undefined ||
-      post.photoUrl === null ||
-      post.photoUrl.values().next().value === ''||
+      post.photoUrl.length === 0 || post.photoUrl.values().next().value === ''||
       isNumber(post.photoUrl.values().next().value)
     ){
       throw ErrorPhotoInvalid;
