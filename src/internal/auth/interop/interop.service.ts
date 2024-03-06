@@ -3,7 +3,9 @@ import {
   Auth,
   AuthInterop,
   AuthUseCase,
+  ErrorBlockFailed,
   ErrorInvalidRole,
+  ErrorPermissionDenied,
 } from '../../../domain/auth.domain';
 
 @Injectable()
@@ -18,7 +20,11 @@ export class InteropService implements AuthInterop {
       const decodedToken = await this.authUseCase.verifyToken(token);
       const account = (await this.authUseCase.getById(id)) as any as Auth;
       account.isBanned = true;
-      return await this.authUseCase.update(account);
+      if (account.id === decodedToken.uid) {
+        throw ErrorBlockFailed;
+      } else {
+        return await this.authUseCase.update(account);
+      }
     } catch (e) {
       throw e;
     }
@@ -46,6 +52,13 @@ export class InteropService implements AuthInterop {
   async getAll(token: string): Promise<FirebaseFirestore.WriteResult[]> {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
+      const isAdmin = (await this.authUseCase.getById(
+        decodedToken.uid,
+      )) as any as Auth;
+
+      if (isAdmin.role !== 'admin') {
+        throw ErrorPermissionDenied;
+      }
       return await this.authUseCase.getAll();
     } catch (e) {
       throw e;

@@ -31,17 +31,6 @@ import { StorageController } from './internal/storage/storage.controller';
     HashtagModule,
     StorageModule,
   ],
-  controllers: [
-    AppController,
-    CategoryController,
-    ProfileController,
-    ReportController,
-    CommentController,
-    AuthController,
-    HttpController,
-    StorageController,
-  ],
-
   providers: [AppService],
 })
-export class AppModule { }
+export class AppModule {}
