@@ -21,21 +21,23 @@ export class CommentUseCaseBaseService implements CommentUseCase {
 
 
   async createComment(comment: Comment): Promise<boolean> {
-    if (!comment.id || !comment.postId || !comment.content || !comment.authorId) {
-      throw ErrorCommentNotCreated;
+    if (typeof (comment.id) !== 'string') {
+      throw ErrorCommentNotString;
     }
+
     if(comment.content === '' || comment.content === null || comment.content === undefined){
       throw ErrorCommentContent;
     }
     if (comment.authorId === '' || comment.authorId === null || comment.authorId === undefined) {
       throw ErrorCommentAuthorId;
     }
-    if (typeof (comment.id) !== 'string') {
-      throw ErrorCommentNotString;
-    }
+
     let exists = await this.repository.getCommentById(comment.id);
     if (exists) {
       throw ErrorCommentAlreadyExits;
+    }
+    if (!comment.id || !comment.postId || !comment.content || !comment.authorId) {
+      throw ErrorCommentNotCreated;
     }
     return this.repository.createComment(comment);
   }
@@ -56,17 +58,18 @@ export class CommentUseCaseBaseService implements CommentUseCase {
         return this.repository.deleteComment(id, comment);
     }
     async getCommentById(id: string): Promise<Comment> {
-    
+      let exists = await this.repository.getCommentById(id);
+      if (!exists) {
+        throw ErrorCommentNotfound;
+      }
         return await this.repository.getCommentById(id);
     }
   async getCommentsByPostId(postId: string): Promise<Comment[]> {
     return await this.repository.getCommentsByPostId(postId);
   }
     async getComments(): Promise<Comment[]> {
-    let exists = await this.repository.getComments();
-    if (!exists) {
-      throw ErrorCommentNotfound;
-    }
-        return await this.repository.getComments();
+
+      return await this.repository.getComments();
+
     }
 }
