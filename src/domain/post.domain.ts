@@ -16,6 +16,10 @@ export interface PostRespone {
   data: PostDomain[];
   endpage: number;
 }
+export interface AllPosts {
+  data: PostDomain[];
+  endpage: number;
+}
 export interface PostRepository {
   getDetail(id: string): Promise<PostDomain>;
 
@@ -45,7 +49,9 @@ export interface PostRepository {
     size: number,
   ): Promise<PostRespone>;
 
-  getAllPost(): Promise<PostDomain[]>;
+  getAllPost(
+    page: number,
+  ): Promise<AllPosts>;
 }
 
 export interface PostUseCase {
@@ -77,7 +83,9 @@ export interface PostUseCase {
     size: number,
   ): Promise<PostRespone>;
 
-  getAllPost(): Promise<PostDomain[]>;
+  getAllPost(
+    page: number,
+  ): Promise<AllPosts>;
 }
 export interface PostInterop {
   getDetail(id: string, token: string): Promise<PostDomain>;
@@ -120,7 +128,10 @@ export interface PostInterop {
     size: number,
   ): Promise<PostRespone>;
 
-  getAllPost(token: string): Promise<PostDomain[]>;
+  getAllPost(
+    token: string,
+    page: number,
+    ): Promise<AllPosts>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(
@@ -148,11 +159,24 @@ export const ErrorEmptyPage: HttpException = new HttpException(
   'Post page is empty',
   400,
 );
+export const ErrorEmptyPageData: HttpException = new HttpException(
+  'Page is no data',
+  400,
+);
 export const ErrorMinusPage: HttpException = new HttpException(
   ' page cannot be minus',
   400,
 );
+export const ErrorPostIdIsEmty: HttpException = new HttpException(
+  'PostId cannot be empty',
+  400,
+);
 export const SizeError: HttpException = new HttpException(
   ' Size must be greater than 0',
+  400,
+);
+
+export const PageError: HttpException = new HttpException(
+  ' Page must be greater than 0',
   400,
 );

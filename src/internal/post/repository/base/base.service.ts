@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  AllPosts,
   PostDomain,
   PostRepository,
   PostRespone,
@@ -22,16 +23,6 @@ export class BaseRepositoryService implements PostRepository {
     }
   }
 
-  async getAllPost(): Promise<PostDomain[]>{
-    try {
-      const postsRef = this.db.collection('posts');
-      const snapshot = await postsRef.get();
-      return snapshot.docs.map((doc) => doc.data() as PostDomain);
-    }
-    catch (e) {
-      throw e;
-    }
-  }
   async getDetail(id: string): Promise<PostDomain> {
     const post = await this.db.collection('posts').doc(id).get();
     console.log(id);
@@ -43,7 +34,7 @@ export class BaseRepositoryService implements PostRepository {
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<AllPosts> {
     const postsRef = this.db.collection('posts');
     const query = postsRef.where('mention', 'array-contains', mention);
     const snapshot = await query.get();
@@ -52,6 +43,23 @@ export class BaseRepositoryService implements PostRepository {
       data: posts.slice((page - 1) * size, page * size),
       endpage: Math.ceil(posts.length / size),
     };
+  }
+  async getAllPost(
+    page: number,
+  ): Promise<AllPosts>{
+    try {
+      const postRef =  this.db.collection('posts');
+      const snapshot = await postRef.get();
+      const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+      const size = 10;
+      return {
+        data: posts.slice((page - 1) * size, page * size),
+        endpage: Math.ceil(posts.length / size),
+      };
+    }
+    catch (e) {
+      throw e;
+    }
   }
 
   async getAllByUid(

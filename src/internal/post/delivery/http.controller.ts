@@ -34,10 +34,13 @@ export class HttpController {
     }
   }
   @Get('all')
-  async getAllPost(@Headers() headers:any) {
+  async getAllPost(
+    @Headers() headers:any,
+    @Query('page') page: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getAllPost(token);
+      return await this.interop.getAllPost(token, page);
     } catch (e) {
       throw e;
     }

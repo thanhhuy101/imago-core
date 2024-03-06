@@ -3,6 +3,7 @@ import { CategoryController } from './delivery/category.controller';
 import { CategoryRepositoryBaseService } from './repository/base/base.service';
 import { CategoryUseCaseBaseService } from './usecase/base/base.service';
 import { CategoryInteropBaseService } from './interop/base/base.service';
+import { AuthModule } from '../auth/auth.module';
 
 @Module({
   controllers: [CategoryController],
@@ -19,16 +20,15 @@ import { CategoryInteropBaseService } from './interop/base/base.service';
       provide: 'CategoryInterop',
       useClass: CategoryInteropBaseService,
     },
-    {
-      provide: 'CategoryCategoryDelivery',
-      useClass: CategoryController,
-    },
+
   ],
   exports: [
     'CategoryRepository',
     'CategoryUseCase',
     'CategoryInterop',
-    'CategoryCategoryDelivery',
+  ],
+  imports: [
+    AuthModule
   ],
 })
 export class CategoryModule {}

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  AllCategories,
   CategoryDomain,
   CategoryRepository,
   CategoryUseCase, ErrorCategoryAlreadyExisted, ErrorCategoryDeleteFailed,
@@ -7,6 +8,9 @@ import {
 } from '../../../../domain/category.domain';
 import * as admin from 'firebase-admin';
 import e from 'express';
+import { awaitExpression } from '@babel/types';
+import { ErrorEmptyPage, ErrorPostId } from '../../../../domain/comment.domain';
+import { ErrorEmptyPageData, PageError } from '../../../../domain/post.domain';
 @Injectable()
 export class CategoryUseCaseBaseService implements CategoryUseCase {
 
@@ -40,7 +44,21 @@ export class CategoryUseCaseBaseService implements CategoryUseCase {
     //   }
     //   return this.repository.getCategory(id);
     }
-    getCategories(): Promise<CategoryDomain[]> {
-        return this.repository.getCategories();
+    async getCategories(
+      page: number,
+    ): Promise<AllCategories> {
+        let endpage: number;
+        const categoryRef = await this.repository.getCategories(page);
+        endpage = categoryRef.endpage;
+       if (page < 1) {
+        throw PageError;
+      } else if (page === undefined || page === null || isNaN(page)) {
+        throw ErrorEmptyPage;
+      }
+      else if (page > endpage){
+        throw ErrorEmptyPageData;
+      }else{
+        return categoryRef;
+       }
     }
 }
