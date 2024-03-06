@@ -12,7 +12,7 @@ export interface AuthRepository {
 
   get(id: string): Promise<AuthDomain>;
   create(account: AuthDomain):Promise<admin.firestore.WriteResult>;
-  update( account: AuthDomain): Promise<admin.firestore.WriteResult>;
+  update(account: AuthDomain): Promise<admin.firestore.WriteResult>;
   list(account: AuthDomain): Promise<AuthDomain[]>;
   verifyToken(token: string): Promise<DecodedIdToken>;
 
@@ -32,7 +32,8 @@ export interface AuthInterop {
   list(token: string,account: AuthDomain): Promise<AuthDomain[]>;
   signUp(token: string,account: AuthDomain ): Promise<admin.firestore.WriteResult>;
   signIn(token: string,account: AuthDomain ): Promise<AuthDomain>;
-
+  changeRole(token: string,id: string): Promise<admin.firestore.WriteResult>;
+  block(token: string,id: string): Promise<admin.firestore.WriteResult>;
 }
 
 export const ErrorUnauthorized = new HttpException('Unauthorized', HttpStatus.UNAUTHORIZED);

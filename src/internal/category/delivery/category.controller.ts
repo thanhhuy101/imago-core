@@ -43,7 +43,7 @@ export class CategoryController {
       throw e;
     }
   }
-  @Get('all')
+  @Get('/all')
   async getCategories() {
     try {
       return await this.interop.getCategories();

@@ -48,15 +48,43 @@ export class InteropService implements AuthInterop {
     }
   }
   // @ts-ignore
-  async update(token: string, auth: AuthDomain): Promise<AuthDomain> {
+  async update(id: string,auth : AuthDomain): Promise<AuthDomain> {
     try {
-      return await this.authUseCase.update(token, auth);
+      return await this.authUseCase.update(id,auth);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // @ts-ignore
+  async changeRole(token: string,id: string): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      let auth = await this.authUseCase.get(id);
+      if (auth.role === 'admin') {
+        auth.role = 'default';
+       await this.authUseCase.update(token ,auth);
+      }
+      else {
+        auth.role = 'admin';
+        await this.authUseCase.update(token ,auth);
+      }
+
     } catch (error) {
       throw error;
     }
   }
   async list(token: string,auth: AuthDomain): Promise<AuthDomain[]> {
     return await this.authUseCase.list(auth);
+  }
+  // @ts-ignore
+  async block(token: string,id: string): Promise<FirebaseFirestore.WriteResult> {
+    try {
+      let auth = await this.authUseCase.get(id);
+      auth.isBanned = !auth.isBanned;
+       await this.authUseCase.update(token,auth);
+    } catch (error) {
+      throw error;
+    }
   }
   verifyToken(token: string): Promise<DecodedIdToken> {
     throw new Error('Method not implemented.');
