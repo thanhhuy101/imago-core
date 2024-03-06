@@ -82,12 +82,12 @@ export class BaseRepositoryService implements PostRepository {
   }
 
   async getShare(
-    uid: string,
+    shareId: string,
     page: number,
     size: number,
   ): Promise<PostResponse> {
     const postsRef = this.db.collection('posts');
-    const query = postsRef.where('share', 'array-contains', uid);
+    const query = postsRef.where('share', 'array-contains', shareId);
     const snapshot = await query.get();
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {

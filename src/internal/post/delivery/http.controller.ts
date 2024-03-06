@@ -9,7 +9,7 @@ import {
   Query,
   Headers,
 } from '@nestjs/common';
-import { PostDomain, PostInterop } from 'src/domain/post.domain';
+import { ErrorInvalidPostBody, PostDomain, PostInterop } from 'src/domain/post.domain';
 import any = jasmine.any;
 
 @Controller('v1/post')
@@ -105,13 +105,12 @@ export class HttpController {
   @Get('share')
   async getSharedPost(
     @Headers() headers: any,
-    @Query('uid') uid: string,
     @Query('page') page: number,
     @Query('size') size: number,
   ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getShare(uid, token, page, size);
+      return await this.interop.getShare( token, page, size);
     } catch (e) {
       throw e;
     }
@@ -120,6 +119,9 @@ export class HttpController {
   @Post()
   async createPost(@Headers() headers: any, @Body() post: PostDomain) {
     let token = headers['authorization'];
+    if (!post || Object.keys(post).length === 0) {
+      throw ErrorInvalidPostBody;
+    }
     try {
       return await this.interop.create(post, token);
     } catch (e) {
@@ -130,6 +132,9 @@ export class HttpController {
   @Put()
   async updatePost(@Headers() headers: any, @Body() post: PostDomain) {
     let token = headers['authorization'];
+    if (!post || Object.keys(post).length === 0) {
+      throw ErrorInvalidPostBody;
+    }
     try {
       return await this.interop.update(post, token);
     } catch (e) {

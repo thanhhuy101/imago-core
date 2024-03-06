@@ -1,6 +1,11 @@
-import { Body, Injectable } from '@nestjs/common';
+import { Body, HttpException, Injectable } from '@nestjs/common';
 import * as admin from 'firebase-admin';
-import { Comment, CommentRepository } from '../../../../domain/comment.domain';
+import {
+  Comment,
+  CommentRepository,
+  ErrorCommentNotDeleted,
+  ErrorCommentNotUpdatedByIdNotTheSame,
+} from '../../../../domain/comment.domain';
 
 @Injectable()
 export class CommentRepositoryBaseService implements CommentRepository{
@@ -19,9 +24,7 @@ export class CommentRepositoryBaseService implements CommentRepository{
     }
   async createComment(comment: Comment): Promise<boolean> {
     try {
-      if (!comment.id || !comment.postId || !comment.content || !comment.authorId) {
-        return false;
-      }
+
       const Comment = await this.db.collection('comments').doc(comment.id).set(comment);
       return true;
     } catch (e) {
@@ -30,9 +33,9 @@ export class CommentRepositoryBaseService implements CommentRepository{
   }
   async updateComment(id: string,comment: Partial<Comment>): Promise<boolean> {
     try {
-      if(id !== comment.id){
-        return false;
-      }
+      // if(id !== comment.id){
+      //   return false;
+      // }
       const Comment = await this.db.collection('comments').doc(id).update(comment);
       return true;
     } catch (e) {
@@ -78,3 +81,4 @@ export class CommentRepositoryBaseService implements CommentRepository{
     }
   }
 }
+ 

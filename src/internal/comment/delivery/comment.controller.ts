@@ -6,9 +6,9 @@ import {
   Headers,
   Get,
   Query,
-  Delete, Put,
+  Delete, Put, HttpException,
 } from '@nestjs/common';
-import { CommentInterop } from '../../../domain/comment.domain';
+import { CommentInterop,  } from '../../../domain/comment.domain';
 import { Comment } from '../../../domain/comment.domain';
 
 @Controller('v1/comment')
@@ -40,15 +40,9 @@ export class CommentController {
     try {
       const updateRef =  await this.interop.updateComment(token, id, comment);
       if (id !== comment.id) {
-        console.log("comment id and id are not the same");
         return false;
       }
-      return {
-        id: comment.id,
-        content: comment.content,
-        postId: comment.postId,
-        authorId: comment.authorId,
-      }
+
     } catch (e) {
       throw e;
     }
@@ -82,3 +76,4 @@ export class CommentController {
     }
   }
 }
+ 
