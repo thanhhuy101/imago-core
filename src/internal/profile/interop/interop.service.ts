@@ -1,6 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import { AuthUseCase } from 'src/domain/auth.domain';
 import {
+  ErrorIdEmpty,
   Profile,
   ProfileInterop,
   ProfileUseCase,
@@ -13,64 +14,37 @@ export class InteropService implements ProfileInterop {
     @Inject('AuthUseCase') private authUseCase: AuthUseCase,
   ) {}
 
-  async getProfile(id: string, token: string): Promise<Profile> {
+  async follow(
+    token: string,
+    profileId: string,
+    otherProfileId: string,
+  ): Promise<any> {
     try {
       await this.authUseCase.verifyToken(token);
-      return await this.profileUseCase.getProfile(id);
-    } catch (e) {
-      throw e;
-    }
-  }
-  async getMineProfile(token: string): Promise<Profile> {
-    try {
-      let decodedToken = await this.authUseCase.verifyToken(token);
-      return await this.profileUseCase.getProfile(decodedToken.uid);
-    } catch (e) {
-      throw e;
-    }
-  }
-  async createProfile(profile: Profile, token: string): Promise<boolean> {
-    try {
-      let decodedToken = await this.authUseCase.verifyToken(token);
-      profile.id = decodedToken.uid;
-      profile.email = decodedToken.email;
-      return await this.profileUseCase.createProfile(profile);
-    } catch (e) {
-      throw e;
-    }
-  }
-  async updateProfile(profile: Profile, token: string): Promise<boolean> {
-    try {
-      await this.authUseCase.verifyToken(token);
-      return await this.profileUseCase.updateProfile(profile);
-    } catch (e) {
-      throw e;
-    }
-  }
-  async follow(token: string, uid: string, id: string): Promise<any> {
-    try {
-      await this.authUseCase.verifyToken(token);
-      let profile = await this.profileUseCase.getProfile(uid);
-      let otherProfile = await this.profileUseCase.getProfile(id);
+      let profile = await this.profileUseCase.get(profileId);
+      let otherProfile = await this.profileUseCase.get(otherProfileId);
       if (profile) {
-        if (this.isExisted(profile.following, id) || uid === id) {
+        if (
+          this.isExisted(profile.following, otherProfileId) ||
+          profileId === otherProfileId
+        ) {
           return false;
-        } 
+        }
         if (
           !profile.following === undefined ||
           profile.following.length === 0 ||
-          !this.isExisted(profile.following, id)
+          !this.isExisted(profile.following, otherProfileId)
         ) {
           if (
             !otherProfile.followers === undefined ||
             otherProfile.followers.length === 0 ||
-            otherProfile.followers.includes(uid) ||
-            profile.followers.includes(id)
+            otherProfile.followers.includes(profileId) ||
+            profile.followers.includes(otherProfileId)
           ) {
-            profile.following.push(id);
-            otherProfile.followers.push(uid);
-            await this.profileUseCase.updateProfile(profile);
-            await this.profileUseCase.updateProfile(otherProfile);
+            profile.following.push(otherProfileId);
+            otherProfile.followers.push(profileId);
+            await this.profileUseCase.update(profile);
+            await this.profileUseCase.update(otherProfile);
           }
         }
       } else {
@@ -81,23 +55,29 @@ export class InteropService implements ProfileInterop {
     }
   }
 
-  async unfollow(token: string, uid: string, id: string): Promise<any> {
+  async unfollow(
+    token: string,
+    profileId: string,
+    otherProfileId: string,
+  ): Promise<any> {
     try {
       await this.authUseCase.verifyToken(token);
-      let profile = await this.profileUseCase.getProfile(uid);
-      let otherProfile = await this.profileUseCase.getProfile(id);
+      let profile = await this.profileUseCase.get(profileId);
+      let otherProfile = await this.profileUseCase.get(otherProfileId);
       if (profile) {
-        if (this.isExisted(profile.following, id)) {
-          if (otherProfile.followers.includes(uid)) {
-            profile.following = profile.following.filter((item) => item !== id);
-            otherProfile.followers = otherProfile.followers.filter(
-              (item) => item !== uid,
+        if (this.isExisted(profile.following, otherProfileId)) {
+          if (otherProfile.followers.includes(profileId)) {
+            profile.following = profile.following.filter(
+              (item) => item !== otherProfileId,
             );
-            await this.profileUseCase.updateProfile(profile);
-            await this.profileUseCase.updateProfile(otherProfile);
+            otherProfile.followers = otherProfile.followers.filter(
+              (item) => item !== profileId,
+            );
+            await this.profileUseCase.update(profile);
+            await this.profileUseCase.update(otherProfile);
           }
         }
-        if (!this.isExisted(profile.following, id)) {
+        if (!this.isExisted(profile.following, otherProfileId)) {
           return;
         }
       } else {
@@ -115,5 +95,72 @@ export class InteropService implements ProfileInterop {
       }
     }
     return false;
+  }
+
+  async create(profile: Profile, token: string): Promise<boolean> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const profileData: Profile = {
+        id: decodedToken.uid,
+        email: decodedToken.email,
+        bio: profile.bio || '',
+        photoUrl: profile.photoUrl || '',
+        phone: profile.phone || '',
+        userName: profile.userName || '',
+        firstName: profile.firstName || '',
+        lastName: profile.lastName || '',
+        category: profile.category || [],
+        followers: profile.followers || [],
+        following: profile.following || [],
+        gender: profile.gender || '',
+      };
+      return this.profileUseCase.create(profileData);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async update(profile: Profile, token: string): Promise<boolean> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const _profile = await this.profileUseCase.get(decodedToken.uid);
+      const profileData: Profile = {
+        ..._profile,
+        ...profile,
+      };
+      return await this.profileUseCase.update(profileData);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async get(id: string, token: string): Promise<Profile> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      if (!id) {
+        throw ErrorIdEmpty;
+      }
+      return await this.profileUseCase.get(id);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  getAll(token: string): Promise<Profile[]> {
+    try {
+      const decodedToken = this.authUseCase.verifyToken(token);
+      return this.profileUseCase.getAll();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async getMine(token: string): Promise<Profile> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      return this.profileUseCase.get(decodedToken.uid);
+    } catch (error) {
+      throw error;
+    }
   }
 }

@@ -4,7 +4,6 @@ import {
   AuthRepository,
   AuthUseCase,
   ErrorAccountExists,
-  ErrorAccountNotFound,
   ErrorIdNotFound,
 } from '../../../../domain/auth.domain';
 import { DecodedIdToken } from 'firebase-admin/lib/auth';
