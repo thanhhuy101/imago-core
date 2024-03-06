@@ -29,6 +29,7 @@ export interface ProfileInterop {
   getProfile(id: string, token: string): Promise<Profile>;
   getMineProfile(token: string): Promise<Profile>;
   createProfile(profile: Profile, token: string): Promise<boolean>;
+  createMineProfile(profile: Profile, token: string): Promise<boolean>;
   updateProfile(profile: Profile, token: string): Promise<boolean>;
   follow(token: string, uid: string, id: string): Promise<any>;
   unfollow(token: string, uid: string, id: string): Promise<any>;

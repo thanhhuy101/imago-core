@@ -29,11 +29,21 @@ export class InteropService implements ProfileInterop {
       throw e;
     }
   }
-  async createProfile(profile: Profile, token: string): Promise<boolean> {
+  createProfile(profile: Profile, token: string): Promise<boolean> {
+    throw new Error('Method not implemented.');
+  }
+  async createMineProfile(profile: Profile, token: string): Promise<boolean> {
     try {
       let decodedToken = await this.authUseCase.verifyToken(token);
       profile.id = decodedToken.uid;
       profile.email = decodedToken.email;
+      profile.followers = [];
+      profile.following = [];
+      profile.category = [];
+      profile.photoUrl = decodedToken.picture;
+      profile.bio = 'hello world';
+      profile.phone = '';
+      profile.gender = '';
       return await this.profileUseCase.createProfile(profile);
     } catch (e) {
       throw e;
@@ -55,7 +65,7 @@ export class InteropService implements ProfileInterop {
       if (profile) {
         if (this.isExisted(profile.following, id) || uid === id) {
           return false;
-        } 
+        }
         if (
           !profile.following === undefined ||
           profile.following.length === 0 ||

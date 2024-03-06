@@ -32,12 +32,12 @@ export class ProfileController {
   createProfile(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
     return this.profileInterop.createProfile(profile, token);
-  }
+  } 
 
   @Post('mine')
   createMineProfile(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
-    return this.profileInterop.createProfile(profile, token);
+    return this.profileInterop.createMineProfile(profile, token);
   }
 
   @Put('')

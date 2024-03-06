@@ -2,17 +2,12 @@ import { Inject, Injectable } from '@nestjs/common';
 import {
   ErrFirstName,
   ErrLastName,
-  ErrPhone,
   ErrUserName,
-  ErrorProfileNotFound,
   Profile,
   ProfileRepository,
-  ProfileUseCase, ErrorProfileCreateFailed,
+  ProfileUseCase,
+ 
 } from 'src/domain/profile.domain';
-import {
-
-  ErrorPostCreateFailed,
-} from '../../../domain/post.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {
@@ -51,9 +46,6 @@ export class UsecaseService implements ProfileUseCase {
       }
       if (profile.lastName === '' || typeof profile.lastName === 'number') {
         throw ErrLastName;
-      }
-      if (profile.phone === '') {
-        throw ErrPhone;
       }
       return await this.profileRepository.updateProfile(profile);
     } catch (error) {
