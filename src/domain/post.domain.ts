@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { Comment } from './comment.domain';
+
 export interface PostDomain {
   id: string;
   creatorId: string;
@@ -13,10 +14,12 @@ export interface PostDomain {
   mention: string[];
   createdAt: Date;
 }
-export interface PostRespone {
+
+export interface PostResponse {
   data: PostDomain[];
   endpage: number;
 }
+
 export interface PostRepository {
   getDetail(id: string): Promise<PostDomain>;
 
@@ -24,13 +27,17 @@ export interface PostRepository {
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getMine(id: string, page: number, size: number): Promise<PostRespone>;
+  getMine(id: string, page: number, size: number): Promise<PostResponse>;
 
-  getByCateId(cateId: string, page: number, size: number): Promise<PostRespone>;
+  getByCateId(
+    cateId: string,
+    page: number,
+    size: number,
+  ): Promise<PostResponse>;
 
-  getShare(uid: string, page: number, size: number): Promise<PostRespone>;
+  getShare(uid: string, page: number, size: number): Promise<PostResponse>;
 
   create(post: PostDomain): Promise<boolean>;
 
@@ -44,7 +51,7 @@ export interface PostRepository {
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
   getAllPost(): Promise<PostDomain[]>;
 }
@@ -56,15 +63,19 @@ export interface PostUseCase {
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getPostById(id:string): Promise<PostDomain>;
+  getPostById(id: string): Promise<PostDomain>;
 
-  getMine(id: string, page: number, size: number): Promise<PostRespone>;
+  getMine(id: string, page: number, size: number): Promise<PostResponse>;
 
-  getByCateId(cateId: string, page: number, size: number): Promise<PostRespone>;
+  getByCateId(
+    cateId: string,
+    page: number,
+    size: number,
+  ): Promise<PostResponse>;
 
-  getShare(uid: string, page: number, size: number): Promise<PostRespone>;
+  getShare(uid: string, page: number, size: number): Promise<PostResponse>;
 
   create(post: PostDomain): Promise<boolean>;
 
@@ -76,10 +87,11 @@ export interface PostUseCase {
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
   getAllPost(): Promise<PostDomain[]>;
 }
+
 export interface PostInterop {
   getDetail(id: string, token: string): Promise<PostDomain>;
 
@@ -88,23 +100,23 @@ export interface PostInterop {
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getMine(token: string, page: number, size: number): Promise<PostRespone>;
+  getMine(token: string, page: number, size: number): Promise<PostResponse>;
 
   getByCateId(
     cateId: string,
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
   getShare(
     uid: string,
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
   getPostById(id: string, token: string): Promise<PostDomain>;
 
@@ -119,7 +131,7 @@ export interface PostInterop {
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
   getAllPost(token: string): Promise<PostDomain[]>;
 }
