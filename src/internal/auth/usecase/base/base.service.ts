@@ -19,7 +19,10 @@ export class BaseService implements AuthUseCase {
   }
 
   // @ts-ignore
-  async update(auth: AuthDomain): Promise<FirebaseFirestore.WriteResult> {
+  async update(
+    token: string,
+    auth: AuthDomain,
+  ): Promise<FirebaseFirestore.WriteResult> {
     return this.repository.update(auth);
   }
 

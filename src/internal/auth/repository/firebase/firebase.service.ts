@@ -42,8 +42,8 @@ export class FirebaseService implements AuthRepository {
 
   async update(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
     try {
-      const db = this.auth;
       // @ts-ignore
+
       return await this.db.collection('auths').doc(auth.id).update(auth);
     } catch (error) {
       throw error;

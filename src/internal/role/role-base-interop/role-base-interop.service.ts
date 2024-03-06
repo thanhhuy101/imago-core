@@ -6,6 +6,7 @@ import {
   RoleUseCase,
   tokenDoesNotExit,
 } from '../../../domain/role.domain';
+import * as admin from 'firebase-admin';
 
 @Injectable()
 export class RoleBaseInteropService implements RoleInterop {
@@ -20,7 +21,10 @@ export class RoleBaseInteropService implements RoleInterop {
     }
   }
 
-  async createRole(token: string, role: Role) {
+  async createRole(
+    token: string,
+    role: Role,
+  ): Promise<admin.firestore.WriteResult> {
     try {
       let decodedToken = await this.roleUseCase.verifyToken(token);
       role.id = decodedToken.uid;
@@ -30,7 +34,11 @@ export class RoleBaseInteropService implements RoleInterop {
     }
   }
 
-  async updateRole(token: string, id: string, role: Role) {
+  async updateRole(
+    token: string,
+    id: string,
+    role: Role,
+  ): Promise<admin.firestore.WriteResult> {
     try {
       let decodedToken = await this.roleUseCase.verifyToken(token);
       role.id = decodedToken.uid;

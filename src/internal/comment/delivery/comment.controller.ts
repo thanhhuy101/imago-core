@@ -25,10 +25,11 @@ export class CommentController {
     }
   }
   @Delete()
-  async deleteComment(@Headers() headers: any,@Query('id') id: string) {
+  async deleteComment(@Headers() headers: any,@Query('id') id: string, @Body() comment: Comment) {
     let token = headers['authorization'];
     try {
-      return await this.interop.deleteComment(token, id);
+        return await this.interop.deleteComment(token, id, comment);
+
     } catch (e) {
       throw e;
     }
@@ -38,12 +39,15 @@ export class CommentController {
     let token = headers['authorization'];
     try {
       const updateRef =  await this.interop.updateComment(token, id, comment);
+      if (id !== comment.id) {
+        console.log("comment id and id are not the same");
+        return false;
+      }
       return {
         id: comment.id,
         content: comment.content,
         postId: comment.postId,
         authorId: comment.authorId,
-        updateRef
       }
     } catch (e) {
       throw e;
@@ -64,6 +68,15 @@ export class CommentController {
     let token = headers['authorization'];
     try {
       return await this.interop.getComments(token);
+    } catch (e) {
+      throw e;
+    }
+  }
+  @Get('/post')
+  async getCommentsByPostId(@Headers() headers: any, @Query('postId') postId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getCommentsByPostId(token, postId);
     } catch (e) {
       throw e;
     }
