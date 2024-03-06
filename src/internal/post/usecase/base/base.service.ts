@@ -1,9 +1,10 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  ErrorContentInvalid,
   ErrorEmptyPage,
-  ErrorEmptySize,
+  ErrorEmptySize, ErrorInvalidPostBody, ErrorMinusPage, ErrorPageIsNaN, ErrorPhotoInvalid,
   ErrorPostCreateFailed,
-  ErrorPostDeleteFailed,
+  ErrorPostDeleteFailed, ErrorPostIdInvalid,
   ErrorPostNotFound,
   PostDomain,
   PostRepository,
@@ -11,6 +12,7 @@ import {
   PostUseCase,
   SizeError,
 } from '../../../../domain/post.domain';
+import { isNumber } from '@nestjs/common/utils/shared.utils';
 
 @Injectable()
 export class BaseUseCaseService implements PostUseCase {
@@ -27,10 +29,16 @@ export class BaseUseCaseService implements PostUseCase {
   }
 
   async getDetail(id: string): Promise<PostDomain> {
-    if (id === '' || id === undefined || id === null) {
+    if (!id || id.trim() === '') {
+      throw ErrorPostIdInvalid;
+    }
+    const postDetail = await this.postRepository.getDetail(id);
+
+    if (!postDetail) {
       throw ErrorPostNotFound;
     }
-    return this.postRepository.getDetail(id);
+
+    return postDetail;
   }
 
   async getByMentionId(
@@ -38,13 +46,18 @@ export class BaseUseCaseService implements PostUseCase {
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    if (size < 1) {
+    if (size <= 0) {
       throw SizeError;
-    } else if (page < 1 || isNaN(page)) {
+    } else if (size === undefined || size === null || isNaN(size)) {
+      throw ErrorEmptySize;
+    } else if (page === undefined || page === null){
       throw ErrorEmptyPage;
-    } else if (mention === '' || mention === undefined || mention === null) {
-      throw ErrorPostNotFound;
-    } else {
+    }else if(isNaN(page)){
+      throw ErrorPageIsNaN
+    }else if(page <= 0 ){
+      throw ErrorMinusPage;
+    }
+    else {
       return this.postRepository.getByMentionId(mention, page, size);
     }
   }
@@ -54,29 +67,34 @@ export class BaseUseCaseService implements PostUseCase {
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    if (size < 1) {
+    if (size <= 0) {
       throw SizeError;
-    } else if (page < 1 || isNaN(page)) {
+    } else if (size === undefined || size === null || isNaN(size)) {
+      throw ErrorEmptySize;
+    } else if (page === undefined || page === null){
       throw ErrorEmptyPage;
-    } else if (
-      creatorId === '' ||
-      creatorId === undefined ||
-      creatorId === null
-    ) {
-      throw ErrorPostNotFound;
-    } else {
+    }else if(isNaN(page)){
+      throw ErrorPageIsNaN
+    }else if(page <= 0 ){
+      throw ErrorMinusPage;
+    }
+    else {
       return this.postRepository.getAllByUid(creatorId, page, size);
     }
   }
-
   getMine(id: string, page: number, size: number): Promise<PostResponse> {
-    if (size < 1) {
+    if (size <= 0) {
       throw SizeError;
-    } else if (id === '' || id === undefined || id === null) {
-      throw ErrorPostNotFound;
-    } else if (page < 1 || isNaN(page)) {
+    } else if (size === undefined || size === null || isNaN(size)) {
+      throw ErrorEmptySize;
+    } else if (page === undefined || page === null){
       throw ErrorEmptyPage;
-    } else {
+    }else if(isNaN(page)){
+      throw ErrorPageIsNaN
+    }else if(page <= 0 ){
+      throw ErrorMinusPage;
+    }
+    else {
       return this.postRepository.getMine(id, page, size);
     }
   }
@@ -86,50 +104,76 @@ export class BaseUseCaseService implements PostUseCase {
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    if (size < 1) {
+    if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
       throw ErrorEmptySize;
-    } else if (page < 1 || isNaN(page)) {
+    } else if (page === undefined || page === null ){
       throw ErrorEmptyPage;
-    } else {
+
+    }else if(isNaN(page)){
+     throw ErrorPageIsNaN
+    }
+    else if(page <= 0 ){
+      throw ErrorMinusPage;
+    }
+    else {
       return this.postRepository.getByCateId(cateId, page, size);
     }
   }
-
-  getShare(uid: string, page: number, size: number): Promise<PostResponse> {
-    if (size < 1) {
+  getShare(shareId: string, page: number, size: number): Promise<PostResponse> {
+    if (size <= 0) {
       throw SizeError;
     } else if (size === undefined || size === null || isNaN(size)) {
       throw ErrorEmptySize;
-    } else if (page < 1 || isNaN(page)) {
+    } else if (page === undefined || page === null){
       throw ErrorEmptyPage;
-    } else {
-      return this.postRepository.getShare(uid, page, size);
+    }else if(isNaN(page)){
+      throw ErrorPageIsNaN
+    }else if(page <= 0 ){
+      throw ErrorMinusPage;
+    }
+    else {
+    return this.postRepository.getShare(shareId, page, size);
     }
   }
 
   create(post: PostDomain): Promise<boolean> {
     if (
-      post.content === '' ||
-      post.content === undefined ||
-      post.content === null ||
-      post.photoUrl.length === 0
-    ) {
-      console.error(ErrorPostCreateFailed);
-      return Promise.resolve(false);
+      post.photoUrl.length === 0 ||
+      post.photoUrl === undefined ||
+      post.photoUrl === null||
+      post.photoUrl.values().next().value === ''||
+      isNumber(post.photoUrl.values().next().value)
+    ){
+     throw ErrorPhotoInvalid;
+    }
+    if(post.content === '' || post.content === undefined || post.content === null) {
+      throw ErrorContentInvalid;
     }
     return this.postRepository.create(post);
   }
 
   update(post: PostDomain): Promise<boolean> {
+    if (
+      post.photoUrl.length === 0 ||
+      post.photoUrl === undefined ||
+      post.photoUrl === null ||
+      post.photoUrl.values().next().value === ''||
+      isNumber(post.photoUrl.values().next().value)
+    ){
+      throw ErrorPhotoInvalid;
+    }
+    if(post.content === '' || post.content === undefined || post.content === null) {
+      throw ErrorContentInvalid;
+    }
     return this.postRepository.update(post);
   }
 
   async delete(id: string): Promise<boolean> {
-    let existed = await this.postRepository.getDetail(id);
+    const existed = await this.postRepository.getDetail(id);
     if (!existed) {
-      console.error(ErrorPostDeleteFailed);
+     throw ErrorPostDeleteFailed
     }
     return this.postRepository.delete(id);
   }

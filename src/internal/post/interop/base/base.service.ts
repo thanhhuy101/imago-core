@@ -88,14 +88,13 @@ export class BaseInteropService implements PostInterop {
   }
 
   async getShare(
-    uid: string,
     token: string,
     page: number,
     size: number,
   ): Promise<PostResponse> {
     try {
-      await this.authUsecase.verifyToken(token);
-      return this.useCase.getShare(uid, page, size);
+      const idToken=await this.authUsecase.verifyToken(token);
+      return this.useCase.getShare(idToken.uid, page, size);
     } catch (e) {
       throw e;
     }
@@ -109,9 +108,19 @@ export class BaseInteropService implements PostInterop {
       post.comments = [];
       post.reaction = [];
       post.share = [];
-      post.mention = [];
-      post.hashtag = [];
-      console.log(post);
+      post.createdAt =  new Date();
+      if(post.cateId==undefined || post.cateId==null){
+        post.cateId = [];
+      }
+
+      if(post.mention==undefined || post.mention==null) {
+        post.mention = [];
+      }
+      if(post.hashtag==undefined || post.hashtag==null){
+        post.hashtag = [];
+      }
+      post.updatedAt = null;
+      post.deletedAt = null;
       return this.useCase.create(post);
     } catch (e) {
       throw e;
@@ -122,6 +131,7 @@ export class BaseInteropService implements PostInterop {
     try {
       const idToken = await this.authUsecase.verifyToken(token);
       post.creatorId = idToken.uid;
+      post.updatedAt = new Date();
       return this.useCase.update(post);
     } catch (e) {
       throw e;
