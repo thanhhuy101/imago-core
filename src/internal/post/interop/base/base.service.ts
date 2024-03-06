@@ -109,6 +109,10 @@ export class BaseInteropService implements PostInterop {
       post.reaction = [];
       post.share = [];
       post.createdAt =  new Date();
+      if(post.cateId==undefined || post.cateId==null){
+        post.cateId = [];
+      }
+
       if(post.mention==undefined || post.mention==null) {
         post.mention = [];
       }
