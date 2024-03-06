@@ -12,6 +12,8 @@ export interface PostDomain {
   comments: Comment[];
   mention: string[];
   createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 }
 export interface PostRespone {
   data: PostDomain[];
@@ -30,7 +32,7 @@ export interface PostRepository {
 
   getByCateId(cateId: string, page: number, size: number): Promise<PostRespone>;
 
-  getShare(uid: string, page: number, size: number): Promise<PostRespone>;
+  getShare(shareId: string, page: number, size: number): Promise<PostRespone>;
 
   create(post: PostDomain): Promise<boolean>;
 
@@ -60,7 +62,7 @@ export interface PostUseCase {
 
   getByCateId(cateId: string, page: number, size: number): Promise<PostRespone>;
 
-  getShare(uid: string, page: number, size: number): Promise<PostRespone>;
+  getShare(shareId: string, page: number, size: number): Promise<PostRespone>;
 
   create(post: PostDomain): Promise<boolean>;
 
@@ -96,7 +98,6 @@ export interface PostInterop {
   ): Promise<PostRespone>;
 
   getShare(
-    uid: string,
     token: string,
     page: number,
     size: number,
@@ -120,6 +121,10 @@ export interface PostInterop {
 
 export const ErrorPostNotFound: HttpException = new HttpException(
   'Post not found',
+  404,
+);
+export const ErrorPostIdInvalid: HttpException = new HttpException(
+  'id is invalid',
   400,
 );
 export const ErrorPostDeleteFailed: HttpException = new HttpException(
@@ -131,23 +136,37 @@ export const ErrorPostCreateFailed: HttpException = new HttpException(
   400,
 );
 
-export const ErrorPostUpdateFailed: HttpException = new HttpException(
-  'Post update failed',
-  400,
-);
+
 export const ErrorEmptySize: HttpException = new HttpException(
-  'Post size is empty',
+  'Post size must be a number',
   400,
 );
 export const ErrorEmptyPage: HttpException = new HttpException(
   'Post page is empty',
   400,
 );
+export const ErrorPageIsNaN: HttpException = new HttpException(
+  'Page must be a number',
+  400,
+);
 export const ErrorMinusPage: HttpException = new HttpException(
-  ' page cannot be minus',
+  ' page cannot be greater than 0',
   400,
 );
 export const SizeError: HttpException = new HttpException(
   ' Size must be greater than 0',
+  400,
+);
+export const ErrorContentInvalid: HttpException = new HttpException(
+  'Content is invalid',
+  400,
+);
+
+export const ErrorPhotoInvalid: HttpException = new HttpException(
+  'Photo is invalid',
+  400,
+);
+export const ErrorInvalidPostBody: HttpException = new HttpException(
+  'Body is invalid',
   400,
 );
