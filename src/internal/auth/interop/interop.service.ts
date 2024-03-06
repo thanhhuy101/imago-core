@@ -4,6 +4,7 @@ import {
   AuthInterop,
   AuthUseCase,
   ErrorBlockFailed,
+  ErrorChangeRoleFailed,
   ErrorInvalidRole,
   ErrorPermissionDenied,
 } from '../../../domain/auth.domain';
@@ -39,10 +40,14 @@ export class InteropService implements AuthInterop {
       const decodedToken = await this.authUseCase.verifyToken(token);
       const account = (await this.authUseCase.getById(id)) as any as Auth;
       account.role = role;
-      if (!account.role || !['admin', 'user'].includes(account.role)) {
-        throw ErrorInvalidRole;
+      if (account.id === decodedToken.uid) {
+        throw ErrorChangeRoleFailed;
       } else {
-        return await this.authUseCase.update(account);
+        if (!account.role || !['admin', 'user'].includes(account.role)) {
+          throw ErrorInvalidRole;
+        } else {
+          return await this.authUseCase.update(account);
+        }
       }
     } catch (e) {
       throw e;
