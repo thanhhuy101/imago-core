@@ -1,3 +1,5 @@
+
+
 import { Inject, Injectable } from '@nestjs/common';
 import {
   StorageDomain,
@@ -9,7 +11,7 @@ import { v4 as uuidv4 } from 'uuid';
 @Injectable()
 export class RepositoryService implements StorageRepository {
   storage: admin.storage.Storage;
-  constructor(){
+  constructor() {
     this.storage = admin.storage();
   }
 
@@ -21,8 +23,7 @@ export class RepositoryService implements StorageRepository {
 
     if (storage.fileName != undefined) {
       for (const file of files) {
-        // const uid = this.authInterop.get(storage.fileName, storage.token);
-        const fileUpload = bucket.file(`images/${storage.fileName}/${storage.userId}/${storage.id}/${file.originalname}`);
+        const fileUpload = bucket.file(`images/${storage.userId}/${storage.fileName}/${file.originalname}`);
         const blobStream = fileUpload.createWriteStream({
           metadata: {
             contentType: file.mimetype,

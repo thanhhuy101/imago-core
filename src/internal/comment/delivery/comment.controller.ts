@@ -6,9 +6,9 @@ import {
   Headers,
   Get,
   Query,
-  Delete, Put,
+  Delete, Put, HttpException,
 } from '@nestjs/common';
-import { CommentInterop } from '../../../domain/comment.domain';
+import { CommentInterop,  } from '../../../domain/comment.domain';
 import { Comment } from '../../../domain/comment.domain';
 
 @Controller('v1/comment')
@@ -25,10 +25,11 @@ export class CommentController {
     }
   }
   @Delete()
-  async deleteComment(@Headers() headers: any,@Query('id') id: string) {
+  async deleteComment(@Headers() headers: any,@Query('id') id: string, @Body() comment: Comment) {
     let token = headers['authorization'];
     try {
-      return await this.interop.deleteComment(token, id);
+        return await this.interop.deleteComment(token, id, comment);
+
     } catch (e) {
       throw e;
     }
@@ -38,13 +39,10 @@ export class CommentController {
     let token = headers['authorization'];
     try {
       const updateRef =  await this.interop.updateComment(token, id, comment);
-      return {
-        id: comment.id,
-        content: comment.content,
-        postId: comment.postId,
-        authorId: comment.authorId,
-        updateRef
+      if (id !== comment.id) {
+        return false;
       }
+
     } catch (e) {
       throw e;
     }
@@ -69,10 +67,15 @@ export class CommentController {
     }
   }
   @Get('/post')
-  async getCommentsByPostId(@Headers() headers: any, @Query('postId') postId: string) {
+  async getCommentsByPostId(
+    @Headers() headers: any,
+    @Query('postId') postId: string,
+    @Query('page') page: number
+  )
+  {
     let token = headers['authorization'];
     try {
-      return await this.interop.getCommentsByPostId(token, postId);
+      return await this.interop.getCommentsByPostId(token, postId,page);
     } catch (e) {
       throw e;
     }

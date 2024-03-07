@@ -1,5 +1,6 @@
 import { HttpException } from '@nestjs/common';
 import { Comment } from './comment.domain';
+
 export interface PostDomain {
   id: string;
   creatorId: string;
@@ -12,11 +13,19 @@ export interface PostDomain {
   comments: Comment[];
   mention: string[];
   createdAt: Date;
+  updatedAt: Date;
+  deletedAt: Date;
 }
-export interface PostRespone {
+
+export interface PostResponse {
   data: PostDomain[];
   endpage: number;
 }
+export interface AllPosts {
+  data: PostDomain[];
+  endpage: number;
+}
+
 export interface PostRepository {
   getDetail(id: string): Promise<PostDomain>;
 
@@ -24,13 +33,17 @@ export interface PostRepository {
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getMine(id: string, page: number, size: number): Promise<PostRespone>;
+  getMine(id: string, page: number, size: number): Promise<PostResponse>;
 
-  getByCateId(cateId: string, page: number, size: number): Promise<PostRespone>;
+  getByCateId(
+    cateId: string,
+    page: number,
+    size: number,
+  ): Promise<PostResponse>;
 
-  getShare(uid: string, page: number, size: number): Promise<PostRespone>;
+  getShare(shareId: string, page: number, size: number): Promise<PostResponse>;
 
   create(post: PostDomain): Promise<boolean>;
 
@@ -38,15 +51,15 @@ export interface PostRepository {
 
   delete(id: string): Promise<boolean>;
 
-  getPostById(id: string): Promise<PostDomain>;
-
   getByMentionId(
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getAllPost(): Promise<PostDomain[]>;
+  getAllPost(
+    page: number,
+  ): Promise<AllPosts>;
 }
 
 export interface PostUseCase {
@@ -56,15 +69,16 @@ export interface PostUseCase {
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
+  getByCateId(
+    cateId: string,
+    page: number,
+    size: number,
+  ): Promise<PostResponse>;
 
-  getPostById(id:string): Promise<PostDomain>;
+  getMine(id: string, page: number, size: number): Promise<PostResponse>;
 
-  getMine(id: string, page: number, size: number): Promise<PostRespone>;
-
-  getByCateId(cateId: string, page: number, size: number): Promise<PostRespone>;
-
-  getShare(uid: string, page: number, size: number): Promise<PostRespone>;
+  getShare(shareId: string, page: number, size: number): Promise<PostResponse>;
 
   create(post: PostDomain): Promise<boolean>;
 
@@ -76,10 +90,13 @@ export interface PostUseCase {
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getAllPost(): Promise<PostDomain[]>;
+  getAllPost(
+    page: number,
+  ): Promise<AllPosts>;
 }
+
 export interface PostInterop {
   getDetail(id: string, token: string): Promise<PostDomain>;
 
@@ -88,25 +105,23 @@ export interface PostInterop {
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getMine(token: string, page: number, size: number): Promise<PostRespone>;
+  getMine(token: string, page: number, size: number): Promise<PostResponse>;
 
   getByCateId(
     cateId: string,
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
   getShare(
-    uid: string,
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getPostById(id: string, token: string): Promise<PostDomain>;
 
   create(post: PostDomain, token: string): Promise<boolean>;
 
@@ -119,13 +134,20 @@ export interface PostInterop {
     token: string,
     page: number,
     size: number,
-  ): Promise<PostRespone>;
+  ): Promise<PostResponse>;
 
-  getAllPost(token: string): Promise<PostDomain[]>;
+  getAllPost(
+    token: string,
+    page: number,
+    ): Promise<AllPosts>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(
   'Post not found',
+  404,
+);
+export const ErrorPostIdInvalid: HttpException = new HttpException(
+  'id is invalid',
   400,
 );
 export const ErrorPostDeleteFailed: HttpException = new HttpException(
@@ -136,24 +158,55 @@ export const ErrorPostCreateFailed: HttpException = new HttpException(
   'Post create failed',
   400,
 );
-
-export const ErrorPostUpdateFailed: HttpException = new HttpException(
-  'Post update failed',
-  400,
-);
 export const ErrorEmptySize: HttpException = new HttpException(
-  'Post size is empty',
+  'Post size must be a number',
   400,
 );
 export const ErrorEmptyPage: HttpException = new HttpException(
   'Post page is empty',
   400,
 );
+export const ErrorEmptyPageData: HttpException = new HttpException(
+  'Page is no data',
+  400,
+);
+
+export const ErrorPageIsNaN: HttpException = new HttpException(
+  'Page must be a number',
+  400,
+);
 export const ErrorMinusPage: HttpException = new HttpException(
-  ' page cannot be minus',
+  ' page cannot be greater than 0',
+  400,
+);
+export const ErrorPostIdIsEmty: HttpException = new HttpException(
+  'PostId cannot be empty',
   400,
 );
 export const SizeError: HttpException = new HttpException(
   ' Size must be greater than 0',
+  400,
+);
+
+export const PageError: HttpException = new HttpException(
+  ' Page must be greater than 0',
+
+  400,
+);
+export const ErrorContentInvalid: HttpException = new HttpException(
+  'Content is invalid',
+  400,
+);
+
+export const ErrorPhotoInvalid: HttpException = new HttpException(
+  'Photo is invalid',
+  400,
+);
+export const ErrorInvalidPostBody: HttpException = new HttpException(
+  'Body is invalid',
+  400,
+);
+export const ErrorIllegalUpdate: HttpException = new HttpException(
+  'Have no right to update',
   400,
 );

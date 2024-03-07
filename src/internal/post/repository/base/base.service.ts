@@ -1,37 +1,20 @@
 import { Injectable } from '@nestjs/common';
 import {
+  AllPosts,
   PostDomain,
   PostRepository,
-  PostRespone,
+  PostResponse,
 } from '../../../../domain/post.domain';
 import * as admin from 'firebase-admin';
 
 @Injectable()
 export class BaseRepositoryService implements PostRepository {
   private db: admin.firestore.Firestore;
+
   constructor() {
     this.db = admin.firestore();
   }
 
-  async getPostById(id: string): Promise<PostDomain> {
-    try {
-      const post = await this.db.collection('posts').doc(id).get();
-      return post.data() as PostDomain;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  async getAllPost(): Promise<PostDomain[]>{
-    try {
-      const postsRef = this.db.collection('posts');
-      const snapshot = await postsRef.get();
-      return snapshot.docs.map((doc) => doc.data() as PostDomain);
-    }
-    catch (e) {
-      throw e;
-    }
-  }
   async getDetail(id: string): Promise<PostDomain> {
     const post = await this.db.collection('posts').doc(id).get();
     console.log(id);
@@ -43,7 +26,7 @@ export class BaseRepositoryService implements PostRepository {
     mention: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     const postsRef = this.db.collection('posts');
     const query = postsRef.where('mention', 'array-contains', mention);
     const snapshot = await query.get();
@@ -54,12 +37,27 @@ export class BaseRepositoryService implements PostRepository {
     };
   }
 
+  async getAllPost(page: number): Promise<AllPosts> {
+    try {
+      const postRef = this.db.collection('posts');
+      const snapshot = await postRef.get();
+      const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+      const size = 10;
+      return {
+        data: posts.slice((page - 1) * size, page * size),
+        endpage: Math.ceil(posts.length / size),
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async getAllByUid(
     creatorId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
-    const postRef = await this.db.collection('posts');
+  ): Promise<PostResponse> {
+    const postRef = this.db.collection('posts');
     const query = postRef.where('creatorId', '==', creatorId);
     const snapshot = await query.get();
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
@@ -69,7 +67,7 @@ export class BaseRepositoryService implements PostRepository {
     };
   }
 
-  async getMine(id: string, page: number, size: number): Promise<PostRespone> {
+  async getMine(id: string, page: number, size: number): Promise<PostResponse> {
     const postsRef = this.db.collection('posts');
     const query = postsRef.where('creatorId', '==', id);
     const snapshot = await query.get();
@@ -81,12 +79,12 @@ export class BaseRepositoryService implements PostRepository {
   }
 
   async getShare(
-    uid: string,
+    shareId: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     const postsRef = this.db.collection('posts');
-    const query = postsRef.where('share', 'array-contains', uid);
+    const query = postsRef.where('share', 'array-contains', shareId);
     const snapshot = await query.get();
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {
@@ -99,7 +97,7 @@ export class BaseRepositoryService implements PostRepository {
     id: string,
     page: number,
     size: number,
-  ): Promise<PostRespone> {
+  ): Promise<PostResponse> {
     const postsRef = this.db.collection('posts');
     const query = postsRef.where('cateId', 'array-contains', id);
     const snapshot = await query.get();
@@ -118,6 +116,7 @@ export class BaseRepositoryService implements PostRepository {
       throw e;
     }
   }
+
   async update(post: PostDomain): Promise<any> {
     try {
       await this.db.collection('posts').doc(post.id).set(post);
@@ -126,6 +125,7 @@ export class BaseRepositoryService implements PostRepository {
       throw e;
     }
   }
+
   async delete(id: string): Promise<any> {
     try {
       await this.db.collection('posts').doc(id).delete();
