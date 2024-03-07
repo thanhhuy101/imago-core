@@ -1,5 +1,6 @@
 import { Injectable } from '@nestjs/common';
 import {
+  AllPosts,
   PostDomain,
   PostRepository,
   PostResponse,
@@ -12,25 +13,6 @@ export class BaseRepositoryService implements PostRepository {
 
   constructor() {
     this.db = admin.firestore();
-  }
-
-  async getPostById(id: string): Promise<PostDomain> {
-    try {
-      const post = await this.db.collection('posts').doc(id).get();
-      return post.data() as PostDomain;
-    } catch (e) {
-      throw e;
-    }
-  }
-
-  async getAllPost(): Promise<PostDomain[]> {
-    try {
-      const postsRef = this.db.collection('posts');
-      const snapshot = await postsRef.get();
-      return snapshot.docs.map((doc) => doc.data() as PostDomain);
-    } catch (e) {
-      throw e;
-    }
   }
 
   async getDetail(id: string): Promise<PostDomain> {
@@ -55,12 +37,27 @@ export class BaseRepositoryService implements PostRepository {
     };
   }
 
+  async getAllPost(page: number): Promise<AllPosts> {
+    try {
+      const postRef = this.db.collection('posts');
+      const snapshot = await postRef.get();
+      const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+      const size = 10;
+      return {
+        data: posts.slice((page - 1) * size, page * size),
+        endpage: Math.ceil(posts.length / size),
+      };
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async getAllByUid(
     creatorId: string,
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    const postRef = await this.db.collection('posts');
+    const postRef = this.db.collection('posts');
     const query = postRef.where('creatorId', '==', creatorId);
     const snapshot = await query.get();
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);

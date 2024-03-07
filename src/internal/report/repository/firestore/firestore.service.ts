@@ -1,18 +1,25 @@
 import { Injectable } from '@nestjs/common';
 import { Report, ReportRepository } from '../../../../domain/report.domain';
 import * as admin from 'firebase-admin';
+
 @Injectable()
-export class FirestoreService implements ReportRepository{
+export class FirestoreService implements ReportRepository {
   private db: admin.firestore.Firestore;
 
   constructor() {
     this.db = admin.firestore();
   }
-  create(report: Report): Promise<Report> {
+
+  create(report: Object) {
     let reportRef = this.db.collection('reports').doc();
-    report.id = reportRef.id;
-    reportRef.set(report).then();
-    return Promise.resolve(report);
+    reportRef
+      .set({
+        ...report,
+        id: reportRef.id,
+        createdAt: new Date(),
+        status: 'pending',
+      } as Report)
+      .then();
   }
 
   async getAll(): Promise<Report[]> {
@@ -24,11 +31,8 @@ export class FirestoreService implements ReportRepository{
     return reports;
   }
 
-  update(id: string): Promise<Report> {
+  update(id: string) {
     let reportRef = this.db.collection('reports').doc(id);
-    reportRef.update({status: 'completed'}).then();
-    return Promise.resolve({} as Report);
+    reportRef.update({ status: 'completed' }).then();
   }
-
-
 }

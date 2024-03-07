@@ -24,20 +24,14 @@ export class HttpController {
       throw e;
     }
   }
-  @Get()
-  async getPostById(@Headers() headers: any, @Query('postId') postId: string) {
-    let token = headers['authorization'];
-    try {
-      return await this.interop.getPostById(postId, token);
-    } catch (e) {
-      throw e;
-    }
-  }
   @Get('all')
-  async getAllPost(@Headers() headers:any) {
+  async getAllPost(
+    @Headers() headers:any,
+    @Query('page') page: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getAllPost(token);
+      return await this.interop.getAllPost(token, page);
     } catch (e) {
       throw e;
     }

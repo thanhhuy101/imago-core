@@ -1,34 +1,41 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { Report, ReportInterop, ReportUseCase } from '../../../../domain/report.domain';
-import {AuthUseCase} from '../../../../domain/auth.domain';
+import {
+  Report,
+  ReportInterop,
+  ReportUseCase,
+} from '../../../../domain/report.domain';
+import { AuthUseCase } from '../../../../domain/auth.domain';
 
 @Injectable()
-export class BaseServiceInterop implements ReportInterop{
+export class BaseServiceInterop implements ReportInterop {
+  constructor(
+    @Inject('ReportUseCase') private useCase: ReportUseCase,
+    @Inject('AuthUseCase') private authUseCase: AuthUseCase,
+  ) {}
 
-  constructor(@Inject('ReportUseCase') private useCase: ReportUseCase,
-              @Inject('AuthUseCase') private authUseCase: AuthUseCase) {
-  }
-
-  create(report: Report): Promise<Report> {
-    return this.useCase.create(report);
+  async create(token: string, report: Object) {
+    try {
+      await this.authUseCase.verifyToken(token);
+      this.useCase.create(report);
+    } catch (e) {
+      throw e;
+    }
   }
 
   async getAll(token: string): Promise<Report[]> {
     try {
       await this.authUseCase.verifyToken(token);
       return this.useCase.getAll();
-    }
-    catch (e) {
+    } catch (e) {
       throw e;
     }
   }
 
-  async update( id: string, token: string): Promise<Report> {
+  async update(id: string, token: string) {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.update( id);
-    }
-    catch (e) {
+      this.useCase.update(id);
+    } catch (e) {
       throw e;
     }
   }

@@ -1,11 +1,15 @@
+import { HttpException } from '@nestjs/common';
 import { Body } from '@nestjs/common';
-import {HttpException} from '@nestjs/common';
 
 export interface Comment {
   id: string;
   content: string;
   postId: string;
   authorId: string;
+}
+export interface CommentRespone {
+  data: Comment[];
+  endpage: number;
 }
 
 export interface CommentRepository {
@@ -14,7 +18,7 @@ export interface CommentRepository {
   deleteComment(id: string, comment: Comment): Promise<boolean>;
   getCommentById(id: string): Promise<Comment>;
   getComments(): Promise<Comment[]>;
-  getCommentsByPostId(postId: string): Promise<Comment[]>;
+  getCommentsByPostId(postId: string, page: number): Promise<CommentRespone>;
 }
 
 export interface CommentUseCase {
@@ -23,7 +27,7 @@ export interface CommentUseCase {
   deleteComment(id: string, comment: Comment): Promise<boolean>;
   getCommentById(id: string): Promise<Comment>;
   getComments(): Promise<Comment[]>;
-  getCommentsByPostId(postId: string): Promise<Comment[]>;
+  getCommentsByPostId(postId: string,page: number): Promise<CommentRespone>;
 }
 
 export interface CommentInterop {
@@ -32,8 +36,22 @@ export interface CommentInterop {
   deleteComment(token: string,id: string, comment: Comment): any;
   getCommentById(token: string,id: string): Promise<Comment>;
   getComments(token: string): Promise<Comment[]>;
-  getCommentsByPostId(token: string,postId: string): Promise<Comment[]>;
+  getCommentsByPostId(token: string,postId: string, page: number): Promise<CommentRespone>;
 }
+
+
+export const ErrorPostId : HttpException = new HttpException(
+  'Cant find PostId',
+  400,
+);
+export const ErrorPostIdNotExist: HttpException = new HttpException(
+  'PostId not exist',
+  400,
+);
+export const ErrorEmptyPage: HttpException = new HttpException(
+  'Comment page is empty',
+  400,
+);
 export const ErrorCommentContent: HttpException = new HttpException('Comment content cannot be empty',
 400,
 );
