@@ -206,3 +206,7 @@ export const ErrorInvalidPostBody: HttpException = new HttpException(
   'Body is invalid',
   400,
 );
+export const ErrorIllegalUpdate: HttpException = new HttpException(
+  'Have no right to update',
+  400,
+);
