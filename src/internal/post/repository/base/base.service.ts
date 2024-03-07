@@ -36,11 +36,10 @@ export class BaseRepositoryService implements PostRepository {
       endpage: Math.ceil(posts.length / size),
     };
   }
-  async getAllPost(
-    page: number,
-  ): Promise<AllPosts>{
+
+  async getAllPost(page: number): Promise<AllPosts> {
     try {
-      const postRef =  this.db.collection('posts');
+      const postRef = this.db.collection('posts');
       const snapshot = await postRef.get();
       const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
       const size = 10;
@@ -48,8 +47,7 @@ export class BaseRepositoryService implements PostRepository {
         data: posts.slice((page - 1) * size, page * size),
         endpage: Math.ceil(posts.length / size),
       };
-    }
-    catch (e) {
+    } catch (e) {
       throw e;
     }
   }
@@ -59,7 +57,7 @@ export class BaseRepositoryService implements PostRepository {
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    const postRef = await this.db.collection('posts');
+    const postRef = this.db.collection('posts');
     const query = postRef.where('creatorId', '==', creatorId);
     const snapshot = await query.get();
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
