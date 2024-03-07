@@ -22,6 +22,7 @@ export class FirebaseService implements AuthRepository {
   async verifyToken(token: string): Promise<DecodedIdToken> {
     try {
       const decodedToken = await this.auth.verifyIdToken(token);
+
       if (!decodedToken) {
         throw ErrorInvalidToken;
       }

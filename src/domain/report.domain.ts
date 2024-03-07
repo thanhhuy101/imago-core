@@ -1,28 +1,33 @@
 export interface Report {
   type: string;
-  reason: string;
+  reason: string[];
   status: string;
   id: string;
   typeId: string;
   content: string;
+  createdAt: Date;
 }
 
 export interface ReportRepository {
-  create(report: Report): Promise<Report>;
-  update(id: string): Promise<Report>;
+  create(report: Object): any;
+
+  update(id: string): any;
+
   getAll(): Promise<Report[]>;
 }
 
 export interface ReportUseCase {
-  create(report: Report): Promise<Report>;
-  update(id: string): Promise<Report>;
+  create(report: Object): any;
+
+  update(id: string): any;
+
   getAll(): Promise<Report[]>;
 }
 
 export interface ReportInterop {
-  create(report: Report): Promise<Report>;
-  update(id: string, token: string): Promise<Report>;
+  create(token: string, report: Object): any;
+
+  update(id: string, token: string): any;
+
   getAll(token: string): Promise<Report[]>;
 }
-
-
