@@ -5,6 +5,7 @@ import {
   ReportUseCase,
 } from '../../../../domain/report.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
+import { RolePagination } from 'src/domain/role.domain';
 
 @Injectable()
 export class BaseServiceInterop implements ReportInterop {
@@ -12,6 +13,14 @@ export class BaseServiceInterop implements ReportInterop {
     @Inject('ReportUseCase') private useCase: ReportUseCase,
     @Inject('AuthUseCase') private authUseCase: AuthUseCase,
   ) {}
+ async getList(token: string, page: number):Promise<RolePagination> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return await this.useCase.getList(page);
+    } catch (e) {
+      throw e;
+    }
+  }
 
   async create(token: string, report: Object) {
     try {
