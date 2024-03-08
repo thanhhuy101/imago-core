@@ -16,8 +16,8 @@ export class ReportController {
   constructor(@Inject('ReportInterop') private interop: ReportInterop) {}
 
   @Get()
-  async getAllReport(@Headers() headers: any) {
-    return this.interop.getAll(headers['authorization']);
+  async getAllReport(@Headers() headers: any, @Query('page') page: number) {
+    return this.interop.getAll(headers['authorization'], page);
   }
 
   @Post()

@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  AllReport,
   Report,
   ReportInterop,
   ReportUseCase,
@@ -22,10 +23,10 @@ export class BaseServiceInterop implements ReportInterop {
     }
   }
 
-  async getAll(token: string): Promise<Report[]> {
+  async getAll(token: string, page: number): Promise<AllReport> {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.getAll();
+      return this.useCase.getAll(page);
     } catch (e) {
       throw e;
     }

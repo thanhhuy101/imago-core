@@ -6,6 +6,13 @@ export interface Report {
   typeId: string;
   content: string;
   createdAt: Date;
+  updatedAt: Date;
+  creatorId: string;
+}
+
+export interface AllReport {
+  data: Report[];
+  endPage: number;
 }
 
 export interface ReportRepository {
@@ -13,7 +20,7 @@ export interface ReportRepository {
 
   update(id: string): any;
 
-  getAll(): Promise<Report[]>;
+  getAll(page: number): Promise<AllReport>;
 }
 
 export interface ReportUseCase {
@@ -21,7 +28,7 @@ export interface ReportUseCase {
 
   update(id: string): any;
 
-  getAll(): Promise<Report[]>;
+  getAll(page: number): Promise<AllReport>;
 }
 
 export interface ReportInterop {
@@ -29,5 +36,5 @@ export interface ReportInterop {
 
   update(id: string, token: string): any;
 
-  getAll(token: string): Promise<Report[]>;
+  getAll(token: string, page: number): Promise<AllReport>;
 }

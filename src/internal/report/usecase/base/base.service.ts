@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  AllReport,
   Report,
   ReportRepository,
   ReportUseCase,
@@ -15,8 +16,8 @@ export class BaseServiceUseCase implements ReportUseCase {
     this.reportRepository.create(report);
   }
 
-  getAll(): Promise<Report[]> {
-    return this.reportRepository.getAll();
+  getAll(page: number): Promise<AllReport> {
+    return this.reportRepository.getAll(page);
   }
 
   update(id: string) {
