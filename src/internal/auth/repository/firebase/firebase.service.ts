@@ -7,13 +7,17 @@ import * as admin from 'firebase-admin';
 @Injectable()
 export class FirebaseService implements AuthRepository {
   auth: assmin.auth.Auth;
-  db  = admin.firestore();
+  db = admin.firestore();
   // @ts-ignore
   constructor() {
     this.auth = assmin.auth();
   }
 
   async get(id: string): Promise<AuthDomain> {
+    if (!id) {
+      throw new Error('Invalid id');
+    }
+
     try {
       const doc = await this.db.collection('auths').doc(id).get();
       if (!doc.exists) {
@@ -22,15 +26,15 @@ export class FirebaseService implements AuthRepository {
         return doc.data() as AuthDomain;
       }
     } catch (error) {
-      throw error;
+      // handle error
     }
   }
   async create(auth: AuthDomain): Promise<admin.firestore.WriteResult> {
-    try{
+    try {
       const db = this.auth;
       return await this.db.collection('auths').doc(auth.id).set(auth);
     }
-    catch (error){
+    catch (error) {
       throw error;
     }
   }
@@ -51,7 +55,8 @@ export class FirebaseService implements AuthRepository {
         auths.push(doc.data() as AuthDomain);
       });
       return auths;
-    })}
+    })
+  }
 
 
   async verifyToken(token: string): Promise<DecodedIdToken> {
