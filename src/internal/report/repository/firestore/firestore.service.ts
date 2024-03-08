@@ -27,9 +27,9 @@ export class FirestoreService implements ReportRepository {
       .then();
   }
 
-  async getAll(page: number): Promise<AllReport> {
+  async getAllByStatusCompleted(page: number): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
-    const snapshot = await reportRef.get();
+    const snapshot = await reportRef.where('status', '==', 'completed').get();
     const reports = snapshot.docs.map((doc) => doc.data() as Report);
     const size = 9;
     return {
@@ -38,9 +38,9 @@ export class FirestoreService implements ReportRepository {
     };
   }
 
-  async getAllByStatus(status: string, page: number): Promise<AllReport> {
+  async getAllByStatusPending(page: number): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
-    const snapshot = await reportRef.where('status', '==', status).get();
+    const snapshot = await reportRef.where('status', '==', 'pending').get();
     const reports = snapshot.docs.map((doc) => doc.data() as Report);
     const size = 9;
     return {

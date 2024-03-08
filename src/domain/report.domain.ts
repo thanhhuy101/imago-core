@@ -20,9 +20,9 @@ export interface ReportRepository {
 
   update(id: string): any;
 
-  getAll(page: number): Promise<AllReport>;
+  getAllByStatusCompleted(page: number): Promise<AllReport>;
 
-  getAllByStatus(status: string, page: number): Promise<AllReport>;
+  getAllByStatusPending(page: number): Promise<AllReport>;
 }
 
 export interface ReportUseCase {
@@ -30,9 +30,9 @@ export interface ReportUseCase {
 
   update(id: string): any;
 
-  getAll(page: number): Promise<AllReport>;
+  getAllByStatusCompleted(page: number): Promise<AllReport>;
 
-  getAllByStatus(status: string, page: number): Promise<AllReport>;
+  getAllByStatusPending(page: number): Promise<AllReport>;
 }
 
 export interface ReportInterop {
@@ -40,11 +40,7 @@ export interface ReportInterop {
 
   update(id: string, token: string): any;
 
-  getAll(token: string, page: number): Promise<AllReport>;
+  getAllByStatusCompleted(token: string, page: number): Promise<AllReport>;
 
-  getAllByStatus(
-    token: string,
-    page: number,
-    status: string,
-  ): Promise<AllReport>;
+  getAllByStatusPending(token: string, page: number): Promise<AllReport>;
 }

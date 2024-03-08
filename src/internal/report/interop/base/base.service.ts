@@ -23,23 +23,22 @@ export class BaseServiceInterop implements ReportInterop {
     }
   }
 
-  async getAll(token: string, page: number): Promise<AllReport> {
+  async getAllByStatusCompleted(
+    token: string,
+    page: number,
+  ): Promise<AllReport> {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.getAll(page);
+      return this.useCase.getAllByStatusCompleted(page);
     } catch (e) {
       throw e;
     }
   }
 
-  async getAllByStatus(
-    token: string,
-    page: number,
-    status: string,
-  ): Promise<AllReport> {
+  async getAllByStatusPending(token: string, page: number): Promise<AllReport> {
     try {
       await this.authUseCase.verifyToken(token);
-      return this.useCase.getAllByStatus(status, page);
+      return this.useCase.getAllByStatusPending(page);
     } catch (e) {
       throw e;
     }
