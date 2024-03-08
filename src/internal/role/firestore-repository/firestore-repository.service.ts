@@ -29,15 +29,19 @@ export class FirestoreRepositoryService implements RoleRepository {
 
   async getListRole(page: number): Promise<any> {
     const size = 10;
-    let auth = await this.db.collection('auth').get();
+    let auth = await this.db.collection('auths').get();
     let profile = await this.db.collection('profile').get();
     let result: any[] = [];
     auth.forEach((doc) => {
       let data = doc.data() as Auth;
       let profileData = profile.docs.find((p) => p.id === data.id);
-      let roleData = profile.docs.find((p) => data.role === 'admin');
-      if (profileData) {
-        result.push({ ...data, ...profileData.data(), ...roleData });
+      if (data.role === 'admin') {
+        if (profileData) {
+          result.push({
+            ...data,
+            profile: profileData.data(),
+          });
+        }
       }
     });
     page = Math.ceil(result.length / size);
@@ -48,20 +52,23 @@ export class FirestoreRepositoryService implements RoleRepository {
   }
 
   async searchRole(keyword: string, page: number): Promise<RolePagination> {
-    const roleRef = this.db.collection('roles');
-    const snapshot = await roleRef.get();
-    const roles = snapshot.docs.map((doc) => doc.data() as Role);
-    const getAllRoles = await this.getAllRole(page);
-    roles.push(...getAllRoles.data);
-    const size = 10;
-    const searchResult = roles.filter((role) => role.name.includes(keyword));
-    if (searchResult.length === 0) {
+    const roleRef = await this.getAllRole(page);
+    const roles = roleRef.data;
+
+    const pageData = this.db.collection('roles');
+    const snapshot = await pageData.get();
+    const data = snapshot.docs.map((doc) => doc.data() as Role);
+
+    let result = roles.filter((role) => {
+      return role.name.toLowerCase().includes(keyword.toLowerCase());
+    });
+    const size = roles.length;
+    if (result.length === 0) {
       throw searchRoleEmpty;
     }
-    page = Math.ceil(searchResult.length / size);
     return {
-      data: searchResult.slice((+page - 1) * size, +page * size),
-      endPage: page,
+      data: result.slice((page - 1) * size, page * size),
+      endPage: Math.ceil(data.length / size),
     };
   }
 

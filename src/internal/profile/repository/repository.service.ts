@@ -43,8 +43,8 @@ export class RepositoryService implements ProfileRepository {
   }
 
   async getAllAuthProfile(page: number): Promise<any> {
-    const size = 1;
-    let auth = await this.db.collection('auth').get();
+    const size = 10;
+    let auth = await this.db.collection('auths').get();
     let profile = await this.db.collection('profile').get();
     let result: any[] = [];
     auth.forEach((doc) => {

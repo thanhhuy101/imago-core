@@ -21,7 +21,7 @@ export class RoleController {
     return this.roleInterop.getAllRole(token, page);
   }
 
-  @Get('/list')
+  @Get('list')
   getListRole(@Headers() headers: any, @Query('page') page: number) {
     let token = headers['authorization'];
     return this.roleInterop.getListRole(token, page);
