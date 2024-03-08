@@ -1,18 +1,13 @@
-import { Inject, Injectable } from '@nestjs/common';
+import { HttpException, Inject, Injectable } from '@nestjs/common';
 import {
-  ErrFirstName,
-  ErrLastName,
-  ErrPhone,
-  ErrUserName,
-  ErrorProfileNotFound,
+  ErrorFieldEmpty,
+  ErrorIdEmpty,
+  ErrorProfileExists,
   Profile,
   ProfileRepository,
-  ProfileUseCase, ErrorProfileCreateFailed,
+  ProfileUseCase,
 } from 'src/domain/profile.domain';
-import {
-
-  ErrorPostCreateFailed,
-} from '../../../domain/post.domain';
+import { Auth } from '../../../domain/auth.domain';
 
 @Injectable()
 export class UsecaseService implements ProfileUseCase {
@@ -20,44 +15,83 @@ export class UsecaseService implements ProfileUseCase {
     @Inject('ProfileRepository') private profileRepository: ProfileRepository,
   ) {}
 
-  async getProfile(id: string): Promise<Profile> {
-    return this.profileRepository.getProfile(id);
-  }
-  async createProfile(profile: Profile): Promise<boolean> {
+  async create(profile: Profile): Promise<boolean> {
     try {
-      if (profile.userName === '') {
-        throw ErrUserName;
+      const isExists = await this.profileRepository.get(profile.id);
+      if (isExists) {
+        throw ErrorProfileExists;
       }
-      if (profile.firstName === '' || typeof profile.firstName === 'number') {
-        throw ErrFirstName;
+    } catch (error) {
+      if ((error as HttpException) == ErrorProfileExists) {
+        throw error;
+      } else {
+        try {
+          if (this.isFieldEmpty(profile)) {
+            throw ErrorFieldEmpty;
+          }
+          return this.profileRepository.create(profile);
+        } catch (error) {
+          throw error;
+        }
       }
-      if (profile.lastName === '' || typeof profile.lastName === 'number') {
-        throw ErrLastName;
-      }
+    }
+  }
 
-      return await this.profileRepository.createProfile(profile);
+  async update(profile: Profile): Promise<boolean> {
+    try {
+      const isExists = await this.profileRepository.get(profile.id);
+      if (isExists) {
+        if (this.isFieldEmpty(profile)) {
+          throw ErrorFieldEmpty;
+        }
+        return this.profileRepository.update(profile);
+      }
     } catch (error) {
       throw error;
     }
   }
 
-  async updateProfile(profile: Profile): Promise<boolean> {
+  async get(id: string): Promise<Profile> {
     try {
-      if (profile.userName === '') {
-        throw ErrUserName;
+      if (!id) {
+        throw ErrorIdEmpty;
+      } else {
+        return this.profileRepository.get(id);
       }
-      if (profile.firstName === '' || typeof profile.firstName === 'number') {
-        throw ErrFirstName;
-      }
-      if (profile.lastName === '' || typeof profile.lastName === 'number') {
-        throw ErrLastName;
-      }
-      if (profile.phone === '') {
-        throw ErrPhone;
-      }
-      return await this.profileRepository.updateProfile(profile);
     } catch (error) {
       throw error;
     }
+  }
+
+  async getAll(): Promise<Profile[]> {
+    try {
+      return this.profileRepository.getAll();
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  // @ts-ignore
+  async getAllAuthProfile(page: number): Promise<any> {
+    try {
+      return this.profileRepository.getAllAuthProfile(page);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  isFieldEmpty(profile: Profile): boolean {
+    return (
+      !profile.id ||
+      !profile.email ||
+      !profile.userName ||
+      !profile.lastName ||
+      !profile.firstName ||
+      profile.id === '' ||
+      profile.email === '' ||
+      profile.userName === '' ||
+      profile.lastName === '' ||
+      profile.firstName === ''
+    );
   }
 }

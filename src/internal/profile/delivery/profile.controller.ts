@@ -17,49 +17,70 @@ export class ProfileController {
   ) {}
 
   @Get('')
-  getProfile(@Headers() headers: any, @Query('id') id: string) {
+  get(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
-    return this.profileInterop.getProfile(id, token);
+    return this.profileInterop.get(id, token);
+  }
+
+  @Get('adminuser')
+  getAdminUser(@Headers() headers: any, @Query('page') page: number) {
+    let token = headers['authorization'];
+    return this.profileInterop.getAllAuthProfile(token, page);
   }
 
   @Get('mine')
-  getMineProfile(@Headers() headers: any) {
+  getMine(@Headers() headers: any) {
     let token = headers['authorization'];
-    return this.profileInterop.getMineProfile(token);
+    return this.profileInterop.getMine(token);
+  }
+
+  @Get('list')
+  getAll(@Headers() headers: any) {
+    let token = headers['authorization'];
+    return this.profileInterop.getAll(token);
   }
 
   @Post('')
-  createProfile(@Headers() headers: any, @Body() profile: Profile) {
+  async create(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
-    return this.profileInterop.createProfile(profile, token);
+    return await this.profileInterop.create(profile, token);
   }
 
   @Post('mine')
-  createMineProfile(@Headers() headers: any, @Body() profile: Profile) {
+  createMine(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
-    return this.profileInterop.createProfile(profile, token);
+    return this.profileInterop.create(profile, token);
   }
 
   @Put('')
-  updateProfile(@Headers() headers: any, @Body() profile: Profile) {
+  update(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
-    return this.profileInterop.updateProfile(profile, token);
+    return this.profileInterop.update(profile, token);
   }
 
   @Put('mine')
-  updateMineProfile(@Headers() headers: any, @Body() profile: Profile) {
+  updateMine(@Headers() headers: any, @Body() profile: Profile) {
     let token = headers['authorization'];
-    return this.profileInterop.updateProfile(profile, token);
+    return this.profileInterop.update(profile, token);
   }
 
   @Put('follow')
-  updateFollow(@Headers() headers: any,@Query('uid') uid: string , @Query('id') id: string){
+  follow(
+    @Headers() headers: any,
+    @Query('profileId') profileId: string,
+    @Query('otherProfileId') otherProfileId: string,
+  ) {
     let token = headers['authorization'];
-    return this.profileInterop.follow(token, uid, id);
+    return this.profileInterop.follow(token, profileId, otherProfileId);
   }
+
   @Put('unfollow')
-  updateUnfollow(@Headers() headers: any, @Query('uid') uid: string , @Query('id') id: string){
+  unfollow(
+    @Headers() headers: any,
+    @Query('profileId') profileId: string,
+    @Query('otherProfileId') otherProfileId: string,
+  ) {
     let token = headers['authorization'];
-    return this.profileInterop.unfollow(token, uid, id);
+    return this.profileInterop.unfollow(token, profileId, otherProfileId);
   }
 }
