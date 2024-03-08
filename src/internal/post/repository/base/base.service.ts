@@ -33,7 +33,7 @@ export class BaseRepositoryService implements PostRepository {
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {
       data: posts.slice((page - 1) * size, page * size),
-      endpage: Math.ceil(posts.length / size),
+      endPage: Math.ceil(posts.length / size),
     };
   }
 
@@ -63,7 +63,7 @@ export class BaseRepositoryService implements PostRepository {
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {
       data: posts.slice((page - 1) * size, page * size),
-      endpage: Math.ceil(posts.length / size),
+      endPage: Math.ceil(posts.length / size),
     };
   }
 
@@ -74,7 +74,7 @@ export class BaseRepositoryService implements PostRepository {
     const post = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {
       data: post.slice((page - 1) * size, page * size),
-      endpage: Math.ceil(post.length / size),
+      endPage: Math.ceil(post.length / size),
     };
   }
 
@@ -89,7 +89,7 @@ export class BaseRepositoryService implements PostRepository {
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {
       data: posts.slice((page - 1) * size, page * size),
-      endpage: Math.ceil(posts.length / size),
+      endPage: Math.ceil(posts.length / size),
     };
   }
 
@@ -104,7 +104,7 @@ export class BaseRepositoryService implements PostRepository {
     const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
     return {
       data: posts.slice((page - 1) * size, page * size),
-      endpage: Math.ceil(posts.length / size),
+      endPage: Math.ceil(posts.length / size),
     };
   }
 
