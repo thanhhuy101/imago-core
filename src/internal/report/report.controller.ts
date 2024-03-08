@@ -20,6 +20,15 @@ export class ReportController {
     return this.interop.getAll(headers['authorization'], page);
   }
 
+  @Get('status')
+  async getAllReportByStatus(
+    @Headers() headers: any,
+    @Query('status') status: string,
+    @Query('page') page: number,
+  ) {
+    return this.interop.getAllByStatus(headers['authorization'], page, status);
+  }
+
   @Post()
   async createReport(@Body() report: Report, @Headers() headers: any) {
     return this.interop.create(headers['authorization'], report);

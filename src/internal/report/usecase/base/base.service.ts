@@ -20,6 +20,10 @@ export class BaseServiceUseCase implements ReportUseCase {
     return this.reportRepository.getAll(page);
   }
 
+  getAllByStatus(status: string, page: number): Promise<AllReport> {
+    return this.reportRepository.getAllByStatus(status, page);
+  }
+
   update(id: string) {
     this.reportRepository.update(id);
   }

@@ -32,6 +32,19 @@ export class BaseServiceInterop implements ReportInterop {
     }
   }
 
+  async getAllByStatus(
+    token: string,
+    page: number,
+    status: string,
+  ): Promise<AllReport> {
+    try {
+      await this.authUseCase.verifyToken(token);
+      return this.useCase.getAllByStatus(status, page);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   async update(id: string, token: string) {
     try {
       await this.authUseCase.verifyToken(token);
