@@ -70,24 +70,18 @@ export class RoleBaseInteropService implements RoleInterop {
         throw ErrorPermissionDenied;
       } else if (role.id === undefined || role.id === '' || role.id === null) {
         throw roleIdEmpty;
-      } else if (/\d/.test(role.id)) {
-        throw roleIdDoNotEnterNumber;
       } else if (
         role.name === undefined ||
         role.name === '' ||
         role.name === null
       ) {
         throw roleNameEmpty;
-      } else if (/\d/.test(role.name)) {
-        throw roleNameDoNotEnterNumber;
       } else if (
         role.description === undefined ||
         role.description === '' ||
         role.description === null
       ) {
         throw roleDescriptionEmpty;
-      } else if (/\d/.test(role.description)) {
-        throw roleDescriptionDoNotEnterNumber;
       } else {
         return this.roleUseCase.createRole(role);
       }
@@ -109,26 +103,27 @@ export class RoleBaseInteropService implements RoleInterop {
       )) as any as Auth;
       if (isAdmin.role !== 'admin') {
         throw ErrorPermissionDenied;
-      } else if (role.id === undefined || role.id === '' || role.id === null) {
+      } else if (
+        role.id === undefined ||
+        role.id === '' ||
+        role.id === null ||
+        id === undefined ||
+        id === '' ||
+        id === null
+      ) {
         throw roleIdEmpty;
-      } else if (/\d/.test(role.id)) {
-        throw roleIdDoNotEnterNumber;
       } else if (
         role.name === undefined ||
         role.name === '' ||
         role.name === null
       ) {
         throw roleNameEmpty;
-      } else if (/\d/.test(role.name)) {
-        throw roleNameDoNotEnterNumber;
       } else if (
         role.description === undefined ||
         role.description === '' ||
         role.description === null
       ) {
         throw roleDescriptionEmpty;
-      } else if (/\d/.test(role.description)) {
-        throw roleDescriptionDoNotEnterNumber;
       }
       return this.roleUseCase.updateRole(id, role);
     } catch (error) {
