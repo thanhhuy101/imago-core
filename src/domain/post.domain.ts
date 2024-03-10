@@ -122,7 +122,6 @@ export interface PostInterop {
   delete(id: string, token: string): Promise<boolean>;
 
   getByMentionId(
-    mention: string,
     token: string,
     page: number,
     size: number,
