@@ -10,6 +10,7 @@ import { CommentModule } from './internal/comment/comment.module';
 import { ReportModule } from './internal/report/report.module';
 import { HashtagModule } from './internal/hashtag/hashtag.module';
 import { StorageModule } from './internal/storage/storage.module';
+import { AppController } from './app.controller';
 
 @Module({
   imports: [
@@ -23,6 +24,7 @@ import { StorageModule } from './internal/storage/storage.module';
     HashtagModule,
     StorageModule,
   ],
+  controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule { }

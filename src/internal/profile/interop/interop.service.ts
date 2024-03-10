@@ -108,7 +108,7 @@ export class InteropService implements ProfileInterop {
         phone: profile.phone || '',
         userName: profile.userName || '',
         firstName: profile.firstName || '',
-        lastName: profile.lastName || '',
+        lastName: profile.lastName || '', 
         category: profile.category || [],
         followers: profile.followers || [],
         following: profile.following || [],
