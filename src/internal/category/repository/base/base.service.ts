@@ -57,7 +57,7 @@ export class CategoryRepositoryBaseService implements CategoryRepository {
             const categoryRef = this.db.collection('categories');
             const snapshot = await categoryRef.get();
             const categories = snapshot.docs.map((doc) => doc.data() as CategoryDomain);
-            const size = 2;
+            const size = 10;
             return {
                 data: categories.slice((page - 1) * size, page * size),
                 endpage: Math.ceil(categories.length / size),
