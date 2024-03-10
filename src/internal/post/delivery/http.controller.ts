@@ -43,13 +43,12 @@ export class HttpController {
   @Get('mention')
   async getMention(
     @Headers() headers: any,
-    @Query('mention') mention: string,
     @Query('page') page: number,
     @Query('size') size: number,
   ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getByMentionId(mention, token, page, size);
+      return await this.interop.getByMentionId(token, page, size);
     } catch (e) {
       throw e;
     }
