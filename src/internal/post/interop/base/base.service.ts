@@ -26,14 +26,13 @@ export class BaseInteropService implements PostInterop {
   }
 
   async getByMentionId(
-    mention: string,
     token: string,
     page: number,
     size: number,
   ): Promise<PostResponse> {
     try {
-      await this.authUsecase.verifyToken(token);
-      return this.useCase.getByMentionId(mention, page, size);
+      const idToken = await this.authUsecase.verifyToken(token);
+      return this.useCase.getByMentionId(idToken.uid, page, size);
     } catch (e) {
       throw e;
     }
