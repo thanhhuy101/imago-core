@@ -1,5 +1,6 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+  AllReport,
   Report,
   ReportRepository,
   ReportUseCase,
@@ -10,27 +11,17 @@ export class BaseServiceUseCase implements ReportUseCase {
   constructor(
     @Inject('ReportRepository') private reportRepository: ReportRepository,
   ) {}
- async getList(page: number): Promise<any> {
-   let skip: number;
-   const reportRef = await this.reportRepository.getList(page);
-   skip = reportRef.endPage;
-    if (page < 1) {
-      throw 'ErrorMinusPage';
-    } else if (page === undefined || page === null || isNaN(page)) {
-      throw 'ErrorEmptyPage';
-    } else if (page > skip) {
-      throw 'ErrorEmptyPageData';
-    } else {
-      return reportRef;
-    }
-  }
 
   create(report: Object) {
     this.reportRepository.create(report);
   }
 
-  getAll(): Promise<Report[]> {
-    return this.reportRepository.getAll();
+  getAllByStatusCompleted(page: number): Promise<AllReport> {
+    return this.reportRepository.getAllByStatusCompleted(page);
+  }
+
+  getAllByStatusPending(page: number): Promise<AllReport> {
+    return this.reportRepository.getAllByStatusPending(page);
   }
 
   update(id: string) {

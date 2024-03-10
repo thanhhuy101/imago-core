@@ -6,9 +6,11 @@ export interface Report {
   typeId: string;
   content: string;
   createdAt: Date;
+  updatedAt: Date;
+  creatorId: string;
 }
 
-export interface ReportPagination {
+export interface AllReport {
   data: Report[];
   endPage: number;
 }
@@ -18,9 +20,9 @@ export interface ReportRepository {
 
   update(id: string): any;
 
-  getAll(): Promise<Report[]>;
+  getAllByStatusCompleted(page: number): Promise<AllReport>;
 
-  getList(page: number ): Promise<any>;
+  getAllByStatusPending(page: number): Promise<AllReport>;
 }
 
 export interface ReportUseCase {
@@ -28,9 +30,9 @@ export interface ReportUseCase {
 
   update(id: string): any;
 
-  getAll(): Promise<Report[]>;
+  getAllByStatusCompleted(page: number): Promise<AllReport>;
 
-  getList(page: number ): Promise<any>;
+  getAllByStatusPending(page: number): Promise<AllReport>;
 }
 
 export interface ReportInterop {
@@ -38,6 +40,7 @@ export interface ReportInterop {
 
   update(id: string, token: string): any;
 
-  getAll(token: string): Promise<Report[]>;
-  getList(token: string,page: number ): Promise<any>;
+  getAllByStatusCompleted(token: string, page: number): Promise<AllReport>;
+
+  getAllByStatusPending(token: string, page: number): Promise<AllReport>;
 }
