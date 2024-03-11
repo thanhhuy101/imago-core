@@ -1,6 +1,5 @@
 import { Injectable } from '@nestjs/common';
 import {
-  AllPosts,
   PostDomain,
   PostRepository,
   PostResponse,
@@ -51,14 +50,14 @@ export class BaseRepositoryService implements PostRepository {
     };
   }
 
-  async getAllPost(page: number, size: number): Promise<AllPosts> {
+  async getAllPost(page: number, size: number): Promise<PostResponse> {
     try {
       const postRef = this.db.collection('posts');
       const snapshot = await postRef.get();
       const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
       return {
         data: posts.slice((page - 1) * size, page * size),
-        endpage: Math.ceil(posts.length / size),
+        endPage: Math.ceil(posts.length / size),
       };
     } catch (e) {
       throw e;
