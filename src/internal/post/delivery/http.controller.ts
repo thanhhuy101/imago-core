@@ -20,7 +20,7 @@ import any = jasmine.any;
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
-  @Get('creatorPost')
+  @Get('creatorpost')
   async getProfilePost(@Headers() headers: any) {
     let token = headers['authorization'];
     try {

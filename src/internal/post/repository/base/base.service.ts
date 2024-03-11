@@ -23,7 +23,7 @@ export class BaseRepositoryService implements PostRepository {
       let data = doc.data() as PostDomain;
       let profileData = profile.docs.find((p) => p.id === data.creatorId);
       if (profileData) {
-        result.push({ ...data, ...profileData.data() });
+        result.push({ ...data, ...profileData.data().user });
       }
     });
     return result;
