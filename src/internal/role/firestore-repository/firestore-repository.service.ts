@@ -68,7 +68,7 @@ export class FirestoreRepositoryService implements RoleRepository {
     }
     return {
       data: result.slice((page - 1) * size, page * size),
-      endPage: Math.ceil(data.length / size),
+      endPage: Math.ceil(result.length / size),
     };
   }
 
