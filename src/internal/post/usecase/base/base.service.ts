@@ -19,16 +19,20 @@ import {
   SizeError,
 } from '../../../../domain/post.domain';
 import { isNumber } from '@nestjs/common/utils/shared.utils';
+import { Profile } from 'src/domain/profile.domain';
 
 @Injectable()
 export class BaseUseCaseService implements PostUseCase {
   constructor(
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
+  getProfilePost(): Promise<any> {
+    return this.postRepository.getProfilePost();
+  }
 
-  async getAllPost(page: number): Promise<PostResponse> {
+  async getAllPost(page: number, size: number): Promise<PostResponse> {
     let endPage: number;
-    const postRef = await this.postRepository.getAllPost(page);
+    const postRef = await this.postRepository.getAllPost(page, size);
     endPage = postRef.endPage;
     if (page < 1) {
       throw PageError;
@@ -37,7 +41,7 @@ export class BaseUseCaseService implements PostUseCase {
     } else if (page > endPage) {
       throw ErrorEmptyPageData;
     } else {
-      return this.postRepository.getAllPost(page);
+      return this.postRepository.getAllPost(page, size);
     }
   }
 

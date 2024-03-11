@@ -23,6 +23,7 @@ export interface PostResponse {
   endPage: number;
 }
 
+//get userName by creatorId
 export interface PostRepository {
   getDetail(id: string): Promise<PostDomain>;
 
@@ -54,7 +55,9 @@ export interface PostRepository {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(page: number): Promise<PostResponse>;
+  getAllPost(page: number, size: number): Promise<PostResponse>;
+
+  getProfilePost(): Promise<any>;
 }
 
 export interface PostUseCase {
@@ -87,7 +90,9 @@ export interface PostUseCase {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(page: number): Promise<PostResponse>;
+  getAllPost(page: number, size: number): Promise<PostResponse>;
+
+  getProfilePost(): Promise<any>;
 }
 
 export interface PostInterop {
@@ -123,9 +128,11 @@ export interface PostInterop {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(token: string, page: number): Promise<PostResponse>;
+  getAllPost(token: string, page: number, size: number): Promise<PostResponse>;
 
   search(index: string, query: string): Promise<SearchResult<PostDomain>>;
+
+  getProfilePost(token: string): Promise<any>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(
