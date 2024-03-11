@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  AllPosts,
   ErrorEmptyPage,
   ErrorEmptyPageData,
-  ErrorPostCreateFailed,
   ErrorPostDeleteFailed,
   ErrorPostNotFound,
   PageError,
@@ -21,7 +19,6 @@ import {
   SizeError,
 } from '../../../../domain/post.domain';
 import { isNumber } from '@nestjs/common/utils/shared.utils';
-import { Profile } from 'src/domain/profile.domain';
 
 @Injectable()
 export class BaseUseCaseService implements PostUseCase {
@@ -32,15 +29,15 @@ export class BaseUseCaseService implements PostUseCase {
     return this.postRepository.getProfilePost();
   }
 
-  async getAllPost(page: number, size: number): Promise<AllPosts> {
-    let endpage: number;
+  async getAllPost(page: number, size: number): Promise<PostResponse> {
+    let endPage: number;
     const postRef = await this.postRepository.getAllPost(page, size);
-    endpage = postRef.endpage;
+    endPage = postRef.endPage;
     if (page < 1) {
       throw PageError;
     } else if (page === undefined || page === null || isNaN(page)) {
       throw ErrorEmptyPage;
-    } else if (page > endpage) {
+    } else if (page > endPage) {
       throw ErrorEmptyPageData;
     } else {
       return this.postRepository.getAllPost(page, size);

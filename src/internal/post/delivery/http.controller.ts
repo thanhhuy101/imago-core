@@ -14,7 +14,6 @@ import {
   PostDomain,
   PostInterop,
 } from 'src/domain/post.domain';
-import any = jasmine.any;
 
 @Controller('v1/post')
 export class HttpController {
