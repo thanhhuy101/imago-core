@@ -8,13 +8,19 @@ import {
   PostUseCase,
 } from '../../../../domain/post.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
+import { SearchResult, SearchUseCase } from 'src/domain/search.domain';
 
 @Injectable()
 export class BaseInteropService implements PostInterop {
   constructor(
     @Inject('PostUseCase') private useCase: PostUseCase,
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
+    @Inject('SearchUseCase') private searchUsecase: SearchUseCase<PostDomain>,
   ) {}
+
+  search(index: string, query: string): Promise<SearchResult<PostDomain>> {
+    return this.searchUsecase.search(index, query);
+  }
 
   async getDetail(id: string, token: string): Promise<PostDomain> {
     try {
@@ -122,7 +128,9 @@ export class BaseInteropService implements PostInterop {
       }
       post.updatedAt = null;
       post.deletedAt = null;
-      return this.useCase.create(post);
+      await this.useCase.create(post);
+      await this.searchUsecase.create('posts', post);
+      return true;
     } catch (e) {
       throw e;
     }
@@ -133,7 +141,9 @@ export class BaseInteropService implements PostInterop {
       const idToken = await this.authUsecase.verifyToken(token);
       if (post.creatorId == idToken.uid) {
         post.updatedAt = new Date();
-        return this.useCase.update(post);
+        await this.useCase.update(post);
+        await this.searchUsecase.update('posts', post);
+        return true;
       } else {
         throw ErrorIllegalUpdate;
       }
@@ -145,7 +155,9 @@ export class BaseInteropService implements PostInterop {
   async delete(id: string, token: string): Promise<boolean> {
     try {
       await this.authUsecase.verifyToken(token);
-      return this.useCase.delete(id);
+      await this.useCase.delete(id);
+      await this.searchUsecase.delete('posts', id);
+      return true;
     } catch (e) {
       throw e;
     }

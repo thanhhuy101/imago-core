@@ -147,4 +147,14 @@ export class HttpController {
       throw e;
     }
   }
+
+  @Get('search')
+  async searchPost(@Headers() headers: any, @Query('query') query: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.search('posts', query);
+    } catch (e) {
+      throw e;
+    }
+  }
 }
