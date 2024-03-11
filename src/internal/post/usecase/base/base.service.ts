@@ -19,7 +19,6 @@ import {
   SizeError,
 } from '../../../../domain/post.domain';
 import { isNumber } from '@nestjs/common/utils/shared.utils';
-import { Profile } from 'src/domain/profile.domain';
 
 @Injectable()
 export class BaseUseCaseService implements PostUseCase {
