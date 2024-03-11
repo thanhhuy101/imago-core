@@ -31,7 +31,7 @@ export class FirestoreService implements ReportRepository {
     const reportRef = this.db.collection('reports');
     const snapshot = await reportRef.where('status', '==', 'completed').get();
     const reports = snapshot.docs.map((doc) => doc.data() as Report);
-    const size = 9;
+    const size = 1;
     return {
       data: reports.slice((page - 1) * size, page * size),
       endPage: Math.ceil(reports.length / size),
