@@ -11,6 +11,8 @@ import { ReportModule } from './internal/report/report.module';
 import { HashtagModule } from './internal/hashtag/hashtag.module';
 import { StorageModule } from './internal/storage/storage.module';
 import { AppController } from './app.controller';
+import { SearchModule } from './internal/search/search.module';
+import { NotificationModule } from './internal/notification/notification.module';
 
 @Module({
   imports: [
@@ -23,8 +25,11 @@ import { AppController } from './app.controller';
     RoleModule,
     HashtagModule,
     StorageModule,
+    SearchModule,
+    NotificationModule,
   ],
   controllers: [AppController],
   providers: [AppService],
+ 
 })
-export class AppModule { }
+export class AppModule {}
