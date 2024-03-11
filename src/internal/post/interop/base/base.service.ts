@@ -1,6 +1,5 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  AllPosts,
   ErrorIllegalUpdate,
   PostDomain,
   PostInterop,
@@ -71,7 +70,7 @@ export class BaseInteropService implements PostInterop {
     }
   }
 
-  async getAllPost(token: string, page: number): Promise<AllPosts> {
+  async getAllPost(token: string, page: number): Promise<PostResponse> {
     try {
       await this.authUsecase.verifyToken(token);
       return this.useCase.getAllPost(page);

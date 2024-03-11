@@ -1,9 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
-  AllPosts,
   ErrorEmptyPage,
   ErrorEmptyPageData,
-  ErrorPostCreateFailed,
   ErrorPostDeleteFailed,
   ErrorPostNotFound,
   PageError,
@@ -28,15 +26,15 @@ export class BaseUseCaseService implements PostUseCase {
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
 
-  async getAllPost(page: number): Promise<AllPosts> {
-    let endpage: number;
+  async getAllPost(page: number): Promise<PostResponse> {
+    let endPage: number;
     const postRef = await this.postRepository.getAllPost(page);
-    endpage = postRef.endpage;
+    endPage = postRef.endPage;
     if (page < 1) {
       throw PageError;
     } else if (page === undefined || page === null || isNaN(page)) {
       throw ErrorEmptyPage;
-    } else if (page > endpage) {
+    } else if (page > endPage) {
       throw ErrorEmptyPageData;
     } else {
       return this.postRepository.getAllPost(page);
