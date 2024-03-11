@@ -1,14 +1,28 @@
-import { Body, Controller, Inject, Post, Headers, Query, Get } from '@nestjs/common';
-import { NotificationDomain, NotificationInterop } from '../../../domain/notification.domain';
+import {
+  Body,
+  Controller,
+  Inject,
+  Post,
+  Headers,
+  Query,
+  Get,
+} from '@nestjs/common';
+import {
+  NotificationDomain,
+  NotificationInterop,
+} from '../../../domain/notification.domain';
 
 @Controller('v1/notification')
 export class NotificationController {
-  constructor(@Inject('NotificationInterop') private interop: NotificationInterop){
-
-  }
+  constructor(
+    @Inject('NotificationInterop') private interop: NotificationInterop,
+  ) {}
 
   @Post()
-  async createNotification(@Headers() headers:any, @Body() notification: NotificationDomain){
+  async createNotification(
+    @Headers() headers: any,
+    @Body() notification: NotificationDomain,
+  ) {
     let token = headers['authorization'];
     try {
       return await this.interop.create(token, notification);
@@ -18,7 +32,7 @@ export class NotificationController {
   }
 
   @Get('all')
-  async getNotifications(@Headers() headers:any, @Query('uid') uid: string){
+  async getNotifications(@Headers() headers: any, @Query('uid') uid: string) {
     let token = headers['authorization'];
     try {
       return await this.interop.getNotificationsByUid(uid, token);
@@ -28,7 +42,10 @@ export class NotificationController {
   }
 
   @Get('follow')
-  async getFollowNotifications(@Headers() headers:any, @Query('uid') uid: string){
+  async getFollowNotifications(
+    @Headers() headers: any,
+    @Query('uid') uid: string,
+  ) {
     let token = headers['authorization'];
     try {
       return await this.interop.getNotificationsByFollow(uid, token);
@@ -38,7 +55,10 @@ export class NotificationController {
   }
 
   @Get('like')
-  async getLikeNotifications(@Headers() headers:any, @Query('uid') uid: string){
+  async getLikeNotifications(
+    @Headers() headers: any,
+    @Query('uid') uid: string,
+  ) {
     let token = headers['authorization'];
     try {
       return await this.interop.getNotificationsByLike(uid, token);
@@ -48,7 +68,10 @@ export class NotificationController {
   }
 
   @Get('comment')
-  async getCommentNotifications(@Headers() headers:any, @Query('uid') uid: string){
+  async getCommentNotifications(
+    @Headers() headers: any,
+    @Query('uid') uid: string,
+  ) {
     let token = headers['authorization'];
     try {
       return await this.interop.getNotificationsByComment(uid, token);
