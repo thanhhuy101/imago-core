@@ -23,7 +23,7 @@ export class BaseRepositoryService implements PostRepository {
       let data = doc.data() as PostDomain;
       let profileData = profile.docs.find((p) => p.id === data.creatorId);
       if (profileData) {
-        result.push({ ...data, ...profileData.data().user });
+        result.push({ ...data, ...profileData.data().userName });
       }
     });
     return result;
@@ -56,6 +56,9 @@ export class BaseRepositoryService implements PostRepository {
       const postRef = this.db.collection('posts');
       const snapshot = await postRef.get();
       const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+      //sort newest post first and day first
+      posts.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
+
       return {
         data: posts.slice((page - 1) * size, page * size),
         endpage: Math.ceil(posts.length / size),

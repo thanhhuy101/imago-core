@@ -48,13 +48,7 @@ export class HttpController {
   ) {
     let token = headers['authorization'];
     try {
-      let allPosts = await this.interop.getAllPost(token, page, size);
-      allPosts.data.sort((a, b) => {
-        let dateA = new Date(a.createdAt);
-        let dateB = new Date(b.createdAt);
-        return dateB.getTime() - dateA.getTime();
-      });
-      return allPosts;
+      return await this.interop.getAllPost(token, page, size);
     } catch (e) {
       throw e;
     }
