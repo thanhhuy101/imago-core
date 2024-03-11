@@ -20,6 +20,16 @@ import any = jasmine.any;
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
+  @Get('creatorpost')
+  async getProfilePost(@Headers() headers: any) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.getProfilePost(token);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @Get()
   async getPost(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
@@ -31,10 +41,20 @@ export class HttpController {
   }
 
   @Get('all')
-  async getAllPost(@Headers() headers: any, @Query('page') page: number) {
+  async getAllPost(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getAllPost(token, page);
+      let allPosts = await this.interop.getAllPost(token, page, size);
+      allPosts.data.sort((a, b) => {
+        let dateA = new Date(a.createdAt);
+        let dateB = new Date(b.createdAt);
+        return dateB.getTime() - dateA.getTime();
+      });
+      return allPosts;
     } catch (e) {
       throw e;
     }
