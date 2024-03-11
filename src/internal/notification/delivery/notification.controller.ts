@@ -1,4 +1,4 @@
-import { Body, Controller, Inject, Post, Headers, Query } from '@nestjs/common';
+import { Body, Controller, Inject, Post, Headers, Query, Get } from '@nestjs/common';
 import { NotificationDomain, NotificationInterop } from '../../../domain/notification.domain';
 
 @Controller('v1/notification')
@@ -17,7 +17,7 @@ export class NotificationController {
     }
   }
 
-  @Post('all')
+  @Get('all')
   async getNotifications(@Headers() headers:any, @Query('uid') uid: string){
     let token = headers['authorization'];
     try {
@@ -27,7 +27,7 @@ export class NotificationController {
     }
   }
 
-  @Post('follow')
+  @Get('follow')
   async getFollowNotifications(@Headers() headers:any, @Query('uid') uid: string){
     let token = headers['authorization'];
     try {
@@ -37,7 +37,7 @@ export class NotificationController {
     }
   }
 
-  @Post('like')
+  @Get('like')
   async getLikeNotifications(@Headers() headers:any, @Query('uid') uid: string){
     let token = headers['authorization'];
     try {
@@ -47,7 +47,7 @@ export class NotificationController {
     }
   }
 
-  @Post('comment')
+  @Get('comment')
   async getCommentNotifications(@Headers() headers:any, @Query('uid') uid: string){
     let token = headers['authorization'];
     try {

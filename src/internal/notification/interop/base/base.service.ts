@@ -1,5 +1,11 @@
 import { Inject, Injectable } from '@nestjs/common';
-import { NotificationDomain, NotificationInterop, NotificationUseCase } from '../../../../domain/notification.domain';
+import {
+    CommentNotificationDomain, FollowNotificationDomain,
+    LikeNotificationDomain,
+    NotificationDomain,
+    NotificationInterop,
+    NotificationUseCase,
+} from '../../../../domain/notification.domain';
 import { AuthUseCase } from '../../../../domain/auth.domain';
 
 @Injectable()
@@ -29,7 +35,7 @@ export class NotificationInteropBaseService implements NotificationInterop {
             throw e;
         }
     }
-    async getNotificationsByFollow(uid: string, token: string): Promise<NotificationDomain[]> {
+    async getNotificationsByFollow(uid: string, token: string): Promise<FollowNotificationDomain[]> {
         try {
             let idToken = await this.authUseCase.verifyToken(token);
             if (idToken.uid !== uid) {
@@ -40,7 +46,7 @@ export class NotificationInteropBaseService implements NotificationInterop {
             throw e;
         }
     }
-    async getNotificationsByLike(uid: string, token: string): Promise<NotificationDomain[]> {
+    async getNotificationsByLike(uid: string, token: string): Promise<LikeNotificationDomain[]> {
         try {
             let idToken = await this.authUseCase.verifyToken(token);
             if (idToken.uid !== uid) {
@@ -51,7 +57,7 @@ export class NotificationInteropBaseService implements NotificationInterop {
             throw e;
         }
     }
-    async getNotificationsByComment(uid: string, token: string): Promise<NotificationDomain[]> {
+    async getNotificationsByComment(uid: string, token: string): Promise<CommentNotificationDomain[]> {
         try {
             let idToken = await this.authUseCase.verifyToken(token);
             if (idToken.uid !== uid) {

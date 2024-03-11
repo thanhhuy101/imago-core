@@ -11,16 +11,43 @@ export interface NotificationDomain{
   isComment: boolean;
 }
 
+export interface LikeNotificationDomain {
+  id: string;
+  createdAt: Date;
+  uid: string;
+  postId: string;
+  sender: string;
+  isLike: boolean;
+}
+
+export interface CommentNotificationDomain {
+  id: string;
+  createdAt: Date;
+  uid: string;
+  postId: string;
+  sender: string;
+  isComment: boolean;
+}
+
+export interface FollowNotificationDomain {
+  id: string;
+  createdAt: Date;
+  uid: string;
+  postId: string;
+  sender: string;
+  isFollow: boolean;
+}
+
 export interface NotificationRepository {
   create(notification: NotificationDomain): Promise<boolean>;
 
   getNotificationsByUid(uid: string): Promise<NotificationDomain[]>;
 
-  getNotificationsByFollow(uid: string): Promise<NotificationDomain[]>;
+  getNotificationsByFollow(uid: string): Promise<FollowNotificationDomain[]>;
 
-  getNotificationsByLike(uid: string): Promise<NotificationDomain[]>;
+  getNotificationsByLike(uid: string): Promise<LikeNotificationDomain[]>;
 
-  getNotificationsByComment(uid: string): Promise<NotificationDomain[]>;
+  getNotificationsByComment(uid: string): Promise<CommentNotificationDomain[]>;
 }
 
 export interface NotificationUseCase {
@@ -28,11 +55,11 @@ export interface NotificationUseCase {
 
   getNotificationsByUid(uid: string): Promise<NotificationDomain[]>;
 
-  getNotificationsByFollow(uid: string): Promise<NotificationDomain[]>;
+  getNotificationsByFollow(uid: string): Promise<FollowNotificationDomain[]>;
 
-  getNotificationsByLike(uid: string): Promise<NotificationDomain[]>;
+  getNotificationsByLike(uid: string): Promise<LikeNotificationDomain[]>;
 
-  getNotificationsByComment(uid: string): Promise<NotificationDomain[]>;
+  getNotificationsByComment(uid: string): Promise<CommentNotificationDomain[]>;
 }
 
 export interface NotificationInterop {
@@ -40,11 +67,11 @@ export interface NotificationInterop {
 
   getNotificationsByUid(uid: string, token: string): Promise<NotificationDomain[]>;
 
-  getNotificationsByFollow(uid: string, token: string): Promise<NotificationDomain[]>;
+  getNotificationsByFollow(uid: string, token: string): Promise<FollowNotificationDomain[]>;
 
-  getNotificationsByLike(uid: string, token: string): Promise<NotificationDomain[]>;
+  getNotificationsByLike(uid: string, token: string): Promise<LikeNotificationDomain[]>;
 
-  getNotificationsByComment(uid: string, token: string): Promise<NotificationDomain[]>;
+  getNotificationsByComment(uid: string, token: string): Promise<CommentNotificationDomain[]>;
 }
 
 export const ErrorNotificationCreateFailed = new HttpException(

@@ -1,5 +1,7 @@
 import { Inject, Injectable } from '@nestjs/common';
 import {
+    CommentNotificationDomain,
+    FollowNotificationDomain, LikeNotificationDomain,
     NotificationDomain,
     NotificationRepository,
     NotificationUseCase,
@@ -19,44 +21,31 @@ export class NotificationUseCaseBaseService implements NotificationUseCase {
     async getNotificationsByUid(uid: string): Promise<NotificationDomain[]> {
         return this.notificationRepository.getNotificationsByUid(uid);
     }
-    async getNotificationsByFollow(uid: string): Promise<NotificationDomain[]> {
+    async getNotificationsByFollow(uid: string): Promise<FollowNotificationDomain[]> {
         let notifications = await this.notificationRepository.getNotificationsByUid(uid);
         if(!notifications){
             return [];
         }
-        let data = [];
-        notifications.forEach((notification) => {
-            if(notification.isFollow){
-                data.push(notification);
-            }
-        });
-        return data;
+        let data : FollowNotificationDomain[] = [];
+
+        return this.assignNotification(notifications, data);
     }
-    async getNotificationsByLike(uid: string): Promise<NotificationDomain[]> {
+    async getNotificationsByLike(uid: string): Promise<LikeNotificationDomain[]> {
         let notifications = await this.notificationRepository.getNotificationsByUid(uid);
         if(!notifications){
             return [];
         }
-        let data = [];
-        notifications.forEach((notification) => {
-            if(notification.isLike){
-                data.push(notification);
-            }
-        });
-        return data;
+        let data :LikeNotificationDomain[] = [];
+        return this.assignNotification(notifications, data);
+
     }
-    async getNotificationsByComment(uid: string): Promise<NotificationDomain[]> {
+    async getNotificationsByComment(uid: string): Promise<CommentNotificationDomain[]> {
         let notifications = await this.notificationRepository.getNotificationsByUid(uid);
         if(!notifications){
             return [];
         }
-        let data = [];
-        notifications.forEach((notification) => {
-            if(notification.isComment){
-                data.push(notification);
-            }
-        });
-        return data;
+        let data :CommentNotificationDomain[] = [];
+        return this.assignNotification(notifications, data);
     }
 
     public validateNotification(notification: NotificationDomain): boolean {
@@ -79,5 +68,16 @@ export class NotificationUseCaseBaseService implements NotificationUseCase {
             return false;
         }
         return notification.isComment !== undefined;
+    }
+
+    private assignNotification(notification: NotificationDomain[], data: any[]): any[] {
+        for(let i = 0; i < notification.length; i++){
+            data[i].id = notification[i].id;
+            data[i].createdAt = notification[i].createdAt;
+            data[i].uid = notification[i].uid;
+            data[i].postId = notification[i].postId;
+            data[i].sender = notification[i].sender;
+        }
+        return data;
     }
 }
