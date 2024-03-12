@@ -7,7 +7,7 @@ export class BaseRepositoryService<T> implements SearchRepository<T> {
   private client: Client;
 
   constructor() {
-    this.client = new Client({ node: 'http://localhost:9200' });
+    this.client = new Client({ node: 'http://172.16.0.148:9200' });
   }
   async create(index: string, item: T, id: string): Promise<boolean> {
     try {

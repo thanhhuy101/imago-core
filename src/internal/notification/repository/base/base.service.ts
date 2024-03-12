@@ -27,7 +27,9 @@ export class NotificationRepositoryBaseService
   }
   async getNotificationsByUid(uid: string): Promise<NotificationDomain[]> {
     const notificationsRef = this.db.collection('notifications');
-    const query = notificationsRef.where('uid', '==', uid).orderBy('createdAt');
+    const query = notificationsRef.where('uid', '==', uid)
+    .orderBy('createdAt', 'desc');
+
     return query.get().then((snapshot) => {
       return snapshot.docs.map((doc) => doc.data() as NotificationDomain);
     });
