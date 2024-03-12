@@ -3,6 +3,7 @@ import {
   PostDomain,
   PostRepository,
   PostResponse,
+  AllPosts,
 } from '../../../../domain/post.domain';
 import * as admin from 'firebase-admin';
 import { Profile } from 'src/domain/profile.domain';
@@ -16,13 +17,13 @@ export class BaseRepositoryService implements PostRepository {
   }
   async getProfilePost(): Promise<any> {
     let post = await this.db.collection('posts').get();
-    let profile = await this.db.collection('profile').get();
+    let profile = await this.db.collection('profiles').get();
     let result: any[] = [];
     post.forEach((doc) => {
       let data = doc.data() as PostDomain;
       let profileData = profile.docs.find((p) => p.id === data.creatorId);
       if (profileData) {
-        result.push({ ...data, ...profileData.data().userName });
+        result.push({ ...data, ...profileData.data() });
       }
     });
     return result;
@@ -40,27 +41,35 @@ export class BaseRepositoryService implements PostRepository {
     page: number,
     size: number,
   ): Promise<PostResponse> {
-    const postsRef = this.db.collection('posts');
-    const query = postsRef.where('mention', 'array-contains', mention);
-    const snapshot = await query.get();
-    const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
-    return {
-      data: posts.slice((page - 1) * size, page * size),
-      endPage: Math.ceil(posts.length / size),
-    };
+    try {
+      const postsRef = this.db.collection('posts');
+      const query = postsRef.where('mention', 'array-contains', mention);
+      const snapshot = await query.get();
+      const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+      return {
+        data: posts.slice((page - 1) * size, page * size),
+        endPage: Math.ceil(posts.length / size),
+      };
+    } catch (e) {
+      throw e;
+    }
   }
 
-  async getAllPost(page: number, size: number): Promise<PostResponse> {
+  async getAllPost(page: number, size: number): Promise<AllPosts> {
     try {
       const postRef = this.db.collection('posts');
       const snapshot = await postRef.get();
       const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
-      //sort newest post first and day first
-      posts.sort((a, b) => (a.createdAt > b.createdAt ? -1 : 1));
-
+      //sort post by created time to newest
+      posts.sort((a, b) => {
+        //convert to date
+        let dateA = new Date(a.createdAt);
+        let dateB = new Date(b.createdAt);
+        return dateB.getTime() - dateA.getTime();
+      });
       return {
         data: posts.slice((page - 1) * size, page * size),
-        endPage: Math.ceil(posts.length / size),
+        endpage: Math.ceil(posts.length / size),
       };
     } catch (e) {
       throw e;
