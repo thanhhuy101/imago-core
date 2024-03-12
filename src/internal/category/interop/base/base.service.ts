@@ -15,6 +15,16 @@ export class CategoryInteropBaseService implements CategoryInterop {
         throw e;
       }
     }
+
+    async updateCategory(id: string, category: CategoryDomain) {
+      try {
+        return await this.useCase.updateCategory(id, category);
+      }
+      catch (e) {
+        throw e;
+      }
+    }
+
     async deleteCategory(id: string){
         try {
           return this.useCase.deleteCategory(id);
