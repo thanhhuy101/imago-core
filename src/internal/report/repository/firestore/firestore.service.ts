@@ -38,7 +38,8 @@ export class FirestoreService implements ReportRepository {
 
   async getAllByStatusCompleted(page: number): Promise<AllReport> {
     const reportRef = this.db.collection('reports');
-    const snapshot = await reportRef.where('status', '==', 'completed').get();
+    const snapshot = await reportRef
+      .where('status', '==', 'completed').get();
     const reports = snapshot.docs.map((doc) => doc.data() as Report);
     const size = 10;
     return {
