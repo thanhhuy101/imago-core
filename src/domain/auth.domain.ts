@@ -74,7 +74,7 @@ export const ErrorInvalidRole = new HttpException(
   'Invalid role',
   HttpStatus.BAD_REQUEST,
 );
-
+ 
 export const ErrorPermissionDenied = new HttpException(
   'Permission denied',
   HttpStatus.FORBIDDEN,

@@ -30,6 +30,5 @@ import { NotificationModule } from './internal/notification/notification.module'
   ],
   controllers: [AppController],
   providers: [AppService],
- 
 })
 export class AppModule {}
