@@ -15,7 +15,7 @@ export class BaseRepositoryService implements PostRepository {
   constructor() {
     this.db = admin.firestore();
   }
-  async getProfilePost(): Promise<any> {
+  async getProfilePost(page: number, size: number): Promise<any> {
     let post = await this.db.collection('posts').get();
     let profile = await this.db.collection('profiles').get();
     let result: any[] = [];
@@ -23,10 +23,16 @@ export class BaseRepositoryService implements PostRepository {
       let data = doc.data() as PostDomain;
       let profileData = profile.docs.find((p) => p.id === data.creatorId);
       if (profileData) {
-        result.push({ ...data, ...profileData.data() });
+        result.push({
+          ...data,
+          profile: profileData.data(),
+        });
       }
     });
-    return result;
+    return {
+      data: result.slice((page - 1) * size, page * size),
+      endPage: Math.ceil(result.length / size),
+    };
   }
 
   async getDetail(id: string): Promise<PostDomain> {
@@ -57,20 +63,23 @@ export class BaseRepositoryService implements PostRepository {
 
   async getAllPost(page: number, size: number): Promise<AllPosts> {
     try {
+      // const notificationsRef = this.db.collection('notifications');
+      // const query = notificationsRef.where('uid', '==', uid)
+      // .orderBy('createdAt', 'desc');
+
+      // return query.get().then((snapshot) => {
+      //   return snapshot.docs.map((doc) => doc.data() as NotificationDomain);
+      // });
       const postRef = this.db.collection('posts');
-      const snapshot = await postRef.get();
-      const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
-      //sort post by created time to newest
-      posts.sort((a, b) => {
-        //convert to date
-        let dateA = new Date(a.createdAt);
-        let dateB = new Date(b.createdAt);
-        return dateB.getTime() - dateA.getTime();
+      const query = postRef.orderBy('createdAt', 'asc');
+
+      return query.get().then((snapshot) => {
+        const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
+        return {
+          data: posts.slice((page - 1) * size, page * size),
+          endpage: Math.ceil(posts.length / size),
+        };
       });
-      return {
-        data: posts.slice((page - 1) * size, page * size),
-        endpage: Math.ceil(posts.length / size),
-      };
     } catch (e) {
       throw e;
     }

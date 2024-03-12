@@ -28,8 +28,8 @@ export class BaseUseCaseService implements PostUseCase {
   constructor(
     @Inject('PostRepository') private postRepository: PostRepository,
   ) {}
-  getProfilePost(): Promise<any> {
-    return this.postRepository.getProfilePost();
+  getProfilePost(page: number, size: number): Promise<any> {
+    return this.postRepository.getProfilePost(page, size);
   }
 
   async getAllPost(page: number, size: number): Promise<AllPosts> {

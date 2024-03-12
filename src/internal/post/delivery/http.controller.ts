@@ -20,10 +20,14 @@ export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
   @Get('creatorpost')
-  async getProfilePost(@Headers() headers: any) {
+  async getProfilePost(
+    @Headers() headers: any,
+    @Query('page') page: number,
+    @Query('size') size: number,
+  ) {
     let token = headers['authorization'];
     try {
-      return await this.interop.getProfilePost(token);
+      return await this.interop.getProfilePost(token, page, size);
     } catch (e) {
       throw e;
     }

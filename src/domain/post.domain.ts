@@ -62,7 +62,7 @@ export interface PostRepository {
 
   getAllPost(page: number, size: number): Promise<AllPosts>;
 
-  getProfilePost(): Promise<any>;
+  getProfilePost(page: number, size: number): Promise<any>;
 }
 
 export interface PostUseCase {
@@ -97,7 +97,7 @@ export interface PostUseCase {
 
   getAllPost(page: number, size: number): Promise<AllPosts>;
 
-  getProfilePost(): Promise<any>;
+  getProfilePost(page: number, size: number): Promise<any>;
 }
 
 export interface PostInterop {
@@ -137,7 +137,7 @@ export interface PostInterop {
 
   search(index: string, query: string): Promise<SearchResult<PostDomain>>;
 
-  getProfilePost(token: string): Promise<any>;
+  getProfilePost(token: string, page: number, size: number): Promise<any>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(
