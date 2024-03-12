@@ -22,8 +22,9 @@ export class NotificationInteropBaseService implements NotificationInterop {
     try {
       let idToken = await this.authUseCase.verifyToken(token);
       notification.id = Date.now().toString() + idToken.uid;
-      notification.createdAt = new Date();
-      notification.sender = idToken.uid;
+      //how to get the current date and time in timestamp format in typescript
+      notification.createdAt = new Date().toString()
+
 
       return this.useCase.create(notification);
     } catch (e) {
