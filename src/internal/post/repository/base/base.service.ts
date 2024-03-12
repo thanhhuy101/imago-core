@@ -21,7 +21,8 @@ export class BaseRepositoryService implements PostRepository {
     let result: any[] = [];
     post.forEach((doc) => {
       let data = doc.data() as PostDomain;
-      let profileData = profile.docs.find((p) => p.id === data.creatorId);
+      //get all data
+      let profileData = profile.docs.find((item) => item.id === data.creatorId);
       if (profileData) {
         result.push({
           ...data,
@@ -71,7 +72,7 @@ export class BaseRepositoryService implements PostRepository {
       //   return snapshot.docs.map((doc) => doc.data() as NotificationDomain);
       // });
       const postRef = this.db.collection('posts');
-      const query = postRef.orderBy('createdAt', 'asc');
+      const query = postRef.orderBy('createdAt', 'desc');
 
       return query.get().then((snapshot) => {
         const posts = snapshot.docs.map((doc) => doc.data() as PostDomain);
