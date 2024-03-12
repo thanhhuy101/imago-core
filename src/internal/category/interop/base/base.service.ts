@@ -5,7 +5,7 @@ import { AuthUseCase } from '../../../../domain/auth.domain';
 
 @Injectable()
 export class CategoryInteropBaseService implements CategoryInterop {
-  constructor(@Inject('CategoryUseCase') private useCase: CategoryUseCase, @Inject('AuthUseCase') private authUseCase: AuthUseCase,) {
+  constructor(@Inject('CategoryUseCase') private useCase: CategoryUseCase, @Inject('AuthUseCase') private authUseCase: AuthUseCase, ) {
   }
     async createCategory(category: CategoryDomain) {
       try {

@@ -1,8 +1,10 @@
 import { HttpException, HttpStatus } from '@nestjs/common';
+import { firestore } from 'firebase-admin';
+import Timestamp = firestore.Timestamp;
 
 export interface NotificationDomain{
   id: string;
-  createdAt: Date;
+  createdAt: string;
   uid: string;
   postId: string;
   sender: string;
@@ -13,7 +15,7 @@ export interface NotificationDomain{
 
 export interface LikeNotificationDomain {
   id: string;
-  createdAt: Date;
+  createdAt: string;
   uid: string;
   postId: string;
   sender: string;
@@ -22,7 +24,7 @@ export interface LikeNotificationDomain {
 
 export interface CommentNotificationDomain {
   id: string;
-  createdAt: Date;
+  createdAt: string;
   uid: string;
   postId: string;
   sender: string;
@@ -31,7 +33,7 @@ export interface CommentNotificationDomain {
 
 export interface FollowNotificationDomain {
   id: string;
-  createdAt: Date;
+  createdAt: string;
   uid: string;
   postId: string;
   sender: string;
