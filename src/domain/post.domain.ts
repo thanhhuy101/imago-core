@@ -23,10 +23,6 @@ export interface PostResponse {
   data: PostDomain[];
   endPage: number;
 }
-export interface AllPosts {
-  data: PostDomain[];
-  endpage: number;
-}
 
 //get userName by creatorId
 export interface PostRepository {
@@ -60,7 +56,7 @@ export interface PostRepository {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(page: number, size: number): Promise<AllPosts>;
+  getAllPost(page: number, size: number): Promise<PostResponse>;
 
   getProfilePost(page: number, size: number): Promise<any>;
 }
@@ -95,7 +91,7 @@ export interface PostUseCase {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(page: number, size: number): Promise<AllPosts>;
+  getAllPost(page: number, size: number): Promise<PostResponse>;
 
   getProfilePost(page: number, size: number): Promise<any>;
 }
@@ -133,7 +129,7 @@ export interface PostInterop {
     size: number,
   ): Promise<PostResponse>;
 
-  getAllPost(token: string, page: number, size: number): Promise<AllPosts>;
+  getAllPost(token: string, page: number, size: number): Promise<PostResponse>;
 
   search(index: string, query: string): Promise<SearchResult<PostDomain>>;
 
