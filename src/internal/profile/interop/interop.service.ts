@@ -126,7 +126,7 @@ export class InteropService implements ProfileInterop {
         phone: profile.phone || '',
         userName: profile.userName || '',
         firstName: profile.firstName || '',
-        lastName: profile.lastName || '', 
+        lastName: profile.lastName || '',
         category: profile.category || [],
         followers: profile.followers || [],
         following: profile.following || [],
@@ -190,6 +190,19 @@ export class InteropService implements ProfileInterop {
     try {
       const decodedToken = await this.authUseCase.verifyToken(token);
       return this.profileUseCase.get(decodedToken.uid);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  //get all profiles except mine profile
+  async getAllExceptMine(token: string): Promise<Profile[]> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const profile = await this.profileUseCase.get(decodedToken.uid);
+      return this.profileUseCase.getAll().then((profiles) => {
+        return profiles.filter((item) => item.id !== profile.id);
+      });
     } catch (error) {
       throw error;
     }

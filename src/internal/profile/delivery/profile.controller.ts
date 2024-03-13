@@ -92,4 +92,11 @@ export class ProfileController {
       throw e;
     }
   }
+
+  //get all except mine
+  @Get('listexceptmine')
+  getAllExceptMine(@Headers() headers: any) {
+    let token = headers['authorization'];
+    return this.profileInterop.getAllExceptMine(token);
+  }
 }
