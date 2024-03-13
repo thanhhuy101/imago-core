@@ -211,4 +211,17 @@ export class InteropService implements ProfileInterop {
       throw error;
     }
   }
+
+  //get all profiles except mine profile
+  async getAllExceptMine(token: string): Promise<Profile[]> {
+    try {
+      const decodedToken = await this.authUseCase.verifyToken(token);
+      const profile = await this.profileUseCase.get(decodedToken.uid);
+      return this.profileUseCase.getAll().then((profiles) => {
+        return profiles.filter((item) => item.id !== profile.id);
+      });
+    } catch (error) {
+      throw error;
+    }
+  }
 }
