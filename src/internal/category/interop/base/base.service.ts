@@ -9,6 +9,7 @@ export class CategoryInteropBaseService implements CategoryInterop {
   }
     async createCategory(category: CategoryDomain) {
       try {
+        category.id = category.name.toLowerCase().replace(/\s/g, '');
         return await this.useCase.createCategory(category);
       }
       catch (e) {
