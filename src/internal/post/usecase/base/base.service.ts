@@ -166,10 +166,10 @@ export class BaseUseCaseService implements PostUseCase {
   }
 
   update(post: PostDomain): Promise<boolean> {
-    if (this.isEmptyPhotoUrl(post)) {
+    if (!this.isEmptyPhotoUrl(post)) {
       throw ErrorPhotoInvalid;
     }
-    if (this.isEmptyContent(post)) {
+    if (!this.isEmptyContent(post)) {
       throw ErrorContentInvalid;
     }
     return this.postRepository.update(post);

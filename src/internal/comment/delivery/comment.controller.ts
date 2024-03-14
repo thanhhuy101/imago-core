@@ -50,7 +50,6 @@ export class CommentController {
   @Get()
   async getCommentById(@Headers() headers: any, @Query('id') id: string) {
     let token = headers['authorization'];
-    console.log(id);
     try {
       return await this.interop.getCommentById(token, id);
     } catch (e) {

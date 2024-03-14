@@ -24,6 +24,8 @@ export interface PostResponse {
   endPage: number;
 }
 
+
+
 //get userName by creatorId
 export interface PostRepository {
   getDetail(id: string): Promise<PostDomain>;
@@ -134,6 +136,9 @@ export interface PostInterop {
   search(index: string, query: string): Promise<SearchResult<PostDomain>>;
 
   getProfilePost(token: string, page: number, size: number): Promise<any>;
+
+  reactionPost(token: string, postId: string, senderId: string): Promise<boolean>;
+  unReactionPost(token: string, postId: string, senderId: string): Promise<boolean>;
 }
 
 export const ErrorPostNotFound: HttpException = new HttpException(
