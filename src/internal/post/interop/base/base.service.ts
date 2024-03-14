@@ -19,7 +19,18 @@ export class BaseInteropService implements PostInterop {
     @Inject('ProfileUseCase') private profileUseCase: ProfileUseCase,
   ) {}
 
-
+  async updateByAdmin(
+    post: PostDomain,
+    id: string,
+    token: string,
+  ): Promise<any> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return await this.useCase.updateByAdmin(post, id);
+    } catch (e) {
+      throw e;
+    }
+  }
   async getProfilePost(
     token: string,
     page: number,
@@ -183,7 +194,11 @@ export class BaseInteropService implements PostInterop {
     }
   }
 
-  async reactionPost(token: string, postId: string, senderId: string): Promise<boolean> {
+  async reactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean> {
     let idToken = await this.authUsecase.verifyToken(token);
     if (idToken) {
       let profile = await this.profileUseCase.get(senderId);
@@ -203,8 +218,12 @@ export class BaseInteropService implements PostInterop {
     return false;
   }
 
-// unReaction delete senderId in reaction array
-  async unReactionPost(token: string, postId: string, senderId: string): Promise<boolean> {
+  // unReaction delete senderId in reaction array
+  async unReactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean> {
     let idToken = await this.authUsecase.verifyToken(token);
     if (idToken) {
       let profile = await this.profileUseCase.get(senderId);

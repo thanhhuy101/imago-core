@@ -19,6 +19,23 @@ import {
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
+  @Put('updatebyadmin')
+  async updateByAdmin(
+    @Headers() headers: any,
+    @Body() post: PostDomain,
+    @Query('id') id: string,
+  ) {
+    let token = headers['authorization'];
+    if (!post || Object.keys(post).length === 0) {
+      throw ErrorInvalidPostBody;
+    }
+    try {
+      return await this.interop.updateByAdmin(post, id, token);
+    } catch (e) {
+      throw e;
+    }
+  }
+
   @Get('creatorpost')
   async getProfilePost(
     @Headers() headers: any,
