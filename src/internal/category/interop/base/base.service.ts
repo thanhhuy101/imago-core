@@ -7,6 +7,14 @@ import { AuthUseCase } from '../../../../domain/auth.domain';
 export class CategoryInteropBaseService implements CategoryInterop {
   constructor(@Inject('CategoryUseCase') private useCase: CategoryUseCase, @Inject('AuthUseCase') private authUseCase: AuthUseCase, ) {
   }
+  async getAllCategories(token: string): Promise<CategoryDomain[]> {
+    try{
+      await this.authUseCase.verifyToken(token);
+      return this.useCase.getAllCategories();
+    }catch (e) {
+      throw e;
+    }
+  }
     async createCategory(category: CategoryDomain) {
       try {
         return await this.useCase.createCategory(category);
