@@ -14,6 +14,15 @@ export class BaseRepositoryService implements PostRepository {
   constructor() {
     this.db = admin.firestore();
   }
+
+  async updateByAdmin(post: PostDomain, id: string): Promise<any> {
+    try {
+      await this.db.collection('posts').doc(id).set(post);
+      return true;
+    } catch (e) {
+      throw e;
+    }
+  }
   async getProfilePost(page: number, size: number): Promise<any> {
     let post = await this.db.collection('posts').get();
     let profile = await this.db.collection('profiles').get();
