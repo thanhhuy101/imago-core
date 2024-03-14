@@ -21,7 +21,7 @@ export class CommentRepositoryBaseService implements CommentRepository{
       const commentRef = this.db.collection('comments');
       const snapshot = await commentRef.where('postId', '==', postId).get();
       const comments = snapshot.docs.map((doc) => doc.data() as Comment);
-      const size = 2;
+      const size = 10;
       return {
         data: comments.slice((page - 1) * size, page * size),
         endpage: Math.ceil(comments.length / size),
