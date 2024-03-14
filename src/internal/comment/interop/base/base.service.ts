@@ -19,6 +19,7 @@ export class CommentInteropBaseService implements CommentInterop {
         try {
           let decoded = await this.auth.verifyToken(token);
           comment.authorId = decoded.uid;
+          comment.createdAt = new Date().toString();
           return await this.useCase.createComment(comment);
         }catch (e) {
             throw e;
