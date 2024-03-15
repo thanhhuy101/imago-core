@@ -42,7 +42,6 @@ export class RepositoryService implements StorageRepository {
               action: 'read',
               expires: '01-01-2500',
             });
-            console.log(imageUrl);
             publicUrls.push(imageUrl);
             resolve(imageUrl);
           });
