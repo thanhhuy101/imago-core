@@ -190,4 +190,24 @@ export class HttpController {
       throw e;
     }
   }
+
+  @Put('reaction')
+  async reactionPost(@Headers() headers: any, @Query('postId') postId: string, @Query('senderId') senderId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.reactionPost(token, postId, senderId);
+    } catch (e) {
+      throw e;
+    }
+  }
+
+  @Put('unReaction')
+  async unReactionPost(@Headers() headers: any, @Query('postId') postId: string, @Query('senderId') senderId: string) {
+    let token = headers['authorization'];
+    try {
+      return await this.interop.unReactionPost(token, postId, senderId);
+    } catch (e) {
+      throw e;
+    }
+  }
 }

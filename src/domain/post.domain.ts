@@ -140,6 +140,16 @@ export interface PostInterop {
 
   getProfilePost(token: string, page: number, size: number): Promise<any>;
 
+  reactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean>;
+  unReactionPost(
+    token: string,
+    postId: string,
+    senderId: string,
+  ): Promise<boolean>;
   updateByAdmin(post: PostDomain, id: string, token: string): Promise<any>;
 }
 
