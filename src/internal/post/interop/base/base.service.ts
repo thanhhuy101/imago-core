@@ -16,6 +16,19 @@ export class BaseInteropService implements PostInterop {
     @Inject('AuthUseCase') private authUsecase: AuthUseCase,
     @Inject('SearchUseCase') private searchUsecase: SearchUseCase<PostDomain>,
   ) {}
+
+  async updateByAdmin(
+    post: PostDomain,
+    id: string,
+    token: string,
+  ): Promise<any> {
+    try {
+      await this.authUsecase.verifyToken(token);
+      return await this.useCase.updateByAdmin(post, id);
+    } catch (e) {
+      throw e;
+    }
+  }
   async getProfilePost(
     token: string,
     page: number,
