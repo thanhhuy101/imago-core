@@ -46,7 +46,6 @@ export class BaseRepositoryService implements PostRepository {
 
   async getDetail(id: string): Promise<PostDomain> {
     const post = await this.db.collection('posts').doc(id).get();
-    console.log(id);
 
     return post.data() as PostDomain;
   }

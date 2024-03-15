@@ -57,7 +57,11 @@ export class CommentInteropBaseService implements CommentInterop {
       let decoded = await this.auth.verifyToken(token);
       let post= await this.postUseCase.getDetail(postId);
       if(post === undefined || post === null ){
-        throw ErrorPostIdNotExist;
+        return {
+          data: [],
+          endpage: 0,
+        };
+        
       }
       return await this.useCase.getCommentsByPostId(postId,page);
     } catch (e) {

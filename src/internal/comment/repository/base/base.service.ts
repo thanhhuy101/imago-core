@@ -22,10 +22,20 @@ export class CommentRepositoryBaseService implements CommentRepository{
       const snapshot = await commentRef.where('postId', '==', postId).get();
       const comments = snapshot.docs.map((doc) => doc.data() as Comment);
       const size = 10;
-      return {
-        data: comments.slice((page - 1) * size, page * size),
-        endpage: Math.ceil(comments.length / size),
-      };
+
+      // don't have data return []
+      if (comments.length === 0) {
+        return {
+          data: [],
+          endpage: 0,
+        };
+      }
+      else {
+        return {
+          data: comments.slice((page - 1) * size, page * size),
+          endpage: Math.ceil(comments.length / size),
+        };
+      }
     } catch (e) {
       throw e;
     }
