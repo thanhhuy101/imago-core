@@ -15,7 +15,7 @@ import {
   PostInterop,
 } from 'src/domain/post.domain';
 
-@Controller('v1/post')
+@Controller('v2/post')
 export class HttpController {
   constructor(@Inject('PostInterop') private interop: PostInterop) {}
 
@@ -192,7 +192,11 @@ export class HttpController {
   }
 
   @Put('reaction')
-  async reactionPost(@Headers() headers: any, @Query('postId') postId: string, @Query('senderId') senderId: string) {
+  async reactionPost(
+    @Headers() headers: any,
+    @Query('postId') postId: string,
+    @Query('senderId') senderId: string,
+  ) {
     let token = headers['authorization'];
     try {
       return await this.interop.reactionPost(token, postId, senderId);
@@ -202,7 +206,11 @@ export class HttpController {
   }
 
   @Put('unReaction')
-  async unReactionPost(@Headers() headers: any, @Query('postId') postId: string, @Query('senderId') senderId: string) {
+  async unReactionPost(
+    @Headers() headers: any,
+    @Query('postId') postId: string,
+    @Query('senderId') senderId: string,
+  ) {
     let token = headers['authorization'];
     try {
       return await this.interop.unReactionPost(token, postId, senderId);

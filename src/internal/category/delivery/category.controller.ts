@@ -15,7 +15,7 @@ import {
   CategoryInterop,
 } from '../../../domain/category.domain';
 
-@Controller('v1/category')
+@Controller('v2/category')
 export class CategoryController {
   constructor(@Inject('CategoryInterop') private interop: CategoryInterop) {}
 
@@ -29,9 +29,9 @@ export class CategoryController {
   }
 
   @Put()
-  async updateCategory(@Query() id: string ,@Body() category: CategoryDomain) {
+  async updateCategory(@Query() id: string, @Body() category: CategoryDomain) {
     try {
-      await this.interop.updateCategory(id,category);
+      await this.interop.updateCategory(id, category);
     } catch (e) {
       throw e;
     }
@@ -54,10 +54,7 @@ export class CategoryController {
     }
   }
   @Get('all')
-  async getCategories(
-    @Headers() headers: any,
-    @Query('page') page: number,
-  ) {
+  async getCategories(@Headers() headers: any, @Query('page') page: number) {
     let token = headers['authorization'];
     try {
       return await this.interop.getCategories(page, token);

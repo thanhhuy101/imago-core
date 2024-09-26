@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Profile, ProfileInterop } from 'src/domain/profile.domain';
 
-@Controller('v1/profile')
+@Controller('v2/profile')
 export class ProfileController {
   constructor(
     @Inject('ProfileInterop') private profileInterop: ProfileInterop,

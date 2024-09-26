@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Hashtag, HashtagInterop } from '../../../domain/hashtag.domain';
 
-@Controller('v1/hashtag')
+@Controller('v2/hashtag')
 export class HashtagController {
   constructor(
     @Inject('HashtagInterop') private hashtagInterop: HashtagInterop,

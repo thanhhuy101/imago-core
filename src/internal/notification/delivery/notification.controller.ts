@@ -12,7 +12,7 @@ import {
   NotificationInterop,
 } from '../../../domain/notification.domain';
 
-@Controller('v1/notification')
+@Controller('v2/notification')
 export class NotificationController {
   constructor(
     @Inject('NotificationInterop') private interop: NotificationInterop,

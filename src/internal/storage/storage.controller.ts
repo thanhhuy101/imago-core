@@ -1,7 +1,9 @@
 import {
   Body,
   Controller,
-  FileTypeValidator, Get, Headers,
+  FileTypeValidator,
+  Get,
+  Headers,
   Inject,
   MaxFileSizeValidator,
   ParseFilePipe,
@@ -16,29 +18,32 @@ import { url } from 'inspector';
 import { max } from 'rxjs';
 import { StorageDomain, StorageInterop } from 'src/domain/storage.domain';
 
-@Controller('v1/storage')
+@Controller('v2/storage')
 export class StorageController {
-  constructor(@Inject('StorageInterop') private storageInterop: StorageInterop) { }
+  constructor(
+    @Inject('StorageInterop') private storageInterop: StorageInterop,
+  ) {}
 
   @Post('upload')
   @UseInterceptors(FilesInterceptor('files'))
-  async uploadFile(@Body() storage: StorageDomain,
+  async uploadFile(
+    @Body() storage: StorageDomain,
     @UploadedFiles(
       new ParseFilePipe({
         validators: [
           new MaxFileSizeValidator({ maxSize: 1024 * 1024 * 5 }),
-          new FileTypeValidator({ fileType: '.(jpg|jpeg|png)' })
-        ]
-      })
-    ) files: Express.Multer.File[], @Headers() headers:any
+          new FileTypeValidator({ fileType: '.(jpg|jpeg|png)' }),
+        ],
+      }),
+    )
+    files: Express.Multer.File[],
+    @Headers() headers: any,
   ) {
-    
     try {
-    
       let token = headers['authorization'];
-      return this.storageInterop.uploadFile(files, storage, token );
+      return this.storageInterop.uploadFile(files, storage, token);
     } catch (e) {
-      throw new Error("Error uploading file to storage");
+      throw new Error('Error uploading file to storage');
     }
   }
 }

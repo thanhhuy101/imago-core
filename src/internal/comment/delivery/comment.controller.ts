@@ -13,7 +13,7 @@ import {
 import { CommentInterop } from '../../../domain/comment.domain';
 import { Comment } from '../../../domain/comment.domain';
 
-@Controller('v1/comment')
+@Controller('v2/comment')
 export class CommentController {
   constructor(@Inject('CommentInterop') private interop: CommentInterop) {}
 

@@ -11,7 +11,7 @@ import {
 } from '@nestjs/common';
 import { Report, ReportInterop } from '../../domain/report.domain';
 
-@Controller('v1/report')
+@Controller('v2/report')
 export class ReportController {
   constructor(@Inject('ReportInterop') private interop: ReportInterop) {}
 

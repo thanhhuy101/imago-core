@@ -10,7 +10,7 @@ import {
 } from '@nestjs/common';
 import { Auth, AuthInterop } from '../../../domain/auth.domain';
 
-@Controller('v1/auth')
+@Controller('v2/auth')
 export class AuthController {
   constructor(@Inject('AuthInterop') private authInterop: AuthInterop) {}
 
@@ -51,7 +51,10 @@ export class AuthController {
     return await this.authInterop.block(token, id);
   }
   @Put('unblock')
-  async unblock(@Headers() headers: any, @Query('id') id: string): Promise<Auth> {
+  async unblock(
+    @Headers() headers: any,
+    @Query('id') id: string,
+  ): Promise<Auth> {
     let token = headers['authorization'];
     return await this.authInterop.unblock(token, id);
   }
